@@ -1,26 +1,307 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #efe6d4;
+  --ink: #1c1917;
+  --ink-soft: #57534e;
+  --line: #1c1917;
+  --card: #fff8ec;
+  --gold: #c4a06a;
+  --gold-deep: #8c6a45;
+  --rose: #8e5a5a;
+  --sage: #5f6f64;
+  --danger: #9b3d3d;
+  --radius: 0;
+  --px: 2px;
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 400ms;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-pixel);
+  --font-serif: var(--font-pixel);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--ink);
+}
+
+html,
+body {
+  height: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #3a332b;
+  background-image:
+    linear-gradient(rgba(28, 25, 23, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(28, 25, 23, 0.18) 1px, transparent 1px);
+  background-size: 8px 8px;
+  color: var(--ink);
+  font-family: var(--font-pixel), ui-monospace, monospace;
+  font-size: 16px;
+  line-height: 1.6;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  image-rendering: pixelated;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  border-radius: 0;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 80;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  padding: 8px 12px;
+  transform: translateY(-120%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.pixel-box {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--card);
+  border-radius: 0;
+}
+
+.pixel-field {
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 #d9cbb3;
+  background: var(--card);
+  border-radius: 0;
+}
+
+.pixel-chip {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--card);
+}
+
+.pixel-chip[aria-pressed="true"],
+.pixel-chip.is-on {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.phone-shell {
+  position: relative;
+  background: var(--bg);
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 3px,
+    rgba(28, 25, 23, 0.04) 3px 4px
+  );
+  box-shadow:
+    0 0 0 4px var(--ink),
+    8px 8px 0 var(--ink);
+}
+
+@keyframes fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+@keyframes slide-y {
+  from {
+    transform: translateY(var(--slide-y-offset, 10px));
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(.slide-down) {
+  animation:
+    var(--duration-exit) ease-out both fade reverse,
+    var(--duration-exit) ease-out both slide-y reverse;
+}
+::view-transition-new(.slide-up) {
+  animation:
+    var(--duration-enter) ease-in var(--duration-exit) both fade,
+    var(--duration-move) ease-in both slide-y;
+}
+
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-move);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+::view-transition-group(persistent-nav) {
+  animation: none;
+  z-index: 100;
+}
+
+@keyframes effort-wave {
+  0% {
+    transform: translateX(-60%);
+  }
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes effort-bloom {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(228, 195, 106, 0.15),
+      0 0 12px 2px rgba(228, 195, 106, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(228, 195, 106, 0.12),
+      0 0 28px 8px rgba(255, 224, 140, 0.55);
+  }
+}
+
+.effort-golden {
+  animation: effort-bloom 1.35s ease-in-out infinite;
+}
+
+.effort-golden .effort-wave {
+  position: absolute;
+  inset: -10px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.effort-golden .effort-wave::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 244, 200, 0.15) 28%,
+    rgba(255, 236, 160, 0.85) 50%,
+    rgba(255, 244, 200, 0.15) 72%,
+    transparent 100%
+  );
+  animation: effort-wave 1.6s linear infinite;
+}
+
+.effort-ink {
+  text-shadow:
+    1px 0 0 var(--ink),
+    -1px 0 0 var(--ink),
+    0 1px 0 var(--ink),
+    0 -1px 0 var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }

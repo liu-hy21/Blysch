@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id           String  @id @default(cuid())
+  username     String  @unique
+  passwordHash String?
+  nickname     String
+  avatar       String? @db.Text
+  createdAt    DateTime @default(now())
+
+  memberships CoupleMember[]
+  moods       Mood[]
+  memories    Memory[]
+  pet         Pet?
+}
+
+model Couple {
+  id        String   @id @default(cuid())
+  name      String?
+  startDate DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  members  CoupleMember[]
+  moods    Mood[]
+  memories Memory[]
+  places   Place[]
+  wishes   Wish[]
+  days     Day[]
+}
+
+model CoupleMember {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupleId  String
+  couple    Couple   @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, coupleId])
+  @@index([coupleId])
+}
+
+model Mood {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupleId  String
+  couple    Couple   @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  mood      String
+  date      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([coupleId, date])
+}
+
+model Memory {
+  id         String   @id @default(cuid())
+  coupleId   String
+  couple     Couple   @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title      String
+  content    String?  @db.Text
+  category   String   @default("其他")
+  date       DateTime
+  coverImage String?  @db.Text
+  placeId    String?
+  place      Place?   @relation(fields: [placeId], references: [id])
+  createdAt  DateTime @default(now())
+
+  images MemoryImage[]
+
+  @@index([coupleId, date])
+}
+
+model MemoryImage {
+  id        String @id @default(cuid())
+  memoryId  String
+  memory    Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  url       String @db.Text
+  sortOrder Int    @default(0)
+
+  @@index([memoryId])
+}
+
+model Place {
+  id        String   @id @default(cuid())
+  coupleId  String
+  couple    Couple   @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  name      String
+  city      String?
+  note      String?  @db.Text
+  images    String?  @db.LongText
+  visitedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  memories Memory[]
+
+  @@index([coupleId])
+}
+
+enum WishStatus {
+  PLANNED
+  DONE
+}
+
+model Wish {
+  id          String     @id @default(cuid())
+  coupleId    String
+  couple      Couple     @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  title       String
+  category    String     @default("其他")
+  status      WishStatus @default(PLANNED)
+  stars       Int        @default(3)
+  note        String?    @db.Text
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+
+  @@index([coupleId])
+}
+
+model Day {
+  id         String   @id @default(cuid())
+  coupleId   String
+  couple     Couple   @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  title      String
+  targetDate DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([coupleId])
+}
+
+enum PetSpecies {
+  rabbit
+  cow
+  sheep
+  deer
+  dog
+  cat
+}
+
+model Pet {
+  id           String     @id @default(cuid())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  species      PetSpecies
+  name         String
+  intimacy     Int        @default(0)
+  lastCareDate String?
+  careStreak   Int        @default(0)
+  hatchedAt    DateTime   @default(now())
+}
