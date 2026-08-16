@@ -5,8 +5,37 @@ import { useRouter } from "next/navigation";
 import { PixelPet } from "@/components/pets/pixel-pet";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
-import { SPECIES, SPECIES_LABEL, type SerializedPet } from "@/lib/pet-rules";
+import {
+  FOODS,
+  SPECIES,
+  SPECIES_LABEL,
+  TYPE_COLOR,
+  type SerializedPet,
+} from "@/lib/pet-rules";
 import type { PetSpecies } from "@/generated/prisma/client";
+
+function Bar({
+  label,
+  value,
+  max,
+}: {
+  label: string;
+  value: number;
+  max: number;
+}) {
+  const pct = max <= 0 ? 100 : Math.min(100, Math.round((value / max) * 100));
+  return (
+    <div>
+      <div className="mb-1 flex justify-between text-[11px] text-ink-soft">
+        <span>{label}</span>
+        <span>{max <= 0 ? "MAX" : `${value}/${max}`}</span>
+      </div>
+      <div className="h-2.5 border-2 border-ink bg-bg">
+        <div className="h-full bg-gold" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
 
 export function PetsClient({
   mine,
@@ -26,6 +55,8 @@ export function PetsClient({
   const [renameOpen, setRenameOpen] = useState(false);
   const [newName, setNewName] = useState(mine?.name ?? "");
   const [error, setError] = useState("");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
 
   async function hatch() {
     setError("");
@@ -43,8 +74,38 @@ export function PetsClient({
   }
 
   async function care() {
+    setBusy(true);
+    setNote("");
     const res = await fetch("/api/pets/care", { method: "POST" });
-    if (res.ok) router.refresh();
+    const data = await res.json().catch(() => ({}));
+    setBusy(false);
+    if (!res.ok) {
+      setError(data.error ?? "照料失败");
+      return;
+    }
+    if (data.levelsGained) setNote(`升了 ${data.levelsGained} 级！`);
+    router.refresh();
+  }
+
+  async function feed(foodId: string) {
+    setBusy(true);
+    setError("");
+    setNote("");
+    const res = await fetch("/api/pets/feed", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ foodId }),
+    });
+    const data = await res.json().catch(() => ({}));
+    setBusy(false);
+    if (!res.ok) {
+      setError(data.error ?? "喂食失败");
+      return;
+    }
+    const bits = [`吃了${data.food}`];
+    if (data.levelsGained) bits.push(`升了 ${data.levelsGained} 级`);
+    setNote(bits.join("，") + "！");
+    router.refresh();
   }
 
   async function rename() {
@@ -60,9 +121,12 @@ export function PetsClient({
   }
 
   const shown = tab === "mine" ? mine : partner;
+  const mineView = tab === "mine";
 
   function switchTab(next: "mine" | "partner") {
     setTab(next);
+    setError("");
+    setNote("");
     startTransition(() => {
       router.replace(next === "partner" ? "/pets?side=partner" : "/pets");
     });
@@ -131,42 +195,129 @@ export function PetsClient({
       )}
 
       {shown && (
-        <div className="mt-8 flex flex-col items-center">
-          <ViewTransition
-            name={tab === "mine" ? "pet-sprite-mine" : "pet-sprite-partner"}
-            share="morph"
-            default="none"
-          >
-            <PixelPet
-              species={shown.species}
-              mood={shown.mood}
-              scale={6}
-              label={shown.name}
-            />
-          </ViewTransition>
-          <h2 className="mt-4 text-2xl">{shown.name}</h2>
-          <p className="text-sm text-ink-soft">
-            {shown.speciesLabel} · 亲密度 {shown.intimacy}
-          </p>
-          <p className="mt-1 text-xs text-ink-soft">
-            {shown.caredToday ? "今天已经照料过" : "今天还没有照料"}
-          </p>
-          {tab === "mine" && (
-            <div className="mt-6 flex w-full gap-3">
-              <Button className="flex-1" disabled={shown.caredToday} onClick={care}>
-                今日照料
-              </Button>
-              <Button
-                variant="ghost"
-                className="flex-1"
-                onClick={() => {
-                  setNewName(shown.name);
-                  setRenameOpen(true);
-                }}
-              >
-                改名
-              </Button>
+        <div className="mt-5 space-y-4">
+          <section className="pixel-box overflow-hidden">
+            <div className="flex items-stretch">
+              <div className="flex w-[42%] items-center justify-center bg-bg py-4">
+                <ViewTransition
+                  name={tab === "mine" ? "pet-sprite-mine" : "pet-sprite-partner"}
+                  share="morph"
+                  default="none"
+                >
+                  <PixelPet
+                    species={shown.species}
+                    mood={shown.mood}
+                    scale={4}
+                    label={shown.name}
+                  />
+                </ViewTransition>
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 border-l-2 border-ink p-3">
+                <p className="text-[11px] text-ink-soft">Lv.{shown.level}</p>
+                <h2 className="truncate text-xl">{shown.name}</h2>
+                <p className="text-xs text-ink-soft">
+                  {shown.speciesLabel}
+                  <span
+                    className="ml-2 inline-block border-2 border-ink px-1 text-[10px]"
+                    style={{ background: TYPE_COLOR[shown.speciesType] ?? "#c4c4c0" }}
+                  >
+                    {shown.speciesType}
+                  </span>
+                </p>
+                <Bar
+                  label="经验"
+                  value={shown.maxLevel ? 1 : shown.exp}
+                  max={shown.maxLevel ? 1 : shown.expToNext}
+                />
+                <Bar label={`亲密度 ${shown.intimacy}`} value={Math.min(shown.intimacy, 100)} max={100} />
+              </div>
             </div>
+            <p className="border-t-2 border-ink px-3 py-2 text-[11px] text-ink-soft">
+              连续照料 {shown.careStreak} 天
+              {shown.caredToday ? " · 今天已照料" : " · 今天还没照料"}
+              {mineView ? ` · 还可喂 ${shown.feedsLeft} 次` : ""}
+            </p>
+          </section>
+
+          <section className="pixel-box p-3">
+            <h3 className="mb-2 text-sm">技能</h3>
+            <ul className="space-y-2">
+              {shown.skills.map((s) => (
+                <li
+                  key={s.id}
+                  className={`border-2 border-ink px-2 py-2 ${s.locked ? "opacity-40" : "bg-bg"}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm">{s.locked ? "？？？" : s.name}</span>
+                    <span className="flex items-center gap-2 text-[11px] text-ink-soft">
+                      <span
+                        className="border-2 border-ink px-1"
+                        style={{ background: TYPE_COLOR[s.type] ?? "#c4c4c0" }}
+                      >
+                        {s.locked ? "??" : s.type}
+                      </span>
+                      {s.locked ? `Lv.${s.unlockLevel}` : s.power ? `威力 ${s.power}` : "变化"}
+                    </span>
+                  </div>
+                  {!s.locked && <p className="mt-1 text-[11px] text-ink-soft">{s.desc}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {mineView ? (
+            <section className="pixel-box p-3">
+              <h3 className="mb-2 text-sm">背包</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {FOODS.map((f) => {
+                  const gold = "gold" in f && f.gold;
+                  const disabled =
+                    busy ||
+                    shown.feedsLeft <= 0 ||
+                    (gold && !shown.goldFoodReady);
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => feed(f.id)}
+                      className="border-2 border-ink bg-card px-2 py-2 text-left disabled:opacity-40"
+                    >
+                      <p className="text-sm">{f.name}</p>
+                      <p className="text-[11px] text-ink-soft">经验 +{f.exp}</p>
+                      <p className="text-[11px] text-ink-soft">{f.desc}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Button className="flex-1" disabled={busy || shown.caredToday} onClick={care}>
+                  照料
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="flex-1"
+                  onClick={() => {
+                    setNewName(shown.name);
+                    setRenameOpen(true);
+                  }}
+                >
+                  改名
+                </Button>
+              </div>
+              {note && (
+                <p className="mt-2 text-sm text-gold-deep" role="status">
+                  {note}
+                </p>
+              )}
+              {error && (
+                <p className="mt-2 text-sm text-rose" role="alert">
+                  {error}
+                </p>
+              )}
+            </section>
+          ) : (
+            <p className="text-center text-xs text-ink-soft">只能看，不能喂对方的宠物。</p>
           )}
         </div>
       )}

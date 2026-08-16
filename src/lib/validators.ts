@@ -41,6 +41,10 @@ export const petNameSchema = z.object({
   name: z.string().min(2).max(8),
 });
 
+export const feedSchema = z.object({
+  foodId: z.enum(["berry", "block", "cake", "apple"]),
+});
+
 export const placeSchema = z.object({
   name: z.string().min(1).max(40),
   city: z.string().max(40).optional(),

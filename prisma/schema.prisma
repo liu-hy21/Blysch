@@ -156,5 +156,10 @@ model Pet {
   intimacy     Int        @default(0)
   lastCareDate String?
   careStreak   Int        @default(0)
+  level        Int        @default(1)
+  exp          Int        @default(0)
+  feedDate     String?
+  feedsToday   Int        @default(0)
+  goldFoodDate String?
   hatchedAt    DateTime   @default(now())
 }
