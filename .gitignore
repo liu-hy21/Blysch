@@ -38,8 +38,9 @@ yarn-error.log*
 /src/generated
 
 # user uploads
+/uploads/*
+!/uploads/.gitkeep
 /public/uploads/*
-!/public/uploads/.gitkeep
 
 # vercel
 .vercel
