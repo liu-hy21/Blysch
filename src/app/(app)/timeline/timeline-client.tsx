@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { MEMORY_CATEGORIES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { PixelSelect } from "@/components/ui/pixel-select";
 import { Sheet } from "@/components/ui/sheet";
 import { ImagePicker } from "@/components/app/image-picker";
 import { ImageLightbox } from "@/components/app/image-lightbox";
@@ -123,7 +124,7 @@ export function TimelineClient({
         {list.map((m) => (
           <li id={m.id} key={m.id} className="pixel-box p-4">
             <p className="text-xs text-ink-soft">
-              {m.date} · {m.category} · {m.author}
+              {m.category}
               {m.placeName ? ` · ${m.placeName}` : ""}
             </p>
             <h2 className="mt-1 text-lg">{m.title}</h2>
@@ -172,33 +173,21 @@ export function TimelineClient({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <input
-            type="date"
-            className="pixel-field min-h-11 w-full px-3"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <select
-            className="pixel-field min-h-11 w-full px-3"
+          <PixelSelect
+            label="分类"
             value={category}
-            onChange={(e) => setCategory(e.target.value as typeof category)}
-          >
-            {MEMORY_CATEGORIES.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-          <select
-            className="pixel-field min-h-11 w-full px-3"
+            onChange={(v) => setCategory(v as typeof category)}
+            options={MEMORY_CATEGORIES.map((c) => ({ value: c, label: c }))}
+          />
+          <PixelSelect
+            label="地点"
             value={placeId}
-            onChange={(e) => setPlaceId(e.target.value)}
-          >
-            <option value="">不关联地点</option>
-            {places.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onChange={setPlaceId}
+            options={[
+              { value: "", label: "不关联地点" },
+              ...places.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
           <textarea
             className="pixel-field min-h-24 w-full px-3 py-2"
             placeholder="发生了什么…"
