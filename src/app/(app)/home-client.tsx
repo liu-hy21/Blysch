@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ViewTransition } from "react";
-import { MOODS, MOOD_MAP } from "@/lib/constants";
+import { MOODS, MOOD_MAP, SHOW_TOGETHER_UI } from "@/lib/constants";
 import { PixelPet } from "@/components/pets/pixel-pet";
 import { RecentPhotos } from "@/components/app/recent-photos";
 import type { SerializedPet } from "@/lib/pet-rules";
@@ -22,8 +22,8 @@ export function HomeClient({
 }: {
   me: { nickname: string; username: string };
   partner: { nickname: string; username: string };
-  togetherDays: number;
-  startLabel: string;
+  togetherDays: number | null;
+  startLabel: string | null;
   mineMood: string | null;
   partnerMood: string | null;
   nextDay: { title: string; remain: number } | null;
@@ -49,11 +49,17 @@ export function HomeClient({
         <h1 className="mt-1 text-3xl">Blysch</h1>
       </header>
 
-      <section className="pixel-box p-4">
-        <p className="text-sm text-ink-soft">在一起</p>
-        <p className="mt-1 text-4xl text-gold-deep">{togetherDays} 天</p>
-        <p className="mt-1 text-xs text-ink-soft">{startLabel}</p>
-      </section>
+      {SHOW_TOGETHER_UI ? (
+        <section className="pixel-box p-4">
+          <p className="text-sm text-ink-soft">在一起</p>
+          <p className="mt-1 text-4xl text-gold-deep">
+            {togetherDays ?? "?"} 天
+          </p>
+          {startLabel ? (
+            <p className="mt-1 text-xs text-ink-soft">{startLabel}</p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="grid grid-cols-2 gap-3">
         <div className="pixel-box p-3">

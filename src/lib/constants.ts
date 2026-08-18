@@ -40,3 +40,9 @@ export const WISH_EFFORTS = [
 ] as const;
 
 export const SESSION_COOKIE = "blysch_session";
+
+/** 首页「在一起」只有起始日为这一天时才揭晓真实天数 */
+export const HOME_REVEAL_START = "2026-08-15";
+
+/** 先关掉「在一起」相关展示，逻辑仍保留 */
+export const SHOW_TOGETHER_UI = false;

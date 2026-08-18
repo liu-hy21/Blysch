@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { SHOW_TOGETHER_UI } from "@/lib/constants";
 import { daysTogether } from "@/lib/utils";
 import { ChevronRight, ListChecks, MapPin, CalendarHeart, UserRound } from "lucide-react";
 
@@ -8,7 +9,7 @@ const links = [
   { href: "/me/wishes", label: "心愿", desc: "一起想做的事", icon: ListChecks },
   { href: "/me/places", label: "足迹", desc: "去过的地方", icon: MapPin },
   { href: "/me/days", label: "日子", desc: "重要的日期", icon: CalendarHeart },
-  { href: "/me/profile", label: "我们", desc: "昵称与起始日", icon: UserRound },
+  { href: "/me/profile", label: "我", desc: SHOW_TOGETHER_UI ? "昵称与起始日" : "昵称与头像", icon: UserRound },
 ];
 
 export default async function MePage() {
@@ -24,7 +25,9 @@ export default async function MePage() {
         <p className="text-xl">{user.nickname}</p>
         <p className="text-xs text-ink-soft">{user.username}</p>
         <p className="mt-3 text-sm text-ink-soft">
-          在一起 {couple ? daysTogether(couple.startDate) : 0} 天 · 回忆 {memoryCount}
+          {SHOW_TOGETHER_UI
+            ? `在一起 ${couple ? daysTogether(couple.startDate) : 0} 天 · 回忆 ${memoryCount}`
+            : `回忆 ${memoryCount}`}
         </p>
       </section>
       <ul className="mt-4 space-y-2">

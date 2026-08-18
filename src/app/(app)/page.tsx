@@ -2,7 +2,8 @@ import { differenceInCalendarDays, format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { daysTogether, todayKey } from "@/lib/utils";
+import { HOME_REVEAL_START } from "@/lib/constants";
+import { daysTogether, isTogetherRevealed, todayKey } from "@/lib/utils";
 import { serializePet } from "@/lib/pet-rules";
 import { HomeClient } from "./home-client";
 
@@ -33,6 +34,7 @@ export default async function HomePage() {
   const remain = nextDay
     ? differenceInCalendarDays(nextDay.targetDate, new Date())
     : null;
+  const revealed = isTogetherRevealed(couple.startDate, HOME_REVEAL_START);
 
   return (
     <HomeClient
@@ -41,8 +43,8 @@ export default async function HomePage() {
         nickname: partner?.nickname ?? "对方",
         username: partner?.username ?? "",
       }}
-      togetherDays={daysTogether(couple.startDate)}
-      startLabel={format(couple.startDate, "yyyy.MM.dd", { locale: zhCN })}
+      togetherDays={revealed ? daysTogether(couple.startDate) : null}
+      startLabel={revealed ? format(couple.startDate, "yyyy.MM.dd", { locale: zhCN }) : null}
       mineMood={moods.find((m) => m.userId === user.id)?.mood ?? null}
       partnerMood={moods.find((m) => m.userId === partner?.id)?.mood ?? null}
       nextDay={

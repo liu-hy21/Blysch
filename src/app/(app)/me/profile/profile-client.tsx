@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { PixelDatePicker } from "@/components/ui/pixel-date-picker";
+import { SHOW_TOGETHER_UI } from "@/lib/constants";
 import { BackBar } from "../back-bar";
 import { uploadImage } from "@/components/app/image-picker";
 import { LogoutButton } from "../logout-button";
@@ -51,7 +53,7 @@ export function ProfileClient({
 
   return (
     <div className="px-5 pb-8 pt-6">
-      <BackBar title="我们" />
+      <BackBar title="我" />
       <button
         type="button"
         aria-label="更换头像"
@@ -86,15 +88,11 @@ export function ProfileClient({
           onChange={(e) => setName(e.target.value)}
         />
       </label>
-      <label className="mt-3 block text-sm">
-        在一起起始日
-        <input
-          type="date"
-          className="pixel-field mt-1 min-h-11 w-full px-3"
-          value={start}
-          onChange={(e) => setStart(e.target.value)}
-        />
-      </label>
+      {SHOW_TOGETHER_UI ? (
+        <div className="mt-3">
+          <PixelDatePicker label="在一起起始日" value={start} onChange={setStart} />
+        </div>
+      ) : null}
       <Button className="mt-4 w-full" onClick={save}>
         保存资料
       </Button>

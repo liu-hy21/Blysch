@@ -28,3 +28,7 @@ export function daysTogether(startDate: Date): number {
   const b = Date.parse(`${today}T00:00:00+08:00`);
   return Math.max(1, Math.floor((b - a) / 86400000) + 1);
 }
+
+export function isTogetherRevealed(startDate: Date, revealKey: string): boolean {
+  return todayKey(startDate) === revealKey;
+}
