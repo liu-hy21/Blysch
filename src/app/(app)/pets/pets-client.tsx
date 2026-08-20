@@ -3,6 +3,7 @@
 import { startTransition, useState, ViewTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PixelPet } from "@/components/pets/pixel-pet";
+import { FurniturePiece } from "@/components/pets/furniture-piece";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import {
@@ -319,6 +320,36 @@ export function PetsClient({
           ) : (
             <p className="text-center text-xs text-ink-soft">只能看，不能喂对方的宠物。</p>
           )}
+
+          <section className="pixel-box p-3">
+            <h3 className="mb-2 text-sm">家具</h3>
+            {shown.furniture.length === 0 ? (
+              <p className="text-sm text-ink-soft">这个物种还没有家具图鉴。</p>
+            ) : shown.furniture.some((f) => !f.locked) ? (
+              <ul className="grid grid-cols-3 gap-2">
+                {shown.furniture
+                  .filter((f) => !f.locked)
+                  .map((f) => (
+                    <li
+                      key={f.id}
+                      className="flex flex-col items-center gap-1 border-2 border-ink bg-bg px-1 py-2"
+                    >
+                      <div className="flex h-14 w-full items-center justify-center overflow-hidden">
+                        <FurniturePiece id={f.id} />
+                      </div>
+                      <span className="text-center text-[11px] leading-4">{f.name}</span>
+                      <span className="text-[11px] text-ink-soft">
+                        {f.scene === "house" ? "室内" : "室外"}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-ink-soft">
+                还没有家具。升到 {shown.furniture[0]?.unlockLevel ?? 3} 级会解锁第一件。
+              </p>
+            )}
+          </section>
         </div>
       )}
 

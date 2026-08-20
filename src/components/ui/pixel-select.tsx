@@ -13,11 +13,13 @@ export function PixelSelect({
   onChange,
   options,
   label,
+  className,
 }: {
   value: string;
   onChange: (value: string) => void;
   options: Option[];
   label?: string;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<MenuPos | null>(null);
@@ -120,7 +122,7 @@ export function PixelSelect({
     ) : null;
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} className={className}>
       {label ? <p className="mb-1 text-[11px] text-ink-soft">{label}</p> : null}
       <button
         ref={buttonRef}

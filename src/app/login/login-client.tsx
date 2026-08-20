@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { PixelSelect } from "@/components/ui/pixel-select";
+import { ALLOWED_USERNAMES } from "@/lib/constants";
 
 export function LoginClient() {
   const router = useRouter();
@@ -43,19 +45,14 @@ export function LoginClient() {
       <h1 className="mt-2 text-3xl">Blysch</h1>
       <p className="mt-2 text-sm text-ink-soft">只给两个人用的私密本子。</p>
       <form onSubmit={onSubmit} className="mt-10 space-y-4">
-        <label className="block text-sm">
-          用户名
-          <select
-            name="username"
-            autoComplete="username"
-            className="mt-1 min-h-11 w-full pixel-field px-3"
+        <div className="space-y-1">
+          <p className="text-sm">用户名</p>
+          <PixelSelect
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          >
-            <option value="liuhangyu">liuhangyu</option>
-            <option value="shaobingchan">shaobingchan</option>
-          </select>
-        </label>
+            onChange={setUsername}
+            options={ALLOWED_USERNAMES.map((name) => ({ value: name, label: name }))}
+          />
+        </div>
         <label className="block text-sm">
           {mode === "setup" ? "设置密码" : "密码"}
           <input

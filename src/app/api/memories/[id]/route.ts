@@ -19,10 +19,31 @@ export async function PATCH(req: Request, { params }: Params) {
   const data = parsed.data;
   const memory = await prisma.$transaction(async (tx) => {
     if (data.images) {
-      await tx.memoryImage.deleteMany({ where: { memoryId: id } });
-      await tx.memoryImage.createMany({
-        data: data.images.map((url, i) => ({ memoryId: id, url, sortOrder: i })),
-      });
+      const existingImages = await tx.memoryImage.findMany({ where: { memoryId: id } });
+      const visible = data.images;
+      const visibleSet = new Set(visible);
+      for (const img of existingImages) {
+        if (!visibleSet.has(img.url)) {
+          await tx.memoryImage.update({
+            where: { id: img.id },
+            data: { hidden: true },
+          });
+        }
+      }
+      for (let i = 0; i < visible.length; i++) {
+        const url = visible[i];
+        const found = existingImages.find((img) => img.url === url);
+        if (found) {
+          await tx.memoryImage.update({
+            where: { id: found.id },
+            data: { hidden: false, sortOrder: i },
+          });
+        } else {
+          await tx.memoryImage.create({
+            data: { memoryId: id, url, sortOrder: i, hidden: false },
+          });
+        }
+      }
     }
     return tx.memory.update({
       where: { id },
@@ -35,7 +56,7 @@ export async function PATCH(req: Request, { params }: Params) {
         coverImage: data.images ? (data.images[0] ?? null) : undefined,
       },
       include: {
-        images: { orderBy: { sortOrder: "asc" } },
+        images: { where: { hidden: false }, orderBy: { sortOrder: "asc" } },
         author: { select: { nickname: true, username: true } },
         place: { select: { id: true, name: true } },
       },

@@ -7,8 +7,9 @@ export function isAllowedUsername(name: string): name is AllowedUsername {
 
 export const MOODS = [
   { value: "happy", label: "开心" },
-  { value: "miss", label: "想你" },
-  { value: "quiet", label: "想安静" },
+  { value: "eager", label: "期待" },
+  { value: "calm", label: "呆着" },
+  { value: "quiet", label: "睡觉" },
   { value: "working", label: "干活中" },
 ] as const;
 
@@ -21,6 +22,11 @@ export const MEMORY_CATEGORIES = [
   "知识",
   "其他",
 ] as const;
+
+/** 一条回忆最多上传的照片数 */
+export const MEMORY_IMAGE_MAX = 20;
+/** 时间轴卡片上预览的照片数 */
+export const MEMORY_IMAGE_PREVIEW = 6;
 
 export const WISH_CATEGORIES = [
   "旅行",

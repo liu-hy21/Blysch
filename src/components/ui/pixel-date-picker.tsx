@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, todayKey } from "@/lib/utils";
 
 type MenuPos = { top?: number; bottom?: number; left: number; width: number };
@@ -48,10 +48,12 @@ export function PixelDatePicker({
   value,
   onChange,
   label,
+  className,
 }: {
   value: string;
   onChange: (value: string) => void;
   label?: string;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<MenuPos | null>(null);
@@ -197,8 +199,8 @@ export function PixelDatePicker({
     ) : null;
 
   return (
-    <div ref={rootRef}>
-      {label ? <p className="mb-1 text-sm">{label}</p> : null}
+    <div ref={rootRef} className={className}>
+      {label ? <p className="mb-1 text-[11px] text-ink-soft">{label}</p> : null}
       <button
         ref={buttonRef}
         type="button"
@@ -211,9 +213,10 @@ export function PixelDatePicker({
         <span className={shown ? "text-ink" : "text-ink-soft"}>
           {shown ?? "选择日期…"}
         </span>
-        <span className="text-[11px] text-ink-soft" aria-hidden>
-          {open ? "▲" : "▼"}
-        </span>
+        <ChevronDown
+          className={cn("h-4 w-4 shrink-0", open ? "rotate-180" : "")}
+          aria-hidden
+        />
       </button>
       {menu ? createPortal(menu, document.body) : null}
     </div>

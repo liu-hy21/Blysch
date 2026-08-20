@@ -2,13 +2,15 @@
 
 import { useMemo, useState, ViewTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Plus } from "lucide-react";
-import { MEMORY_CATEGORIES } from "@/lib/constants";
+import { MEMORY_CATEGORIES, MEMORY_IMAGE_MAX, MEMORY_IMAGE_PREVIEW } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { PixelSelect } from "@/components/ui/pixel-select";
 import { Sheet } from "@/components/ui/sheet";
 import { ImagePicker } from "@/components/app/image-picker";
 import { ImageLightbox } from "@/components/app/image-lightbox";
+import { todayKey } from "@/lib/utils";
 
 type MemoryItem = {
   id: string;
@@ -36,7 +38,7 @@ export function TimelineClient({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<(typeof MEMORY_CATEGORIES)[number]>("旅行");
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(() => todayKey());
   const [placeId, setPlaceId] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -52,7 +54,7 @@ export function TimelineClient({
     setTitle("");
     setContent("");
     setCategory("旅行");
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(todayKey());
     setPlaceId("");
     setImages([]);
     setOpen(true);
@@ -84,12 +86,6 @@ export function TimelineClient({
     setBusy(false);
     if (!res.ok) return;
     setOpen(false);
-    router.refresh();
-  }
-
-  async function remove(id: string) {
-    if (!confirm("删除这条回忆？")) return;
-    await fetch(`/api/memories/${id}`, { method: "DELETE" });
     router.refresh();
   }
 
@@ -130,37 +126,52 @@ export function TimelineClient({
             <h2 className="mt-1 text-lg">{m.title}</h2>
             {m.content && <p className="mt-2 text-sm leading-6 text-ink-soft">{m.content}</p>}
             {m.images.length > 0 && (
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                {m.images.map((url, i) => {
-                  const img = (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={url} alt="" className="aspect-square w-full object-cover" />
-                  );
-                  const thumb =
-                    i === 0 ? (
-                      <ViewTransition name={`memory-${m.id}`} share="morph" default="none">
-                        {img}
-                      </ViewTransition>
-                    ) : (
-                      img
+              <>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {m.images.slice(0, MEMORY_IMAGE_PREVIEW).map((url, i) => {
+                    const img = (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={url} alt="" className="aspect-square w-full object-cover" />
                     );
-                  return (
-                    <button
-                      key={url}
-                      type="button"
-                      className="overflow-hidden"
-                      aria-label={`查看原图 ${i + 1}`}
-                      onClick={() => setPreview({ urls: m.images, index: i })}
-                    >
-                      {thumb}
-                    </button>
-                  );
-                })}
-              </div>
+                    const thumb =
+                      i === 0 ? (
+                        <ViewTransition name={`memory-${m.id}`} share="morph" default="none">
+                          {img}
+                        </ViewTransition>
+                      ) : (
+                        img
+                      );
+                    return (
+                      <button
+                        key={url}
+                        type="button"
+                        className="overflow-hidden"
+                        aria-label={`查看原图 ${i + 1}`}
+                        onClick={() =>
+                          setPreview({
+                            urls: m.images.slice(0, MEMORY_IMAGE_PREVIEW),
+                            index: i,
+                          })
+                        }
+                      >
+                        {thumb}
+                      </button>
+                    );
+                  })}
+                </div>
+                {m.images.length > MEMORY_IMAGE_PREVIEW ? (
+                  <Link
+                    href={`/timeline/${m.id}/photos`}
+                    transitionTypes={["nav-forward"]}
+                    className="mt-2 inline-block text-xs text-ink-soft"
+                  >
+                    查看更多
+                  </Link>
+                ) : null}
+              </>
             )}
             <div className="mt-3 flex gap-3 text-xs text-gold-deep">
               <button onClick={() => startEdit(m)}>编辑</button>
-              <button onClick={() => remove(m.id)}>删除</button>
             </div>
           </li>
         ))}
@@ -194,7 +205,7 @@ export function TimelineClient({
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <ImagePicker value={images} onChange={setImages} />
+          <ImagePicker value={images} onChange={setImages} max={MEMORY_IMAGE_MAX} />
           <Button className="w-full" disabled={busy || !title} onClick={save}>
             保存
           </Button>

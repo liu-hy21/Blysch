@@ -1,5 +1,6 @@
 import type { Pet, PetSpecies } from "@/generated/prisma/client";
 import { addDaysKey, todayKey } from "@/lib/utils";
+import { furnitureFor } from "@/lib/dream-furniture";
 
 export const SPECIES = [
   "rabbit",
@@ -180,6 +181,7 @@ export function serializePet(pet: Pet) {
     feedsLeft: feedsLeft(pet, today),
     goldFoodReady: goldFoodReady(pet, today),
     skills: skillsFor(pet.species, pet.level),
+    furniture: furnitureFor(pet.species, pet.level ?? 1),
   };
 }
 

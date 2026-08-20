@@ -82,11 +82,12 @@ model Memory {
 }
 
 model MemoryImage {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   memoryId  String
-  memory    Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
-  url       String @db.Text
-  sortOrder Int    @default(0)
+  memory    Memory  @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  url       String  @db.Text
+  sortOrder Int     @default(0)
+  hidden    Boolean @default(false)
 
   @@index([memoryId])
 }

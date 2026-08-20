@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { isAllowedUsername, MEMORY_CATEGORIES, MOODS, WISH_CATEGORIES } from "@/lib/constants";
+import {
+  isAllowedUsername,
+  MEMORY_CATEGORIES,
+  MEMORY_IMAGE_MAX,
+  MOODS,
+  WISH_CATEGORIES,
+} from "@/lib/constants";
 import { SPECIES } from "@/lib/pet-rules";
 
 export const loginSchema = z.object({
@@ -29,7 +35,7 @@ export const memorySchema = z.object({
   category: z.enum(MEMORY_CATEGORIES),
   date: z.string().min(8),
   placeId: z.string().nullable().optional(),
-  images: z.array(z.string()).max(9).default([]),
+  images: z.array(z.string()).max(MEMORY_IMAGE_MAX).default([]),
 });
 
 export const hatchSchema = z.object({

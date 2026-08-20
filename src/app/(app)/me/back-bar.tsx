@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
-export function BackBar({ title }: { title: string }) {
+export function BackBar({ title, href = "/me" }: { title: string; href?: string }) {
   return (
     <div className="mb-5 flex items-center gap-2">
       <Link
-        href="/me"
+        href={href}
         transitionTypes={["nav-back"]}
         className="flex h-11 w-11 items-center justify-center"
         aria-label="返回"

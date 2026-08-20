@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { WISH_CATEGORIES, WISH_EFFORTS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { PixelSelect } from "@/components/ui/pixel-select";
 import { EffortSlider } from "@/components/ui/effort-slider";
 import { Sheet } from "@/components/ui/sheet";
 import { BackBar } from "../back-bar";
@@ -98,15 +99,12 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <select
-          className="pixel-field mt-3 min-h-11 w-full px-3"
+        <PixelSelect
+          className="mt-3"
           value={category}
-          onChange={(e) => setCategory(e.target.value as typeof category)}
-        >
-          {WISH_CATEGORIES.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
+          onChange={(v) => setCategory(v as typeof category)}
+          options={WISH_CATEGORIES.map((c) => ({ value: c, label: c }))}
+        />
         <EffortSlider value={stars} onChange={setStars} />
         <Button className="mt-4 w-full" disabled={!title} onClick={add}>
           保存

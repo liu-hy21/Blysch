@@ -23,7 +23,7 @@ export default async function HomePage() {
       where: { coupleId: couple.id },
       orderBy: { date: "desc" },
       take: 10,
-      include: { images: { take: 1, orderBy: { sortOrder: "asc" } } },
+      include: { images: { where: { hidden: false }, take: 1, orderBy: { sortOrder: "asc" } } },
     }),
     prisma.pet.findUnique({ where: { userId: user.id } }),
     partner

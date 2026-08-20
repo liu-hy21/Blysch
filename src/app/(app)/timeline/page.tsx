@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { PageStack } from "@/components/app/page-stack";
 import { TimelineClient } from "./timeline-client";
 
 export default async function TimelinePage() {
@@ -10,7 +11,7 @@ export default async function TimelinePage() {
     prisma.memory.findMany({
       where: { coupleId },
       include: {
-        images: { orderBy: { sortOrder: "asc" } },
+        images: { where: { hidden: false }, orderBy: { sortOrder: "asc" } },
         author: { select: { nickname: true } },
         place: { select: { id: true, name: true } },
       },
@@ -23,19 +24,21 @@ export default async function TimelinePage() {
     }),
   ]);
   return (
-    <TimelineClient
-      memories={memories.map((m) => ({
-        id: m.id,
-        title: m.title,
-        content: m.content,
-        category: m.category,
-        date: m.date.toISOString().slice(0, 10),
-        images: m.images.map((i) => i.url),
-        author: m.author.nickname,
-        placeId: m.placeId,
-        placeName: m.place?.name ?? null,
-      }))}
-      places={places}
-    />
+    <PageStack>
+      <TimelineClient
+        memories={memories.map((m) => ({
+          id: m.id,
+          title: m.title,
+          content: m.content,
+          category: m.category,
+          date: m.date.toISOString().slice(0, 10),
+          images: m.images.map((i) => i.url),
+          author: m.author.nickname,
+          placeId: m.placeId,
+          placeName: m.place?.name ?? null,
+        }))}
+        places={places}
+      />
+    </PageStack>
   );
 }

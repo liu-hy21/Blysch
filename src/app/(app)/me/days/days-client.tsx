@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { differenceInCalendarDays } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { PixelDatePicker } from "@/components/ui/pixel-date-picker";
 import { Sheet } from "@/components/ui/sheet";
 import { BackBar } from "../back-bar";
+import { todayKey } from "@/lib/utils";
 
 export function DaysClient({
   days,
@@ -15,7 +17,7 @@ export function DaysClient({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [targetDate, setTargetDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [targetDate, setTargetDate] = useState(() => todayKey());
 
   async function add() {
     await fetch("/api/days", {
@@ -65,12 +67,7 @@ export function DaysClient({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <input
-          type="date"
-          className="pixel-field mt-3 min-h-11 w-full px-3"
-          value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
-        />
+        <PixelDatePicker className="mt-3" value={targetDate} onChange={setTargetDate} />
         <Button className="mt-4 w-full" disabled={!title} onClick={add}>
           保存
         </Button>

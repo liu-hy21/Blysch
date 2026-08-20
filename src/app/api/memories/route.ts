@@ -9,7 +9,7 @@ export async function GET() {
   const memories = await prisma.memory.findMany({
     where: { coupleId: ctx.coupleId },
     include: {
-      images: { orderBy: { sortOrder: "asc" } },
+      images: { where: { hidden: false }, orderBy: { sortOrder: "asc" } },
       author: { select: { nickname: true, username: true } },
       place: { select: { id: true, name: true } },
     },

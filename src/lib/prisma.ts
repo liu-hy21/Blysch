@@ -5,6 +5,7 @@ import { PrismaClient } from "@/generated/prisma/client";
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
   prismaBlysch?: PrismaClient;
+  prismaMemoryHidden?: PrismaClient;
 };
 
 function withPoolParams(url: string) {
@@ -29,12 +30,16 @@ function createClient() {
   });
 }
 
-const leaked = globalForPrisma.prismaBlysch;
-if (leaked && leaked !== globalForPrisma.prisma) {
-  void leaked.$disconnect();
-  globalForPrisma.prismaBlysch = undefined;
+for (const key of ["prisma", "prismaBlysch"] as const) {
+  const stale = globalForPrisma[key];
+  if (stale && stale !== globalForPrisma.prismaMemoryHidden) {
+    void stale.$disconnect();
+    globalForPrisma[key] = undefined;
+  }
 }
 
-export const prisma = globalForPrisma.prisma ?? createClient();
+export const prisma = globalForPrisma.prismaMemoryHidden ?? createClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prismaMemoryHidden = prisma;
+}

@@ -175,6 +175,13 @@ h2 {
   animation: none;
 }
 
+::view-transition-old(.fade-out) {
+  animation: var(--duration-exit) ease-in fade reverse;
+}
+::view-transition-new(.fade-in) {
+  animation: var(--duration-enter) ease-out var(--duration-exit) both fade;
+}
+
 ::view-transition-old(.slide-down) {
   animation:
     var(--duration-exit) ease-out both fade reverse,
@@ -279,6 +286,307 @@ h2 {
     transparent 100%
   );
   animation: effort-wave 1.6s linear infinite;
+}
+
+.dream-scene {
+  position: relative;
+  height: 640px;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  image-rendering: pixelated;
+}
+
+.dream-yard {
+  background-color: #c4a06a;
+  background-image:
+    linear-gradient(#b08958 1px, transparent 1px),
+    linear-gradient(90deg, #a07840 1px, transparent 1px),
+    radial-gradient(circle at 5px 9px, #9aa08c 2px, transparent 2.5px),
+    radial-gradient(circle at 13px 3px, #d4c090 2px, transparent 2.5px),
+    radial-gradient(circle at 18px 14px, #8c6a45 1.5px, transparent 2px);
+  background-size: 16px 16px, 16px 16px, 22px 22px, 18px 18px, 26px 26px;
+}
+
+.dream-grass-patch {
+  background-color: #5a9a38;
+  background-image:
+    radial-gradient(circle at 4px 8px, #3d7a28 1.5px, transparent 2px),
+    radial-gradient(circle at 12px 4px, #8fd45a 1.5px, transparent 2px);
+  background-size: 16px 16px;
+  border: 2px solid #2f6a22;
+}
+
+.dream-river {
+  background:
+    repeating-linear-gradient(
+      100deg,
+      #3d7ab0 0 6px,
+      #5aa4d4 6px 10px,
+      #7ec8ff 10px 12px,
+      #4a8fc8 12px 18px
+    );
+  border-top: 2px solid #2c5a80;
+  border-bottom: 2px solid #2c5a80;
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.18);
+}
+
+.dream-bridge {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #6b4a2a 0 6px,
+      #c4a06a 6px 8px,
+      #8b6239 8px 14px
+    );
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.dream-cobble {
+  background-color: #b8b09c;
+  background-image:
+    linear-gradient(#6b4a2a 1px, transparent 1px),
+    linear-gradient(90deg, #6b4a2a 1px, transparent 1px),
+    repeating-linear-gradient(
+      90deg,
+      #c4bba8 0 8px,
+      #9aa08c 8px 16px,
+      #d4cbb8 16px 22px,
+      #8e8878 22px 30px
+    );
+  background-size: 10px 8px, 14px 10px, 30px 12px;
+  border: 2px solid var(--ink);
+}
+
+.dream-roof-cute {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #f0a0b0 0 6px,
+      #d46a80 6px 8px
+    );
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  border: 2px solid var(--ink);
+}
+
+.dream-wall-cute {
+  background: linear-gradient(#ffe8d4, #ffd4c4 70%, #f0c4b4);
+  border: 2px solid var(--ink);
+  box-shadow: inset 0 -6px 0 #ee99ac;
+}
+
+.dream-house {
+  background: #3d3228;
+}
+
+.dream-room {
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 4px solid var(--ink);
+}
+
+.dream-floor-kitchen {
+  background-color: #c4784a;
+  background-image:
+    linear-gradient(#8b4a2a 1px, transparent 1px),
+    linear-gradient(90deg, #8b4a2a 1px, transparent 1px),
+    repeating-linear-gradient(
+      90deg,
+      #d4a574 0 12px,
+      #c4784a 12px 20px,
+      #e8c090 20px 28px,
+      #a05a32 28px 36px
+    );
+  background-size: 12px 12px, 16px 12px, 36px 16px;
+}
+
+.dream-floor-living {
+  background-color: #a07840;
+  background-image:
+    linear-gradient(#6b4a2a 2px, transparent 2px),
+    linear-gradient(90deg, #5a3a1e 1px, transparent 1px),
+    repeating-linear-gradient(
+      90deg,
+      #c4a06a 0 18px,
+      #8b6239 18px 28px,
+      #d4b078 28px 40px,
+      #a07840 40px 52px
+    );
+  background-size: 100% 18px, 28px 100%, 52px 18px;
+}
+
+.dream-floor-bedroom {
+  background-color: #c9a090;
+  background-image:
+    linear-gradient(#a07870 1px, transparent 1px),
+    linear-gradient(90deg, #a07870 1px, transparent 1px),
+    repeating-linear-gradient(
+      45deg,
+      #d4b0a8 0 10px,
+      #c9a090 10px 18px,
+      #b07a78 18px 24px
+    );
+  background-size: 14px 10px, 18px 14px, 24px 24px;
+}
+
+.dream-floor-bath {
+  background-color: #c5d0d8;
+  background-image:
+    linear-gradient(#8a9aa8 1px, transparent 1px),
+    linear-gradient(90deg, #8a9aa8 1px, transparent 1px),
+    repeating-linear-gradient(
+      90deg,
+      #dce6ec 0 10px,
+      #c5d0d8 10px 16px,
+      #b0c4c8 16px 22px,
+      #9bb0bc 22px 28px
+    );
+  background-size: 10px 10px, 14px 10px, 28px 14px;
+}
+
+.dream-paper-kitchen {
+  background: #e8d8b0;
+}
+
+.dream-paper-living {
+  background: #efe6d4;
+}
+
+.dream-paper-bedroom {
+  background: #e8c8d0;
+}
+
+.dream-paper-bath {
+  background: #d4e4e0;
+}
+
+.dream-doorway {
+  background: #6b4a2a;
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 #a07840;
+}
+
+.dream-fence-h {
+  height: 14px;
+  z-index: 6;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #6b4a2a 0 10px,
+      #8b6239 10px 12px,
+      #5a3a1e 12px 14px,
+      transparent 14px 22px
+    ),
+    linear-gradient(#8b6239, #6b4a2a);
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.dream-fence-v {
+  width: 14px;
+  z-index: 6;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #6b4a2a 0 10px,
+      #8b6239 10px 12px,
+      #5a3a1e 12px 14px,
+      transparent 14px 22px
+    ),
+    linear-gradient(90deg, #8b6239, #6b4a2a);
+  border-left: 2px solid var(--ink);
+  border-right: 2px solid var(--ink);
+}
+
+.dream-roof {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #a3443a 0 7px,
+      #7a2e28 7px 9px
+    );
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  border: 2px solid var(--ink);
+}
+
+.dream-wall {
+  background:
+    linear-gradient(#d4c090, #e8d8b0 40%, #d4c090);
+  border: 2px solid var(--ink);
+  box-shadow: inset 0 -8px 0 #c4b080;
+}
+
+.dream-path {
+  background:
+    repeating-linear-gradient(
+      #b8b09c 0 10px,
+      #9aa08c 10px 12px
+    );
+  border-left: 2px solid var(--ink);
+  border-right: 2px solid var(--ink);
+}
+
+.dream-wallpaper {
+  background-color: #e8d8b0;
+  background-image:
+    radial-gradient(#d4c090 1.5px, transparent 2px),
+    linear-gradient(#efe6d4, #e8d8b0);
+  background-size: 12px 12px, 100% 100%;
+  border-bottom: 2px solid var(--ink);
+}
+
+.dream-baseboard {
+  background: #6b4a2a;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.dream-hearth {
+  background: #8e5a5a;
+  border: 2px solid var(--ink);
+  box-shadow: inset 0 10px 0 #6e3a3a;
+}
+
+.dream-flame {
+  background: #ffb347;
+  border: 2px solid var(--ink);
+  box-shadow: 0 0 10px #ffb347;
+  animation: dream-flame 1.1s steps(2) infinite;
+}
+
+@keyframes dream-flame {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleY(1);
+    background: #ffb347;
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.15);
+    background: #e07a3a;
+  }
+}
+
+.dream-door {
+  border: 2px solid var(--ink);
+  background:
+    linear-gradient(#6b4a2a 0 4px, transparent 4px) 0 0 / 100% 50%,
+    linear-gradient(#6b4a2a, #8b6239);
+  box-shadow: inset 2px 2px 0 #a07840, inset -2px -2px 0 #5a3a1e;
+}
+
+.dream-pet-idle {
+  animation: dream-idle 1.8s ease-in-out infinite;
+}
+
+@keyframes dream-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 .effort-ink {

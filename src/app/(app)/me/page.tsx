@@ -3,9 +3,10 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SHOW_TOGETHER_UI } from "@/lib/constants";
 import { daysTogether } from "@/lib/utils";
-import { ChevronRight, ListChecks, MapPin, CalendarHeart, UserRound } from "lucide-react";
+import { ChevronRight, Moon, ListChecks, MapPin, CalendarHeart, UserRound } from "lucide-react";
 
 const links = [
+  { href: "/me/dream", label: "梦境", desc: "小屋里的它们", icon: Moon },
   { href: "/me/wishes", label: "心愿", desc: "一起想做的事", icon: ListChecks },
   { href: "/me/places", label: "足迹", desc: "去过的地方", icon: MapPin },
   { href: "/me/days", label: "日子", desc: "重要的日期", icon: CalendarHeart },
