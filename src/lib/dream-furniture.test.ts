@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   DREAM_ROOMS,
+  DREAM_STATIONS,
   dreamRoom,
   furnitureCount,
   furnitureFor,
@@ -51,7 +52,7 @@ describe("dreamRoom", () => {
     const a = dreamRoom("couple-1", "pet-1", "2026-08-20");
     const b = dreamRoom("couple-1", "pet-1", "2026-08-20");
     assert.equal(a, b);
-    assert.ok((DREAM_ROOMS as readonly string[]).includes(a));
+    assert.ok((DREAM_STATIONS as readonly string[]).includes(a));
   });
 
   it("can change on a different day", () => {

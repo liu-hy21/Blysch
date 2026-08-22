@@ -65,6 +65,29 @@ function Roof() {
   );
 }
 
+function Lounge({ c, r }: { c: number; r: number }) {
+  return (
+    <>
+      <Cell c={c} r={r} w={4} h={7} z={5} className="dream-la-lounge-frame" />
+      <Cell c={c} r={r} w={4} h={2} z={6} className="dream-la-lounge-head" />
+      <Cell c={c} r={r + 2} w={4} h={4} z={6} className="dream-la-lounge-pad" />
+      <Cell c={c + 1} r={r + 6} w={2} h={1} z={6} className="dream-la-lounge-leg" />
+    </>
+  );
+}
+
+function Bbq({ c, r }: { c: number; r: number }) {
+  return (
+    <>
+      <Cell c={c} r={r + 5} w={5} h={1} z={5} className="dream-la-bbq-legs" />
+      <Cell c={c} r={r + 2} w={5} h={3} z={6} className="dream-la-bbq-body" />
+      <Cell c={c + 1} r={r} w={3} h={2} z={7} className="dream-la-bbq-lid" />
+      <Cell c={c + 1} r={r + 3} w={3} h={1} z={7} className="dream-la-bbq-coal" />
+      <Cell c={c + 5} r={r + 3} w={2} h={2} z={6} className="dream-la-bbq-shelf" />
+    </>
+  );
+}
+
 function Tree({ cx, cy }: { cx: number; cy: number }) {
   return (
     <>
@@ -87,11 +110,6 @@ const LAWN: { c: number; r: number; w?: number; h?: number; className: string }[
   { c: 9, r: 48, w: 2, h: 2, className: "dream-la-lawn-tuft" },
   { c: 16, r: 47, w: 1, h: 2, className: "dream-la-lawn-tuft" },
   { c: 12, r: 52, w: 2, h: 1, className: "dream-la-lawn-tuft" },
-  { c: 34, r: 40, w: 6, h: 2, className: "dream-la-lawn" },
-  { c: 33, r: 42, w: 8, h: 4, className: "dream-la-lawn" },
-  { c: 35, r: 46, w: 7, h: 4, className: "dream-la-lawn" },
-  { c: 36, r: 50, w: 8, h: 3, className: "dream-la-lawn" },
-  { c: 38, r: 44, w: 2, h: 2, className: "dream-la-lawn-tuft" },
   { c: 8, r: 56, w: 6, h: 2, className: "dream-la-lawn" },
   { c: 10, r: 58, w: 4, h: 1, className: "dream-la-lawn-tuft" },
 ];
@@ -146,6 +164,9 @@ export function YardScenery() {
       <Cell c={46} r={32} w={1} h={1} z={4} className="dream-la-glint" />
       <Cell c={49} r={30} w={1} h={1} z={4} className="dream-la-glint" />
       <Cell c={44} r={34} w={1} h={1} z={4} className="dream-la-glint" />
+      <Lounge c={43} r={40} />
+      <Lounge c={48} r={40} />
+      <Bbq c={34} r={36} />
 
       <Bits z={6} items={BOUG} />
       <Bits z={6} items={AGAVE} />
@@ -194,75 +215,217 @@ export function YardScenery() {
   );
 }
 
-function Room({
-  name,
-  floor,
-  paper,
-  className,
-}: {
-  name: string;
-  floor: string;
-  paper: string;
-  className: string;
-}) {
+function splashTiles() {
+  const tiles: { c: number; r: number; w?: number; h?: number; className: string }[] = [];
+  for (let row = 0; row < 2; row++) {
+    const r = 14 + row * 2;
+    const stagger = row % 2;
+    for (let c = 12 + stagger; c <= 20; c += 2) {
+      tiles.push({ c, r, w: 2, h: 2, className: tileClass(c, r) });
+    }
+  }
+  return tiles;
+}
+
+function Sofa({ c, r }: { c: number; r: number }) {
   return (
-    <div className={`dream-room absolute ${floor} ${className}`}>
-      <div className={`absolute inset-x-0 top-0 h-[28%] border-b-2 border-ink ${paper}`} />
-      <p className="absolute left-2 top-1 z-[1] text-[11px] text-[#4a3a2c]">{name}</p>
-    </div>
+    <>
+      <Cell c={c} r={r + 6} w={14} h={2} z={4} className="dream-la-in-sofa-front" />
+      <Cell c={c} r={r} w={14} h={7} z={5} className="dream-la-in-wood" />
+      <Cell c={c + 1} r={r + 1} w={12} h={5} z={6} className="dream-la-lounge-pad" />
+      <Cell c={c} r={r} w={3} h={6} z={7} className="dream-la-in-sofa-arm" />
+      <Cell c={c + 11} r={r} w={3} h={6} z={7} className="dream-la-in-sofa-arm" />
+    </>
   );
 }
 
-function Doorway({ className }: { className: string }) {
-  return <div className={`dream-doorway absolute z-[8] ${className}`} />;
+function Range({ c, r }: { c: number; r: number }) {
+  return (
+    <>
+      <Cell c={c} r={r} w={6} h={4} z={6} className="dream-la-in-steel" />
+      <Cell c={c + 1} r={r} w={4} h={1} z={7} className="dream-la-in-steel-hi" />
+      <Cell c={c + 1} r={r + 1} w={1} h={1} z={7} className="dream-la-bbq-coal" />
+      <Cell c={c + 3} r={r + 1} w={1} h={1} z={7} className="dream-la-bbq-coal" />
+    </>
+  );
 }
 
-export function HouseScenery() {
+function HouseShell({
+  southDoor,
+  finish = "lower",
+}: {
+  southDoor: boolean;
+  finish?: "lower" | "upper";
+}) {
+  const upper = finish === "upper";
+  const wall = upper ? "dream-la-up-wall" : "dream-la-stucco";
+  const floor = upper ? "dream-la-up-floor" : "dream-la-in-saltillo";
+  const ceiling = upper ? "dream-la-up-ceiling" : "dream-la-in-ceiling";
+  const beam = upper ? "dream-la-up-beam" : "dream-la-in-beam";
+  const stair = upper ? "dream-la-up-stair" : "dream-la-in-stair";
+  const lintel = upper ? "dream-la-up-walnut" : "dream-la-in-wood-hi";
+
+  return (
+    <>
+      <Cell c={0} r={0} w={DREAM_COLS} h={6} z={0} className={ceiling} />
+      <Cell c={0} r={1} w={DREAM_COLS} h={1} z={1} className={beam} />
+      <Cell c={0} r={3} w={DREAM_COLS} h={1} z={1} className={beam} />
+      <Cell c={0} r={5} w={DREAM_COLS} h={1} z={1} className={beam} />
+
+      <Cell c={0} r={6} w={DREAM_COLS} h={16} z={2} className={wall} />
+      <Cell c={0} r={6} w={3} h={66} z={3} className={wall} />
+      <Cell c={57} r={6} w={3} h={66} z={3} className={wall} />
+      {southDoor ? (
+        <>
+          <Cell c={0} r={70} w={26} h={10} z={4} className={wall} />
+          <Cell c={34} r={70} w={26} h={10} z={4} className={wall} />
+        </>
+      ) : (
+        <Cell c={0} r={70} w={DREAM_COLS} h={10} z={4} className={wall} />
+      )}
+
+      <Cell c={3} r={22} w={54} h={48} z={1} className={floor} />
+
+      <Cell c={23} r={6} w={10} h={8} z={4} className={wall} />
+      <Cell c={23} r={12} w={10} h={2} z={6} className={lintel} />
+
+      <Cell c={33} r={58} w={6} h={10} z={5} className={stair} />
+    </>
+  );
+}
+
+function Bed({ c, r }: { c: number; r: number }) {
+  return (
+    <>
+      <Cell c={c} r={r} w={16} h={12} z={4} className="dream-la-up-walnut" />
+      <Cell c={c + 1} r={r + 2} w={14} h={8} z={5} className="dream-la-up-grey" />
+      <Cell c={c + 1} r={r + 1} w={5} h={4} z={6} className="dream-la-up-pillow" />
+      <Cell c={c + 7} r={r + 1} w={5} h={4} z={6} className="dream-la-up-pillow" />
+    </>
+  );
+}
+
+function GreySeat({ c, r, w = 10 }: { c: number; r: number; w?: number }) {
+  return (
+    <>
+      <Cell c={c} r={r + 4} w={w} h={2} z={4} className="dream-la-up-grey-dk" />
+      <Cell c={c} r={r} w={w} h={5} z={5} className="dream-la-up-grey" />
+      <Cell c={c} r={r} w={2} h={5} z={6} className="dream-la-up-grey-dk" />
+      <Cell c={c + w - 2} r={r} w={2} h={5} z={6} className="dream-la-up-grey-dk" />
+    </>
+  );
+}
+
+function Lamp({ c, r }: { c: number; r: number }) {
+  return (
+    <>
+      <Cell c={c} r={r + 2} w={1} h={2} z={6} className="dream-la-up-walnut" />
+      <Cell c={c} r={r} w={2} h={2} z={7} className="dream-la-lamp-glow" />
+      <Cell c={c} r={r + 4} w={2} h={1} z={6} className="dream-la-spill" />
+    </>
+  );
+}
+
+function LowerStory() {
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
-      <Room
-        name="厨房"
-        floor="dream-floor-kitchen"
-        paper="dream-paper-kitchen"
-        className="left-0 top-0 h-[40%] w-[70%]"
-      />
-      <Room
-        name="浴室"
-        floor="dream-floor-bath"
-        paper="dream-paper-bath"
-        className="right-0 top-0 h-[40%] w-[30%]"
-      />
-      <Room
-        name="客厅"
-        floor="dream-floor-living"
-        paper="dream-paper-living"
-        className="bottom-0 left-0 h-[60%] w-1/2"
-      />
-      <Room
-        name="卧室"
-        floor="dream-floor-bedroom"
-        paper="dream-paper-bedroom"
-        className="bottom-0 right-0 h-[60%] w-1/2"
-      />
+      <HouseShell southDoor />
 
-      <Doorway className="left-[18%] top-[calc(40%-22px)] h-11 w-9" />
-      <Doorway className="left-[calc(70%-18px)] top-[12%] h-9 w-11" />
-      <Doorway className="left-[calc(50%-18px)] top-[68%] h-9 w-11" />
-      <Doorway className="left-[82%] top-[calc(40%-22px)] h-11 w-9" />
+      <Cell c={4} r={7} w={5} h={5} z={5} className="dream-la-in-wood" />
+      <Cell c={4} r={13} w={6} h={3} z={3} className="dream-la-roof-mass" />
+      <Cell c={11} r={13} w={11} h={5} z={3} className="dream-la-roof-mass" />
+      <Bits z={4} items={splashTiles()} />
+      <Cell c={4} r={18} w={18} h={2} z={5} className="dream-la-in-wood-hi" />
+      <Cell c={4} r={20} w={18} h={3} z={5} className="dream-la-in-wood" />
+      <Range c={4} r={16} />
+      <Cell c={13} r={16} w={5} h={2} z={6} className="dream-la-in-sink" />
+      <Cell c={15} r={14} w={1} h={2} z={7} className="dream-la-in-steel-hi" />
+      <Cell c={18} r={8} w={4} h={1} z={6} className="dream-la-iron-rail" />
+      <Cell c={18} r={9} w={2} h={2} z={7} className="dream-la-fountain" />
+      <Cell c={20} r={9} w={2} h={3} z={7} className="dream-la-knob" />
 
-      <div className="absolute left-[6%] top-[7%] h-8 w-28 border-2 border-ink bg-[#8b6239]" />
-      <div className="absolute left-[8%] top-[5%] h-3 w-6 border-2 border-ink bg-[#7ec8ff]" />
+      <Cell c={11} r={8} w={1} h={6} z={6} className="dream-la-shutter" />
+      <Cell c={12} r={8} w={5} h={6} z={6} className="dream-la-window dream-la-window-lit" />
+      <Cell c={17} r={8} w={1} h={6} z={6} className="dream-la-shutter" />
 
-      <div className="dream-hearth absolute bottom-[26%] left-[3%] h-[14%] w-[14%]">
-        <div className="dream-flame absolute bottom-2 left-1/2 h-5 w-4 -translate-x-1/2" />
-      </div>
-      <div className="absolute left-[8%] top-[48%] h-10 w-8 border-2 border-ink bg-[#7ec8ff] shadow-[inset_2px_2px_0_rgba(255,255,255,0.45)]" />
+      <Cell c={38} r={10} w={1} h={8} z={6} className="dream-la-shutter" />
+      <Cell c={39} r={10} w={8} h={8} z={6} className="dream-la-window dream-la-window-lit" />
+      <Cell c={47} r={10} w={1} h={8} z={6} className="dream-la-shutter" />
+      <Cell c={39} r={18} w={9} h={2} z={6} className="dream-la-planter" />
+      <Cell c={40} r={17} w={1} h={1} z={7} className="dream-la-bougainvillea-lite" />
+      <Cell c={42} r={17} w={2} h={1} z={7} className="dream-la-bougainvillea" />
+      <Cell c={45} r={17} w={1} h={1} z={7} className="dream-la-bougainvillea-dk" />
 
-      <div className="absolute right-[8%] top-[48%] h-10 w-8 border-2 border-ink bg-[#c8d8e8] shadow-[inset_2px_2px_0_rgba(255,255,255,0.5)]" />
+      <Cell c={50} r={11} w={5} h={7} z={5} className="dream-la-in-nicho" />
+      <Cell c={51} r={13} w={3} h={4} z={6} className="dream-la-in-nicho-in" />
+      <Cell c={52} r={14} w={1} h={2} z={7} className="dream-la-lamp-glow" />
 
-      <div className="absolute right-[4%] top-[8%] h-10 w-12 border-2 border-ink bg-[#9bb0bc]" />
-      <div className="absolute right-[6%] top-[10%] h-3 w-8 border-2 border-ink bg-[#c5d0d8]" />
-      <div className="absolute right-[5%] top-[24%] h-5 w-4 border-2 border-ink bg-[#fff8ec]" />
+      <Cell c={34} r={42} w={18} h={14} z={2} className="dream-la-in-rug" />
+      <Sofa c={40} r={36} />
+      <Cell c={34} r={34} w={4} h={2} z={5} className="dream-la-planter" />
+      <Cell c={35} r={32} w={1} h={2} z={6} className="dream-la-agave-hi" />
+      <Cell c={36} r={31} w={2} h={3} z={6} className="dream-la-agave" />
+
+      <Cell c={26} r={68} w={8} h={2} z={5} className="dream-la-stoop" />
+      <Cell c={26} r={70} w={8} h={10} z={6} className="dream-la-door" />
+      <Cell c={32} r={76} w={1} h={1} z={7} className="dream-la-knob" />
+      <Cell c={27} r={69} w={4} h={1} z={6} className="dream-la-spill" />
     </div>
   );
+}
+
+function UpperStory() {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      <HouseShell southDoor={false} finish="upper" />
+
+      <Cell c={11} r={8} w={1} h={8} z={6} className="dream-la-shutter" />
+      <Cell c={12} r={8} w={5} h={8} z={6} className="dream-la-up-glass" />
+      <Cell c={17} r={8} w={1} h={8} z={6} className="dream-la-shutter" />
+      <Cell c={4} r={8} w={4} h={6} z={5} className="dream-la-up-mirror" />
+      <Cell c={4} r={16} w={16} h={5} z={5} className="dream-la-up-walnut" />
+      <Cell c={6} r={15} w={6} h={2} z={6} className="dream-la-up-basin" />
+      <Cell c={8} r={14} w={1} h={1} z={7} className="dream-la-in-steel-hi" />
+      <Cell c={4} r={28} w={16} h={10} z={6} className="dream-la-up-tub" />
+      <Cell c={6} r={30} w={12} h={6} z={7} className="dream-la-water" />
+      <Cell c={8} r={32} w={1} h={1} z={8} className="dream-la-glint" />
+      <Cell c={14} r={33} w={1} h={1} z={8} className="dream-la-glint" />
+      <Cell c={18} r={20} w={3} h={8} z={6} className="dream-la-up-towel" />
+      <Cell c={4} r={40} w={4} h={2} z={5} className="dream-la-up-cream" />
+      <Cell c={5} r={38} w={1} h={2} z={6} className="dream-la-agave-hi" />
+      <Cell c={6} r={37} w={2} h={3} z={6} className="dream-la-agave" />
+
+      <Cell c={37} r={8} w={1} h={12} z={6} className="dream-la-shutter" />
+      <Cell c={38} r={8} w={10} h={12} z={6} className="dream-la-up-glass" />
+      <Cell c={48} r={8} w={1} h={12} z={6} className="dream-la-shutter" />
+
+      <Cell c={34} r={22} w={4} h={2} z={5} className="dream-la-up-cream" />
+      <Cell c={35} r={20} w={1} h={2} z={6} className="dream-la-agave-hi" />
+      <Cell c={36} r={19} w={2} h={3} z={6} className="dream-la-agave" />
+      <GreySeat c={40} r={22} w={10} />
+      <Cell c={44} r={28} w={4} h={3} z={5} className="dream-la-up-walnut" />
+      <GreySeat c={51} r={22} w={6} />
+      <Cell c={50} r={18} w={1} h={6} z={6} className="dream-la-up-walnut" />
+      <Cell c={49} r={16} w={3} h={2} z={7} className="dream-la-up-cream" />
+      <Cell c={49} r={19} w={3} h={1} z={6} className="dream-la-spill" />
+
+      <Cell c={34} r={32} w={22} h={20} z={2} className="dream-la-up-rug" />
+      <Cell c={38} r={30} w={16} h={2} z={3} className="dream-la-up-cream" />
+      <Bed c={38} r={34} />
+      <Cell c={34} r={34} w={4} h={5} z={5} className="dream-la-up-cream" />
+      <Lamp c={35} r={30} />
+      <Cell c={54} r={34} w={3} h={5} z={5} className="dream-la-up-cream" />
+      <Lamp c={54} r={30} />
+      <Cell c={42} r={46} w={8} h={3} z={5} className="dream-la-up-walnut" />
+      <Cell c={43} r={46} w={6} h={2} z={6} className="dream-la-up-grey" />
+
+      <Cell c={50} r={54} w={6} h={5} z={5} className="dream-la-up-walnut" />
+      <Cell c={51} r={52} w={1} h={2} z={6} className="dream-la-lamp-glow" />
+      <Cell c={54} r={52} w={1} h={2} z={6} className="dream-la-lamp-glow" />
+    </div>
+  );
+}
+
+export function HouseScenery({ story }: { story: 1 | 2 }) {
+  return story === 2 ? <UpperStory /> : <LowerStory />;
 }

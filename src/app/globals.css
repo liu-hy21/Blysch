@@ -593,6 +593,225 @@ h2 {
   background: #c4d4b8;
 }
 
+.dream-la-lounge-frame {
+  background: #6b4a2a;
+}
+
+.dream-la-lounge-head {
+  background: #d4c4b0;
+}
+
+.dream-la-lounge-pad {
+  background: #efe6d4;
+  box-shadow: inset 0 -2px 0 #d4c4b0;
+}
+
+.dream-la-lounge-leg {
+  background: #3d3228;
+}
+
+.dream-la-bbq-body {
+  background: #3d3228;
+  box-shadow: inset 0 0 0 2px #1c1917, inset 0 2px 0 #6b4a2a;
+}
+
+.dream-la-bbq-lid {
+  background: #1c1917;
+}
+
+.dream-la-bbq-coal {
+  background: #c45a4a;
+}
+
+.dream-la-bbq-legs {
+  background: #1c1917;
+}
+
+.dream-la-bbq-shelf {
+  background: #6b4a2a;
+}
+
+.dream-la-in-ceiling {
+  background: #3d3228;
+}
+
+.dream-la-in-beam {
+  background: #6b4a2a;
+  box-shadow: inset 0 -2px 0 #3d2a1e, inset 0 2px 0 #8b6239;
+}
+
+.dream-la-in-saltillo {
+  background-color: #c4784a;
+  background-image:
+    linear-gradient(#8a3a32 1px, transparent 1px),
+    linear-gradient(90deg, #8a3a32 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dream-la-in-wood {
+  background: #5a3a1e;
+  box-shadow: inset 0 0 0 2px #3d2a1e, inset 2px 2px 0 #8b6239;
+}
+
+.dream-la-in-wood-hi {
+  background: #8b6239;
+  box-shadow: inset 0 2px 0 #a07a50, inset 0 -2px 0 #6b4a2a;
+}
+
+.dream-la-in-steel {
+  background: #1c1917;
+  box-shadow: inset 0 0 0 2px #3d3228, inset 2px 2px 0 #6b4a2a;
+}
+
+.dream-la-in-steel-hi {
+  background: #3d3228;
+}
+
+.dream-la-in-sink {
+  background: #3d3228;
+  box-shadow: inset 0 0 0 2px #1c1917, inset 2px 2px 0 #5a7a90;
+}
+
+.dream-la-in-rug {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #8a3a32 0 8px,
+      #c45a4a 8px 16px,
+      #efe6d4 16px 20px
+    );
+}
+
+.dream-la-in-sofa-front {
+  background: #3d2a1e;
+}
+
+.dream-la-in-sofa-arm {
+  background: #6b4a2a;
+  box-shadow: inset 2px 0 0 #8b6239;
+}
+
+.dream-la-in-nicho {
+  background: #e4d8c4;
+  box-shadow: inset 0 0 0 2px #d4c4b0;
+}
+
+.dream-la-in-nicho-in {
+  background: #d4c4b0;
+  box-shadow: inset 4px 4px 0 #c4b49c;
+}
+
+.dream-la-in-linen {
+  background: #fff8ec;
+  box-shadow: inset 0 -2px 0 #e4d8c4;
+}
+
+.dream-la-in-stair {
+  background: repeating-linear-gradient(
+    to bottom,
+    #8b6239 0 6px,
+    #6b4a2a 6px 8px
+  );
+  box-shadow: inset 0 0 0 2px #3d2a1e;
+}
+
+.dream-la-in-tub {
+  background: #efe6d4;
+  box-shadow: inset 0 0 0 2px #d4c4b0, inset 0 4px 0 #fff8ec;
+}
+
+.dream-la-up-ceiling {
+  background: #efe6d4;
+}
+
+.dream-la-up-beam {
+  background: #5a3a1e;
+  box-shadow: inset 0 -2px 0 #3d2a1e, inset 0 2px 0 #8b6239;
+}
+
+.dream-la-up-wall {
+  background: #f5f0e6;
+  box-shadow: inset 0 0 0 2px #e4d8c4, inset 8px 0 0 #fff8ec;
+}
+
+.dream-la-up-floor {
+  background-color: #d8c09a;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 14px,
+    #c4a478 14px 16px
+  );
+}
+
+.dream-la-up-stair {
+  background: repeating-linear-gradient(
+    to bottom,
+    #d8c09a 0 6px,
+    #b89068 6px 8px
+  );
+  box-shadow: inset 0 0 0 2px #8b6239;
+}
+
+.dream-la-up-walnut {
+  background: #3d2a1e;
+  box-shadow: inset 0 0 0 2px #2a1c14, inset 2px 2px 0 #6b4a2a;
+}
+
+.dream-la-up-cream {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #e4d8c4, inset 2px 2px 0 #fffef8;
+}
+
+.dream-la-up-grey {
+  background: #c8c0b8;
+  box-shadow: inset 0 -2px 0 #a8a098;
+}
+
+.dream-la-up-grey-dk {
+  background: #8a847c;
+  box-shadow: inset 2px 0 0 #a8a098;
+}
+
+.dream-la-up-pillow {
+  background: #e8e2da;
+  box-shadow: inset 0 -2px 0 #c8c0b8;
+}
+
+.dream-la-up-rug {
+  background: #efe6d4;
+  box-shadow: inset 0 0 0 2px #e4d8c4;
+}
+
+.dream-la-up-tub {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #d4c4b0, inset 0 4px 0 #ffffff, inset 4px 4px 0 #efe6d4;
+}
+
+.dream-la-up-basin {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #c4b49c, inset 2px 2px 0 #efe6d4;
+}
+
+.dream-la-up-mirror {
+  background: #c8d4dc;
+  box-shadow: inset 0 0 0 2px #3d3228, inset 2px 2px 0 #e8f0f4;
+}
+
+.dream-la-up-towel {
+  background: #e8e2da;
+  box-shadow: inset 0 -2px 0 #c8c0b8;
+}
+
+.dream-la-up-glass {
+  background:
+    linear-gradient(#3d3228, #3d3228) 33% 0 / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 67% 0 / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 0 33% / 100% 2px no-repeat,
+    linear-gradient(#3d3228, #3d3228) 0 67% / 100% 2px no-repeat,
+    #8eb8c8;
+  box-shadow: inset 0 0 0 2px #1c1917;
+}
+
 .dream-door-hotspot {
   border: 0;
   background: transparent;
@@ -668,7 +887,7 @@ h2 {
 }
 
 .dream-house {
-  background: #3d3228;
+  background: #e4d8c4;
 }
 
 .dream-room {

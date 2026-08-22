@@ -13,31 +13,24 @@ import {
 import type { SerializedPet } from "@/lib/pet-rules";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
 import { HouseScenery, YardScenery } from "./dream-scenery";
-import { todayKey } from "@/lib/utils";
+import { cn, todayKey } from "@/lib/utils";
 import { dreamPx } from "@/lib/dream-grid";
 
 type DreamPet = SerializedPet & { room: DreamRoom };
-
+type Story = 1 | 2;
 type Spot = { top: number | string; left: number | string };
 
 const PET_SPOTS: Record<DreamRoom, Spot[]> = {
   yard: [dreamPx(14, 48), dreamPx(36, 48)],
-  kitchen: [
-    { top: "18%", left: "12%" },
-    { top: "18%", left: "32%" },
-  ],
-  bathroom: [
-    { top: "18%", left: "78%" },
-    { top: "18%", left: "88%" },
-  ],
-  living: [
-    { top: "78%", left: "8%" },
-    { top: "78%", left: "24%" },
-  ],
-  bedroom: [
-    { top: "78%", left: "58%" },
-    { top: "78%", left: "74%" },
-  ],
+  kitchen: [dreamPx(8, 50), dreamPx(14, 58)],
+  living: [dreamPx(36, 54), dreamPx(48, 50)],
+  bathroom: [dreamPx(8, 50), dreamPx(14, 58)],
+  bedroom: [dreamPx(36, 54), dreamPx(48, 50)],
+};
+
+const STORY_ROOMS: Record<Story, DreamRoom[]> = {
+  1: ["kitchen", "living"],
+  2: ["bathroom", "bedroom"],
 };
 
 function placedPets(pets: DreamPet[], room: DreamRoom) {
@@ -57,6 +50,35 @@ function PetMarker({ pet, spot }: { pet: DreamPet; spot: Spot }) {
         {pet.name}
       </span>
     </div>
+  );
+}
+
+function FloorBtn({
+  label,
+  ariaLabel,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  ariaLabel: string;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        "inline-flex h-11 min-w-11 items-center justify-center border-2 border-ink px-2 text-sm",
+        disabled
+          ? "cursor-default bg-[#efe6d4] text-[#c4b49c] shadow-none"
+          : "bg-gold text-ink shadow-[3px_3px_0_var(--ink)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none",
+      )}
+    >
+      {label}
+    </button>
   );
 }
 
@@ -95,36 +117,43 @@ function YardScene({
 }
 
 function HouseScene({
+  story,
   furniture,
   pets,
   label,
   onLeave,
 }: {
+  story: Story;
   furniture: FurnitureItem[];
   pets: DreamPet[];
   label: string;
   onLeave: () => void;
 }) {
-  const indoor = (["kitchen", "bathroom", "living", "bedroom"] as const).flatMap((room) =>
-    placedPets(pets, room),
-  );
+  const indoor = STORY_ROOMS[story].flatMap((room) => placedPets(pets, room));
+  const areas = new Set<DreamRoom>(STORY_ROOMS[story]);
   return (
     <div className="dream-stage -mx-5">
       <div className="dream-scene dream-house" role="group" aria-label={label}>
-        <HouseScenery />
+        <HouseScenery story={story} />
 
-        {furniture.map((f) => (
-          <FurniturePiece key={f.id} id={f.id} slot={f.slot} />
-        ))}
+        {furniture
+          .filter((f) => areas.has(f.area) && f.id !== "cow-bed")
+          .map((f) => (
+            <FurniturePiece key={f.id} id={f.id} slot={f.slot} />
+          ))}
 
-        <button
-          type="button"
-          aria-label="出门"
-          onClick={onLeave}
-          className="dream-door absolute bottom-3 left-[17%] z-30 flex min-h-11 w-16 items-center justify-center text-[11px] text-[#fff8ec]"
-        >
-          出门
-        </button>
+        {story === 1 ? (
+          <button
+            type="button"
+            aria-label="出门"
+            onClick={onLeave}
+            className="dream-door-hotspot absolute z-30 cursor-pointer"
+            style={{
+              ...dreamPx(26, 70, 8, 10),
+              minHeight: 44,
+            }}
+          />
+        ) : null}
 
         {indoor.map((p) => (
           <PetMarker key={p.id} pet={p} spot={p.spot} />
@@ -144,6 +173,7 @@ export function DreamClient({
   partner: SerializedPet | null;
 }) {
   const [scene, setScene] = useState<DreamScene>("yard");
+  const [story, setStory] = useState<Story>(1);
   const dateKey = todayKey();
   const pets: DreamPet[] = [mine, partner]
     .filter((p): p is SerializedPet => p !== null)
@@ -157,33 +187,67 @@ export function DreamClient({
   const label =
     scene === "yard"
       ? `室外院子${where ? `，${where}` : ""}`
-      : `室内厨房、客厅、卧室、浴室${where ? `，${where}` : ""}`;
+      : story === 1
+        ? `一楼厨房与客厅${where ? `，${where}` : ""}`
+        : `二楼浴室与卧室${where ? `，${where}` : ""}`;
 
-  function go(next: DreamScene) {
-    startTransition(() => setScene(next));
+  function goYard() {
+    startTransition(() => {
+      setStory(1);
+      setScene("yard");
+    });
+  }
+
+  function goHouse() {
+    startTransition(() => {
+      setStory(1);
+      setScene("house");
+    });
+  }
+
+  function goStory(next: Story) {
+    startTransition(() => setStory(next));
   }
 
   return (
     <div className="px-5 pb-8 pt-6">
       <BackBar title="乐园" href="/me" />
-      <p className="mb-3 text-xs text-ink-soft">
-        {scene === "yard" ? "点屋门进屋" : "点门口出门"}
+      <p className="mb-3 flex items-center text-xs text-ink-soft">
+        {scene === "yard" ? (
+          "点屋门进屋"
+        ) : (
+          <>
+            点门口出门
+            <span className="ml-3 inline-flex gap-1">
+              <FloorBtn
+                label="上"
+                ariaLabel="上楼"
+                disabled={story === 2}
+                onClick={() => goStory(2)}
+              />
+              <FloorBtn
+                label="下"
+                ariaLabel="下楼"
+                disabled={story === 1}
+                onClick={() => goStory(1)}
+              />
+            </span>
+          </>
+        )}
       </p>
       {scene === "yard" ? (
         <ViewTransition enter="fade-in" exit="fade-out" default="none">
-          <YardScene
-            pets={pets}
-            label={label}
-            onEnter={() => go("house")}
-          />
+          <YardScene pets={pets} label={label} onEnter={goHouse} />
         </ViewTransition>
       ) : (
         <ViewTransition enter="fade-in" exit="fade-out" default="none">
           <HouseScene
+            key={story}
+            story={story}
             furniture={furniture}
             pets={pets}
             label={label}
-            onLeave={() => go("yard")}
+            onLeave={goYard}
           />
         </ViewTransition>
       )}

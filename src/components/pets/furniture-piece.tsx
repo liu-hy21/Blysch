@@ -52,7 +52,7 @@ export function FurniturePiece({
   slot,
 }: {
   id: string;
-  slot?: { top: string; left: string };
+  slot?: { top: number | string; left: number | string };
 }) {
   return (
     <div
