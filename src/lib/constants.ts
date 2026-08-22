@@ -7,8 +7,7 @@ export function isAllowedUsername(name: string): name is AllowedUsername {
 
 export const MOODS = [
   { value: "happy", label: "开心" },
-  { value: "eager", label: "期待" },
-  { value: "calm", label: "呆着" },
+  { value: "miss", label: "想你" },
   { value: "quiet", label: "睡觉" },
   { value: "working", label: "干活中" },
 ] as const;

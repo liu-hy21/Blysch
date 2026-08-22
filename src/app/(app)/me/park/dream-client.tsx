@@ -165,7 +165,7 @@ export function DreamClient({
 
   return (
     <div className="px-5 pb-8 pt-6">
-      <BackBar title="梦境" href="/me" />
+      <BackBar title="乐园" href="/me" />
       <p className="mb-3 text-xs text-ink-soft">
         {scene === "yard" ? "点屋门进屋" : "点门口出门"}
       </p>
