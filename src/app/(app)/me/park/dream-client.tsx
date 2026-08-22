@@ -14,14 +14,14 @@ import type { SerializedPet } from "@/lib/pet-rules";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
 import { HouseScenery, YardScenery } from "./dream-scenery";
 import { todayKey } from "@/lib/utils";
+import { dreamPx } from "@/lib/dream-grid";
 
 type DreamPet = SerializedPet & { room: DreamRoom };
 
-const PET_SPOTS: Record<DreamRoom, { top: string; left: string }[]> = {
-  yard: [
-    { top: "46%", left: "32%" },
-    { top: "46%", left: "50%" },
-  ],
+type Spot = { top: number | string; left: number | string };
+
+const PET_SPOTS: Record<DreamRoom, Spot[]> = {
+  yard: [dreamPx(14, 48), dreamPx(36, 48)],
   kitchen: [
     { top: "18%", left: "12%" },
     { top: "18%", left: "32%" },
@@ -46,7 +46,7 @@ function placedPets(pets: DreamPet[], room: DreamRoom) {
     .map((p, i) => ({ ...p, spot: PET_SPOTS[room][Math.min(i, 1)] }));
 }
 
-function PetMarker({ pet, spot }: { pet: DreamPet; spot: { top: string; left: string } }) {
+function PetMarker({ pet, spot }: { pet: DreamPet; spot: Spot }) {
   return (
     <div
       className="dream-pet-idle absolute z-20 flex flex-col items-center"
@@ -61,37 +61,35 @@ function PetMarker({ pet, spot }: { pet: DreamPet; spot: { top: string; left: st
 }
 
 function YardScene({
-  furniture,
   pets,
   label,
   onEnter,
 }: {
-  furniture: FurnitureItem[];
   pets: DreamPet[];
   label: string;
   onEnter: () => void;
 }) {
   const here = placedPets(pets, "yard");
   return (
-    <div className="dream-scene dream-yard" role="group" aria-label={label}>
-      <YardScenery />
+    <div className="dream-stage -mx-5">
+      <div className="dream-scene dream-yard" role="group" aria-label={label}>
+        <YardScenery />
 
-      {furniture.map((f) => (
-        <FurniturePiece key={f.id} id={f.id} slot={f.slot} />
-      ))}
+        <button
+          type="button"
+          aria-label="进屋"
+          onClick={onEnter}
+          className="dream-door-hotspot absolute z-30 cursor-pointer"
+          style={{
+            ...dreamPx(26, 21, 8, 13),
+            minHeight: 44,
+          }}
+        />
 
-      <button
-        type="button"
-        aria-label="进屋"
-        onClick={onEnter}
-        className="dream-door absolute left-[44%] top-[26%] z-30 flex min-h-11 w-12 flex-col items-center justify-end pb-1"
-      >
-        <span className="mb-2 h-2 w-2 bg-[#e4c36a]" aria-hidden />
-      </button>
-
-      {here.map((p) => (
-        <PetMarker key={p.id} pet={p} spot={p.spot} />
-      ))}
+        {here.map((p) => (
+          <PetMarker key={p.id} pet={p} spot={p.spot} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -111,25 +109,27 @@ function HouseScene({
     placedPets(pets, room),
   );
   return (
-    <div className="dream-scene dream-house" role="group" aria-label={label}>
-      <HouseScenery />
+    <div className="dream-stage -mx-5">
+      <div className="dream-scene dream-house" role="group" aria-label={label}>
+        <HouseScenery />
 
-      {furniture.map((f) => (
-        <FurniturePiece key={f.id} id={f.id} slot={f.slot} />
-      ))}
+        {furniture.map((f) => (
+          <FurniturePiece key={f.id} id={f.id} slot={f.slot} />
+        ))}
 
-      <button
-        type="button"
-        aria-label="出门"
-        onClick={onLeave}
-        className="dream-door absolute bottom-3 left-[17%] z-30 flex min-h-11 w-16 items-center justify-center text-[11px] text-[#fff8ec]"
-      >
-        出门
-      </button>
+        <button
+          type="button"
+          aria-label="出门"
+          onClick={onLeave}
+          className="dream-door absolute bottom-3 left-[17%] z-30 flex min-h-11 w-16 items-center justify-center text-[11px] text-[#fff8ec]"
+        >
+          出门
+        </button>
 
-      {indoor.map((p) => (
-        <PetMarker key={p.id} pet={p} spot={p.spot} />
-      ))}
+        {indoor.map((p) => (
+          <PetMarker key={p.id} pet={p} spot={p.spot} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -172,7 +172,6 @@ export function DreamClient({
       {scene === "yard" ? (
         <ViewTransition enter="fade-in" exit="fade-out" default="none">
           <YardScene
-            furniture={furniture}
             pets={pets}
             label={label}
             onEnter={() => go("house")}
