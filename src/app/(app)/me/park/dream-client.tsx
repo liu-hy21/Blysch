@@ -11,6 +11,7 @@ import {
   type FurnitureItem,
 } from "@/lib/dream-furniture";
 import type { SerializedPet } from "@/lib/pet-rules";
+import type { PetSpecies } from "@/generated/prisma/client";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
 import { HouseScenery, YardScenery } from "./dream-scenery";
 import { cn, todayKey } from "@/lib/utils";
@@ -28,6 +29,11 @@ const PET_SPOTS: Record<DreamRoom, Spot[]> = {
   bedroom: [dreamPx(36, 54), dreamPx(48, 50)],
 };
 
+const YARD_BY_SPECIES: Partial<Record<PetSpecies, Spot>> = {
+  rabbit: dreamPx(26, 32),
+  cow: dreamPx(43, 26),
+};
+
 const STORY_ROOMS: Record<Story, DreamRoom[]> = {
   1: ["kitchen", "living"],
   2: ["bathroom", "bedroom"],
@@ -36,7 +42,13 @@ const STORY_ROOMS: Record<Story, DreamRoom[]> = {
 function placedPets(pets: DreamPet[], room: DreamRoom) {
   return pets
     .filter((p) => p.room === room)
-    .map((p, i) => ({ ...p, spot: PET_SPOTS[room][Math.min(i, 1)] }));
+    .map((p, i) => ({
+      ...p,
+      spot:
+        room === "yard"
+          ? (YARD_BY_SPECIES[p.species] ?? PET_SPOTS.yard[Math.min(i, 1)])
+          : PET_SPOTS[room][Math.min(i, 1)],
+    }));
 }
 
 function PetMarker({ pet, spot }: { pet: DreamPet; spot: Spot }) {
@@ -177,7 +189,13 @@ export function DreamClient({
   const dateKey = todayKey();
   const pets: DreamPet[] = [mine, partner]
     .filter((p): p is SerializedPet => p !== null)
-    .map((p) => ({ ...p, room: dreamRoom(coupleId, p.id, dateKey) }));
+    .map((p) => ({
+      ...p,
+      room:
+        p.species === "rabbit" || p.species === "cow"
+          ? "yard"
+          : dreamRoom(coupleId, p.id, dateKey),
+    }));
 
   const furniture = pets
     .flatMap((p) => p.furniture)

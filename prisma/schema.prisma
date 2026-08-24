@@ -163,4 +163,6 @@ model Pet {
   feedsToday   Int        @default(0)
   goldFoodDate String?
   hatchedAt    DateTime   @default(now())
+  moodLevel      Int     @default(3)
+  moodSettledOn  String?
 }

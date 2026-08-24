@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
 import { hatchSchema, petNameSchema } from "@/lib/validators";
 import { serializePet } from "@/lib/pet-rules";
+import { settleAndSerialize } from "@/lib/pet-settle";
+import { todayKey } from "@/lib/utils";
 
 export async function GET() {
   const ctx = await requireApiCouple();
@@ -11,9 +13,13 @@ export async function GET() {
     prisma.pet.findUnique({ where: { userId: ctx.user.id } }),
     prisma.pet.findUnique({ where: { userId: ctx.partner.id } }),
   ]);
+  const [minePet, partnerPet] = await Promise.all([
+    settleAndSerialize(mine),
+    settleAndSerialize(partner),
+  ]);
   return NextResponse.json({
-    mine: mine ? serializePet(mine) : null,
-    partner: partner ? serializePet(partner) : null,
+    mine: minePet,
+    partner: partnerPet,
     partnerNickname: ctx.partner.nickname,
   });
 }
@@ -33,6 +39,8 @@ export async function POST(req: Request) {
       userId: ctx.user.id,
       species: parsed.data.species,
       name: parsed.data.name,
+      moodLevel: 3,
+      moodSettledOn: todayKey(),
     },
   });
   return NextResponse.json(serializePet(pet));

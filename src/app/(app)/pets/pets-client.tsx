@@ -2,7 +2,7 @@
 
 import { startTransition, useState, ViewTransition } from "react";
 import { useRouter } from "next/navigation";
-import { PixelPet } from "@/components/pets/pixel-pet";
+import { PixelPet, GuardianPet } from "@/components/pets/pixel-pet";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
@@ -105,6 +105,7 @@ export function PetsClient({
     }
     const bits = [`吃了${data.food}`];
     if (data.levelsGained) bits.push(`升了 ${data.levelsGained} 级`);
+    if (shown && shown.moodLevel <= 1) bits.push("可是还在等你照料");
     setNote(bits.join("，") + "！");
     router.refresh();
   }
@@ -197,7 +198,7 @@ export function PetsClient({
 
       {shown && (
         <div className="mt-5 space-y-4">
-          <section className="pixel-box overflow-hidden">
+          <section className="pixel-box">
             <div className="flex items-stretch">
               <div className="flex w-[42%] items-center justify-center bg-bg py-4">
                 <ViewTransition
@@ -205,11 +206,10 @@ export function PetsClient({
                   share="morph"
                   default="none"
                 >
-                  <PixelPet
+                  <GuardianPet
                     species={shown.species}
-                    mood={shown.mood}
-                    scale={4}
-                    label={shown.name}
+                    moodLevel={shown.moodLevel}
+                    name={shown.name}
                   />
                 </ViewTransition>
               </div>

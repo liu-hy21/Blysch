@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { PetMood } from "@/lib/pet-rules";
+import { moodEmoji, type PetMood } from "@/lib/pet-rules";
 import type { PetSpecies } from "@/generated/prisma/client";
 
 const MOOD_ROW: Record<PetMood, number> = { calm: 0, content: 1, miss: 2 };
@@ -47,5 +47,32 @@ export function PixelPet({
         backgroundPosition: `-${x}px -${y}px`,
       }}
     />
+  );
+}
+
+export function GuardianPet({
+  species,
+  moodLevel,
+  name,
+}: {
+  species: PetSpecies;
+  moodLevel: number;
+  name: string;
+}) {
+  const level = Math.max(0, Math.min(5, moodLevel));
+  const marks = moodEmoji(level);
+  return (
+    <div className="pet-guard">
+      <PixelPet species={species} mood="calm" scale={4} label={name} />
+      {marks.map((mark, i) => (
+        <span
+          key={`${mark}-${i}`}
+          className={`pet-guard-emoji pet-guard-emoji-${i}`}
+          aria-hidden
+        >
+          {mark}
+        </span>
+      ))}
+    </div>
   );
 }

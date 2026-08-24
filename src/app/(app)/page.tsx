@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { HOME_REVEAL_START } from "@/lib/constants";
 import { daysTogether, isTogetherRevealed, todayKey } from "@/lib/utils";
-import { serializePet } from "@/lib/pet-rules";
+import { settleAndSerialize } from "@/lib/pet-settle";
 import { HomeClient } from "./home-client";
 
 export default async function HomePage() {
@@ -13,7 +13,7 @@ export default async function HomePage() {
   if (!couple) return <p className="p-6">空间未就绪。</p>;
   const partner = couple.members.find((m) => m.userId !== user.id)?.user;
   const date = todayKey();
-  const [moods, nextDay, memories, minePet, partnerPet] = await Promise.all([
+  const [moods, nextDay, memories, mineRaw, partnerRaw] = await Promise.all([
     prisma.mood.findMany({ where: { coupleId: couple.id, date } }),
     prisma.day.findFirst({
       where: { coupleId: couple.id, targetDate: { gte: new Date() } },
@@ -35,9 +35,14 @@ export default async function HomePage() {
     ? differenceInCalendarDays(nextDay.targetDate, new Date())
     : null;
   const revealed = isTogetherRevealed(couple.startDate, HOME_REVEAL_START);
+  const [minePet, partnerPet] = await Promise.all([
+    settleAndSerialize(mineRaw),
+    settleAndSerialize(partnerRaw),
+  ]);
 
   return (
     <HomeClient
+      coupleId={couple.id}
       me={{ nickname: user.nickname, username: user.username }}
       partner={{
         nickname: partner?.nickname ?? "对方",
@@ -57,8 +62,8 @@ export default async function HomePage() {
         title: m.title,
         cover: m.coverImage ?? m.images[0]?.url ?? null,
       }))}
-      minePet={minePet ? serializePet(minePet) : null}
-      partnerPet={partnerPet ? serializePet(partnerPet) : null}
+      minePet={minePet}
+      partnerPet={partnerPet}
     />
   );
 }

@@ -8,13 +8,16 @@ import {
   goldFoodReady,
   serializePet,
 } from "@/lib/pet-rules";
+import { settlePetRecord } from "@/lib/pet-settle";
 import { feedSchema } from "@/lib/validators";
 import { todayKey } from "@/lib/utils";
 
 export async function POST(req: Request) {
   const ctx = await requireApiCouple();
   if ("error" in ctx) return ctx.error;
-  const pet = await prisma.pet.findUnique({ where: { userId: ctx.user.id } });
+  const raw = await prisma.pet.findUnique({ where: { userId: ctx.user.id } });
+  if (!raw) return jsonError("还没有宠物", 404);
+  const pet = await settlePetRecord(raw);
   if (!pet) return jsonError("还没有宠物", 404);
   const body = await req.json().catch(() => null);
   const parsed = feedSchema.safeParse(body);

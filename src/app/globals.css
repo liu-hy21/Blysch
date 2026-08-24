@@ -1107,6 +1107,350 @@ h2 {
     0 -1px 0 var(--ink);
 }
 
+.pet-guard {
+  position: relative;
+  display: inline-block;
+}
+
+.pet-guard-emoji {
+  position: absolute;
+  font-size: 12px;
+  line-height: 1;
+  pointer-events: none;
+  animation: pet-emoji-float 1.6s steps(2, end) infinite;
+}
+
+.pet-guard-emoji-0 {
+  top: 2px;
+  right: 2px;
+}
+
+.pet-guard-emoji-1 {
+  top: 16px;
+  right: -2px;
+  animation-delay: 0.5s;
+}
+
+@keyframes pet-emoji-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.home-bond {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 132px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  background: #d7ecf4;
+}
+
+.home-bond.is-fight {
+  background: #7a7670;
+}
+
+.home-bond-garage-door {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 56px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #5e5a56 0 6px,
+    var(--ink) 6px 8px
+  );
+  border: 2px solid var(--ink);
+  border-top: 0;
+}
+
+.home-bond-garage-lamp {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 14px;
+  height: 8px;
+  margin-left: -7px;
+  background: #e8c04a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-garage-chest {
+  position: absolute;
+  left: 8px;
+  bottom: 18px;
+  width: 22px;
+  height: 16px;
+  background: #8c6a45;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-garage-floor {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 16px;
+  background: #4f4b47;
+  border-top: 2px solid var(--ink);
+}
+
+.home-bond-weapon {
+  position: absolute;
+  right: -2px;
+  bottom: 16px;
+  width: 12px;
+  height: 28px;
+  pointer-events: none;
+  transform: rotate(-28deg);
+  transform-origin: 50% 100%;
+}
+
+.home-bond-carrot-blade {
+  position: absolute;
+  right: 3px;
+  bottom: 0;
+  width: 6px;
+  height: 20px;
+  background: #e07a3a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-carrot-leaf {
+  position: absolute;
+  right: 1px;
+  top: 0;
+  width: 10px;
+  height: 8px;
+  background: #3d6b3a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-bell-stick {
+  position: absolute;
+  left: 4px;
+  bottom: 0;
+  width: 4px;
+  height: 18px;
+  background: #6b4423;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-bell-head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  background: #c4a06a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond.is-moon {
+  background: #2c2830;
+}
+
+.home-bond-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-bond-sun {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  background: #e8c04a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-cloud {
+  position: absolute;
+  height: 10px;
+  background: #fff8ee;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-cloud-a {
+  top: 14px;
+  left: 48px;
+  width: 28px;
+}
+
+.home-bond-cloud-b {
+  top: 22px;
+  left: 72px;
+  width: 18px;
+}
+
+.home-bond-tree {
+  position: absolute;
+  left: 14px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-bond-crown {
+  width: 40px;
+  height: 28px;
+  background: #3d6b3a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-trunk {
+  width: 10px;
+  height: 22px;
+  background: #6b4423;
+  border: 2px solid var(--ink);
+  border-top: 0;
+}
+
+.home-bond-moon-disc {
+  position: absolute;
+  top: 10px;
+  right: 18px;
+  width: 20px;
+  height: 20px;
+  background: #e8d48a;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-star {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #efe6d4;
+  border: 2px solid var(--ink);
+}
+
+.home-bond-star-a {
+  top: 16px;
+  left: 28px;
+}
+
+.home-bond-star-b {
+  top: 28px;
+  left: 58px;
+}
+
+.home-bond-actors {
+  position: absolute;
+  inset: 0;
+}
+
+.home-bond .home-bond-me,
+.home-bond .home-bond-them {
+  position: absolute;
+  bottom: 8px;
+  width: 64px;
+  height: 64px;
+}
+
+.home-bond.is-tree .home-bond-me {
+  left: 46px;
+}
+
+.home-bond.is-tree .home-bond-them {
+  left: 72px;
+}
+
+.home-bond.is-fight .home-bond-me {
+  left: 48px;
+  animation: home-bond-clash-l 0.7s steps(2, end) infinite;
+}
+
+.home-bond.is-fight .home-bond-them {
+  left: 112px;
+  transform: scaleX(-1);
+  animation: home-bond-clash-r 0.7s steps(2, end) infinite;
+}
+
+.home-bond.is-moon .home-bond-me,
+.home-bond.is-moon .home-bond-them {
+  animation: home-bond-stroll 2.4s steps(4, end) infinite;
+}
+
+.home-bond.is-moon .home-bond-me {
+  left: 40px;
+}
+
+.home-bond.is-moon .home-bond-them {
+  left: 88px;
+}
+
+.home-bond.is-play .home-bond-me,
+.home-bond.is-play .home-bond-them {
+  animation: home-bond-hop 0.35s steps(2, end) 2;
+}
+
+.home-bond.is-fight.is-play .home-bond-them {
+  animation: home-bond-hop-flip 0.35s steps(2, end) 2;
+}
+
+@keyframes home-bond-clash-l {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes home-bond-clash-r {
+  0%,
+  100% {
+    transform: scaleX(-1) translateX(0);
+  }
+  50% {
+    transform: scaleX(-1) translateX(6px);
+  }
+}
+
+@keyframes home-bond-stroll {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes home-bond-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes home-bond-hop-flip {
+  0%,
+  100% {
+    transform: scaleX(-1) translateY(0);
+  }
+  50% {
+    transform: scaleX(-1) translateY(-8px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

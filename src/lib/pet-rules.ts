@@ -1,5 +1,5 @@
 import type { Pet, PetSpecies } from "@/generated/prisma/client";
-import { addDaysKey, todayKey } from "@/lib/utils";
+import { addDaysKey, daysBetweenKeys, todayKey } from "@/lib/utils";
 import { furnitureFor } from "@/lib/dream-furniture";
 
 export const SPECIES = [
@@ -56,17 +56,102 @@ export function applyExp(pet: { level?: number | null; exp?: number | null }, ga
   return { level, exp, levelsGained };
 }
 
+export const MOOD_META = [
+  { name: "赌气", emoji: ["💤"] },
+  { name: "想念", emoji: ["💭"] },
+  { name: "安静", emoji: ["💧"] },
+  { name: "平常", emoji: ["🍃"] },
+  { name: "快活", emoji: ["☀️"] },
+  { name: "黏人", emoji: ["✨"] },
+] as const;
+
+export function moodEmoji(level: number): readonly string[] {
+  return MOOD_META[level]?.emoji ?? MOOD_META[3].emoji;
+}
+
 export function petMood(pet: Pick<Pet, "lastCareDate">, today = todayKey()): PetMood {
   if (pet.lastCareDate === today) return "content";
   if (pet.lastCareDate && addDaysKey(pet.lastCareDate, 1) < today) return "miss";
   return "calm";
 }
 
-export function nextCareGain(pet: Pick<Pet, "lastCareDate" | "careStreak">, today = todayKey()) {
+export type MoodSettleInput = {
+  lastCareDate: string | null;
+  careStreak: number;
+  intimacy: number;
+  moodLevel: number;
+  moodSettledOn: string | null;
+  hatchedAt: Date;
+};
+
+export function missedCareDays(pet: Pick<MoodSettleInput, "lastCareDate" | "hatchedAt">, today = todayKey()) {
+  const yesterday = addDaysKey(today, -1);
+  const hatchKey = todayKey(pet.hatchedAt);
+  const start = pet.lastCareDate ? addDaysKey(pet.lastCareDate, 1) : addDaysKey(hatchKey, 1);
+  if (start > yesterday) return 0;
+  return daysBetweenKeys(start, yesterday) + 1;
+}
+
+export function applyOneMiss(mood: number) {
+  return Math.max(0, Math.min(mood - 1, 1));
+}
+
+export function settleMoodState(pet: MoodSettleInput, today = todayKey()) {
+  const moodLevel0 = Number.isFinite(pet.moodLevel) ? pet.moodLevel : 3;
+  if (pet.moodSettledOn === today) {
+    return {
+      changed: false as const,
+      moodLevel: moodLevel0,
+      intimacy: pet.intimacy,
+      careStreak: pet.careStreak,
+      moodSettledOn: pet.moodSettledOn,
+    };
+  }
+  const n = missedCareDays(pet, today);
+  const prevN = pet.moodSettledOn ? missedCareDays(pet, pet.moodSettledOn) : 0;
+  const delta = Math.max(0, n - prevN);
+  let moodLevel = moodLevel0;
+  let intimacy = pet.intimacy;
+  let careStreak = pet.careStreak;
+  if (delta > 0) {
+    careStreak = 0;
+    intimacy = Math.max(0, intimacy - 3 * delta);
+    for (let i = 0; i < delta; i++) moodLevel = applyOneMiss(moodLevel);
+  }
+  return {
+    changed: true as const,
+    moodLevel,
+    intimacy,
+    careStreak,
+    moodSettledOn: today,
+  };
+}
+
+export function nextCareGain(
+  pet: Pick<Pet, "lastCareDate" | "careStreak"> & { moodLevel: number },
+  today = todayKey(),
+) {
+  const mood = pet.moodLevel;
+  if (mood <= 0) {
+    return { intimacyDelta: 2, expDelta: 10, careStreak: 1, moodLevel: 2 };
+  }
+  if (mood <= 2) {
+    return {
+      intimacyDelta: 3,
+      expDelta: 10,
+      careStreak: 1,
+      moodLevel: Math.min(5, mood + 2),
+    };
+  }
   const continuing = pet.lastCareDate === addDaysKey(today, -1);
   const streak = continuing ? Math.min(pet.careStreak + 1, 7) : 1;
   const extra = streak >= 2 ? 1 : 0;
-  return { intimacyDelta: 3 + extra, expDelta: 10 + extra, careStreak: streak };
+  return {
+    intimacyDelta: 3 + extra,
+    expDelta: 10 + extra,
+    careStreak: streak,
+    moodLevel: Math.min(5, mood + 1),
+  };
 }
 
 export const TYPE_COLOR: Record<string, string> = {
@@ -170,6 +255,7 @@ export function serializePet(pet: Pet) {
     lastCareDate: pet.lastCareDate,
     careStreak: pet.careStreak,
     hatchedAt: pet.hatchedAt.toISOString(),
+    moodLevel: pet.moodLevel ?? 3,
     mood: petMood(pet),
     caredToday: pet.lastCareDate === today,
     speciesLabel: SPECIES_LABEL[pet.species],

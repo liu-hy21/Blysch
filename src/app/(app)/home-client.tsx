@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ViewTransition } from "react";
 import { MOODS, MOOD_MAP, SHOW_TOGETHER_UI } from "@/lib/constants";
-import { PixelPet } from "@/components/pets/pixel-pet";
+import { HomePets } from "@/components/pets/home-pets";
 import { RecentPhotos } from "@/components/app/recent-photos";
 import type { SerializedPet } from "@/lib/pet-rules";
 
 export function HomeClient({
+  coupleId,
   me,
   partner,
   togetherDays,
@@ -20,6 +20,7 @@ export function HomeClient({
   minePet,
   partnerPet,
 }: {
+  coupleId: string;
   me: { nickname: string; username: string };
   partner: { nickname: string; username: string };
   togetherDays: number | null;
@@ -90,38 +91,13 @@ export function HomeClient({
         ))}
       </div>
 
-      <section className="flex items-end justify-around pixel-box py-4">
-        <Link href="/pets" className="flex flex-col items-center gap-1">
-          <ViewTransition name="pet-sprite-mine" share="morph" default="none">
-            {minePet ? (
-              <PixelPet
-                species={minePet.species}
-                mood={minePet.mood}
-                scale={2}
-                label={me.nickname}
-              />
-            ) : (
-              <div className="h-16 w-16 border-2 border-dashed border-ink" />
-            )}
-          </ViewTransition>
-          <span className="text-[11px] text-ink-soft">{me.nickname}</span>
-        </Link>
-        <Link href="/pets?side=partner" className="flex flex-col items-center gap-1">
-          <ViewTransition name="pet-sprite-partner" share="morph" default="none">
-            {partnerPet ? (
-              <PixelPet
-                species={partnerPet.species}
-                mood={partnerPet.mood}
-                scale={2}
-                label={partner.nickname}
-              />
-            ) : (
-              <div className="h-16 w-16 border-2 border-dashed border-ink" />
-            )}
-          </ViewTransition>
-          <span className="text-[11px] text-ink-soft">{partner.nickname}</span>
-        </Link>
-      </section>
+      <HomePets
+        coupleId={coupleId}
+        me={me}
+        partner={partner}
+        minePet={minePet}
+        partnerPet={partnerPet}
+      />
 
       {nextDay && (
         <section className="pixel-box px-4 py-3 text-sm">
