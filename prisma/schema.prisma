@@ -118,7 +118,8 @@ model Wish {
   coupleId    String
   couple      Couple     @relation(fields: [coupleId], references: [id], onDelete: Cascade)
   title       String
-  category    String     @default("其他")
+  category    String     @default("知识")
+  region      String?
   status      WishStatus @default(PLANNED)
   stars       Int        @default(3)
   note        String?    @db.Text

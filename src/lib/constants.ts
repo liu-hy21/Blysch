@@ -27,14 +27,8 @@ export const MEMORY_IMAGE_MAX = 20;
 /** 时间轴卡片上预览的照片数 */
 export const MEMORY_IMAGE_PREVIEW = 6;
 
-export const WISH_CATEGORIES = [
-  "旅行",
-  "美食",
-  "体验",
-  "纪念日",
-  "购物",
-  "其他",
-] as const;
+export const WISH_CATEGORIES = ["旅行", "体验", "知识"] as const;
+export const WISH_REGIONS = ["国内", "国外"] as const;
 
 export const WISH_EFFORTS = [
   { value: 1, label: "普通", color: "#ffffff" },

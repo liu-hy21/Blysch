@@ -26,9 +26,16 @@ export async function PATCH(req: Request, { params }: Params) {
   }
   const parsed = wishSchema.partial().safeParse(body);
   if (!parsed.success) return jsonError("参数错误", 400);
+  const category = parsed.data.category ?? existing.category;
   const wish = await prisma.wish.update({
     where: { id },
-    data: parsed.data,
+    data: {
+      ...parsed.data,
+      region:
+        category === "旅行"
+          ? (parsed.data.region !== undefined ? parsed.data.region : existing.region)
+          : null,
+    },
   });
   return NextResponse.json(wish);
 }

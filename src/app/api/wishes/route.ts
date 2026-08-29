@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       coupleId: ctx.coupleId,
       title: parsed.data.title,
       category: parsed.data.category,
+      region: parsed.data.category === "旅行" ? parsed.data.region : null,
       stars: parsed.data.stars,
       note: parsed.data.note,
     },

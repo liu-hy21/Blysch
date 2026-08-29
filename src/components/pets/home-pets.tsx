@@ -157,6 +157,26 @@ function BondScenery({ kind }: { kind: BondKind }) {
       </div>
     );
   }
+  if (kind === "rain") {
+    return (
+      <div className="home-bond-scene" aria-hidden>
+        <span className="home-bond-rain" />
+        <span className="home-bond-eave-wall" />
+        <span className="home-bond-eave-roof" />
+        <span className="home-bond-eave-ground" />
+      </div>
+    );
+  }
+  if (kind === "hearth") {
+    return (
+      <div className="home-bond-scene" aria-hidden>
+        <span className="home-bond-hearth-wall" />
+        <span className="home-bond-hearth-box" />
+        <span className="home-bond-hearth-fire" />
+        <span className="home-bond-hearth-floor" />
+      </div>
+    );
+  }
   return (
     <div className="home-bond-scene" aria-hidden>
       <span className="home-bond-moon-disc" />

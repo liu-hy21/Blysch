@@ -4,13 +4,15 @@ export const BOND_HOURS = [
 
 export const BOND_SPECIAL_COUNT = 5;
 
-export const BOND_KINDS = ["tree", "fight", "moon"] as const;
+export const BOND_KINDS = ["tree", "fight", "moon", "rain", "hearth"] as const;
 export type BondKind = (typeof BOND_KINDS)[number];
 
 export const BOND_LABEL: Record<BondKind, string> = {
   tree: "树下靠着",
   fight: "在打架",
   moon: "月下散步",
+  rain: "檐下躲雨",
+  hearth: "炉边烤火",
 };
 
 export type BondSlot = {

@@ -18,6 +18,7 @@ export default async function WishesPage() {
         id: w.id,
         title: w.title,
         category: w.category,
+        region: w.region,
         status: w.status,
         stars: w.stars,
         note: w.note,

@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   BOND_HOURS,
+  BOND_KINDS,
+  BOND_LABEL,
   BOND_SPECIAL_COUNT,
   currentBond,
   todaysBonds,
@@ -46,5 +48,15 @@ describe("currentBond", () => {
     const idleHour = BOND_HOURS.find((h) => !day.some((s) => s.hour === h));
     assert.ok(idleHour !== undefined);
     assert.equal(currentBond("couple-a", "2026-08-24", idleHour), null);
+  });
+});
+
+describe("BOND_KINDS", () => {
+  it("has a label for every kind", () => {
+    assert.equal(BOND_KINDS.length, 5);
+    for (const kind of BOND_KINDS) {
+      assert.equal(typeof BOND_LABEL[kind], "string");
+      assert.ok(BOND_LABEL[kind].length > 0);
+    }
   });
 });
