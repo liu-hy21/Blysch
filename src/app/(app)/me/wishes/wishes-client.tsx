@@ -105,6 +105,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
   const [category, setCategory] = useState<WishCategory>("旅行");
   const [region, setRegion] = useState<WishRegion>("国内");
   const [stars, setStars] = useState(3);
+  const [error, setError] = useState("");
 
   const list = useMemo(() => {
     return wishes.filter((w) => {
@@ -120,6 +121,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
     setCategory("旅行");
     setRegion("国内");
     setStars(3);
+    setError("");
     setOpen(true);
   }
 
@@ -133,6 +135,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
     );
     setRegion(w.region === "国外" ? "国外" : "国内");
     setStars(w.stars);
+    setError("");
     setOpen(true);
   }
 
@@ -143,13 +146,17 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
       region: category === "旅行" ? region : null,
       stars,
     };
+    setError("");
     startTransition(async () => {
       const res = await fetch(editing ? `/api/wishes/${editing.id}` : "/api/wishes", {
         method: editing ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        setError("没保存上，再试一次");
+        return;
+      }
       setOpen(false);
       router.refresh();
     });
@@ -266,6 +273,11 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
           />
         ) : null}
         <EffortSlider value={stars} onChange={setStars} />
+        {error ? (
+          <p className="mt-3 text-sm text-danger" role="alert">
+            {error}
+          </p>
+        ) : null}
         <Button className="mt-4 w-full" disabled={!title || pending} onClick={save}>
           {pending ? "保存中…" : "保存心愿"}
         </Button>

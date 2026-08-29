@@ -59,23 +59,23 @@ export const placeSchema = z.object({
   images: z.array(z.string()).max(6).default([]),
 });
 
-export const wishSchema = z
-  .object({
-    title: z.string().min(1).max(40),
-    category: z.enum(WISH_CATEGORIES),
-    region: z.enum(WISH_REGIONS).nullable().optional(),
-    stars: z.number().int().min(1).max(5).default(3),
-    note: z.string().max(500).optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.category === "旅行" && !data.region) {
-      ctx.addIssue({
-        code: "custom",
-        message: "旅行需要选择国内或国外",
-        path: ["region"],
-      });
-    }
-  });
+export const wishFields = z.object({
+  title: z.string().min(1).max(40),
+  category: z.enum(WISH_CATEGORIES),
+  region: z.enum(WISH_REGIONS).nullable().optional(),
+  stars: z.number().int().min(1).max(5).default(3),
+  note: z.string().max(500).optional(),
+});
+
+export const wishSchema = wishFields.superRefine((data, ctx) => {
+  if (data.category === "旅行" && !data.region) {
+    ctx.addIssue({
+      code: "custom",
+      message: "旅行需要选择国内或国外",
+      path: ["region"],
+    });
+  }
+});
 
 export const daySchema = z.object({
   title: z.string().min(1).max(40),

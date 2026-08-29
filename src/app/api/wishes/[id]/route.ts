@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
-import { wishSchema } from "@/lib/validators";
+import { wishFields } from "@/lib/validators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -24,17 +24,21 @@ export async function PATCH(req: Request, { params }: Params) {
     });
     return NextResponse.json(wish);
   }
-  const parsed = wishSchema.partial().safeParse(body);
+  const parsed = wishFields.partial().safeParse(body);
   if (!parsed.success) return jsonError("参数错误", 400);
   const category = parsed.data.category ?? existing.category;
+  const region =
+    category === "旅行"
+      ? (parsed.data.region !== undefined ? parsed.data.region : existing.region)
+      : null;
+  if (category === "旅行" && !region) {
+    return jsonError("旅行需要选择国内或国外", 400);
+  }
   const wish = await prisma.wish.update({
     where: { id },
     data: {
       ...parsed.data,
-      region:
-        category === "旅行"
-          ? (parsed.data.region !== undefined ? parsed.data.region : existing.region)
-          : null,
+      region,
     },
   });
   return NextResponse.json(wish);
