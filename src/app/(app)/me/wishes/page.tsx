@@ -21,6 +21,7 @@ export default async function WishesPage() {
         region: w.region,
         status: w.status,
         stars: w.stars,
+        whenText: w.whenText,
         note: w.note,
       }))}
     />

@@ -7,6 +7,7 @@ const globalForPrisma = globalThis as unknown as {
   prismaBlysch?: PrismaClient;
   prismaMemoryHidden?: PrismaClient;
   prismaMood?: PrismaClient;
+  prismaWishWhen?: PrismaClient;
 };
 
 function withPoolParams(url: string) {
@@ -31,16 +32,16 @@ function createClient() {
   });
 }
 
-for (const key of ["prisma", "prismaBlysch", "prismaMemoryHidden"] as const) {
+for (const key of ["prisma", "prismaBlysch", "prismaMemoryHidden", "prismaMood"] as const) {
   const stale = globalForPrisma[key];
-  if (stale && stale !== globalForPrisma.prismaMood) {
+  if (stale && stale !== globalForPrisma.prismaWishWhen) {
     void stale.$disconnect();
     globalForPrisma[key] = undefined;
   }
 }
 
-export const prisma = globalForPrisma.prismaMood ?? createClient();
+export const prisma = globalForPrisma.prismaWishWhen ?? createClient();
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prismaMood = prisma;
+  globalForPrisma.prismaWishWhen = prisma;
 }

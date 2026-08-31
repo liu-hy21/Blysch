@@ -64,6 +64,7 @@ export const wishFields = z.object({
   category: z.enum(WISH_CATEGORIES),
   region: z.enum(WISH_REGIONS).nullable().optional(),
   stars: z.number().int().min(1).max(5).default(3),
+  whenText: z.string().max(40).optional().nullable(),
   note: z.string().max(500).optional(),
 });
 

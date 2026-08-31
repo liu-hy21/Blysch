@@ -27,6 +27,7 @@ export async function POST(req: Request) {
       category: parsed.data.category,
       region: parsed.data.category === "旅行" ? parsed.data.region : null,
       stars: parsed.data.stars,
+      whenText: parsed.data.whenText?.trim() || null,
       note: parsed.data.note,
     },
   });

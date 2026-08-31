@@ -20,6 +20,7 @@ type WishItem = {
   region: string | null;
   status: "PLANNED" | "DONE";
   stars: number;
+  whenText: string | null;
   note: string | null;
 };
 
@@ -57,31 +58,28 @@ function WishCard({
         } ${done ? "is-done" : ""}`}
       >
           <span className="w-1.5 shrink-0 self-stretch" style={{ background: rail }} aria-hidden />
-          <span className="min-w-0 flex-1 px-4 py-3">
-            <span className="flex items-start justify-between gap-3">
-              <span className="min-w-0">
+          <span className="relative min-w-0 flex-1 px-4 py-3">
+            <span className="absolute top-[0.95rem] right-4 flex gap-0.5" aria-hidden>
+              {WISH_EFFORTS.map((e) => (
                 <span
-                  className={`block text-pretty text-base ${done ? "text-sage line-through" : ""}`}
-                >
-                  {lead}
-                </span>
-                {rest ? (
-                  <span className="mt-0.5 block wrap-break-word text-xs leading-5 text-ink-soft">
-                    {rest}
-                  </span>
-                ) : null}
+                  key={e.value}
+                  className="block h-1.5 w-1.5 border border-ink"
+                  style={{
+                    background: e.value <= wish.stars ? effort.color : "transparent",
+                  }}
+                />
+              ))}
+            </span>
+            <span className={`pr-14 text-pretty text-base ${done ? "text-sage line-through" : ""}`}>
+              {lead}
+            </span>
+            <span className="mt-0.5 flex items-baseline justify-between gap-3">
+              <span className="min-w-0 wrap-break-word text-xs leading-5 text-ink-soft">
+                {rest || "\u00a0"}
               </span>
-              <span className="mt-0.5 flex shrink-0 gap-0.5" aria-hidden>
-                {WISH_EFFORTS.map((e) => (
-                  <span
-                    key={e.value}
-                    className="block h-1.5 w-1.5 border border-ink"
-                    style={{
-                      background: e.value <= wish.stars ? effort.color : "transparent",
-                    }}
-                  />
-                ))}
-              </span>
+              {wish.whenText ? (
+                <span className="shrink-0 text-xs leading-5 text-ink-soft">{wish.whenText}</span>
+              ) : null}
             </span>
             <span className="mt-2 block text-[11px]">
               <span className="effort-ink" style={{ color: effort.color }}>
@@ -105,6 +103,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
   const [category, setCategory] = useState<WishCategory>("旅行");
   const [region, setRegion] = useState<WishRegion>("国内");
   const [stars, setStars] = useState(3);
+  const [whenText, setWhenText] = useState("");
   const [error, setError] = useState("");
 
   const list = useMemo(() => {
@@ -121,6 +120,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
     setCategory("旅行");
     setRegion("国内");
     setStars(3);
+    setWhenText("");
     setError("");
     setOpen(true);
   }
@@ -135,6 +135,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
     );
     setRegion(w.region === "国外" ? "国外" : "国内");
     setStars(w.stars);
+    setWhenText(w.whenText ?? "");
     setError("");
     setOpen(true);
   }
@@ -145,6 +146,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
       category,
       region: category === "旅行" ? region : null,
       stars,
+      whenText: whenText.trim() || null,
     };
     setError("");
     startTransition(async () => {
@@ -272,6 +274,17 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
             options={WISH_REGIONS.map((r) => ({ value: r, label: r }))}
           />
         ) : null}
+        <label className="mt-3 block">
+          <span className="mb-1 block text-[11px] text-ink-soft">时间</span>
+          <input
+            name="when"
+            autoComplete="off"
+            className="pixel-field min-h-11 w-full px-3"
+            placeholder="选填"
+            value={whenText}
+            onChange={(e) => setWhenText(e.target.value)}
+          />
+        </label>
         <EffortSlider value={stars} onChange={setStars} />
         {error ? (
           <p className="mt-3 text-sm text-danger" role="alert">

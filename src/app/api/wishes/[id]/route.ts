@@ -39,6 +39,10 @@ export async function PATCH(req: Request, { params }: Params) {
     data: {
       ...parsed.data,
       region,
+      whenText:
+        parsed.data.whenText !== undefined
+          ? parsed.data.whenText?.trim() || null
+          : undefined,
     },
   });
   return NextResponse.json(wish);

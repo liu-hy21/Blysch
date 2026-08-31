@@ -122,6 +122,7 @@ model Wish {
   region      String?
   status      WishStatus @default(PLANNED)
   stars       Int        @default(3)
+  whenText    String?
   note        String?    @db.Text
   completedAt DateTime?
   createdAt   DateTime   @default(now())
