@@ -23,7 +23,7 @@ export const MEMORY_CATEGORIES = [
 ] as const;
 
 /** 一条回忆最多上传的照片数 */
-export const MEMORY_IMAGE_MAX = 20;
+export const MEMORY_IMAGE_MAX = 50;
 /** 时间轴卡片上预览的照片数 */
 export const MEMORY_IMAGE_PREVIEW = 6;
 /** 时间轴一页条数 */
