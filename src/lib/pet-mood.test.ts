@@ -122,6 +122,17 @@ describe("nextCareGain", () => {
     assert.equal(gain.moodLevel, 5);
   });
 
+  it("keeps growing past seven days", () => {
+    const gain = nextCareGain(
+      { lastCareDate: "2026-08-23", careStreak: 13, moodLevel: 5 },
+      "2026-08-24",
+    );
+    assert.equal(gain.careStreak, 14);
+    assert.equal(gain.intimacyDelta, 4);
+    assert.equal(gain.expDelta, 11);
+    assert.equal(gain.moodLevel, 5);
+  });
+
   it("pulls miss back toward calm without streak bonus", () => {
     const gain = nextCareGain(
       { lastCareDate: "2026-08-22", careStreak: 0, moodLevel: 1 },

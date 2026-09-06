@@ -6,6 +6,7 @@ import {
   feedsLeft,
   foodById,
   goldFoodReady,
+  isTodaysBackpackFood,
   serializePet,
 } from "@/lib/pet-rules";
 import { settlePetRecord } from "@/lib/pet-settle";
@@ -26,6 +27,9 @@ export async function POST(req: Request) {
   if (!food) return jsonError("没有这种食物", 400);
 
   const today = todayKey();
+  if (!isTodaysBackpackFood(food.id, today)) {
+    return jsonError("今天背包里没有这个", 409);
+  }
   if (feedsLeft(pet, today) <= 0) return jsonError("今天喂饱了，明天再来", 409);
   if ("gold" in food && food.gold && !goldFoodReady(pet, today)) {
     return jsonError("金苹果一天只能一颗", 409);

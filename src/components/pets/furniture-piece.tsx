@@ -216,11 +216,27 @@ function shape(id: string) {
           }}
         />
       );
-    case "cow-trough":
+    case "cow-fountain":
       return (
-        <div className="relative w-14">
-          <Iso w={56} topH={8} frontH={14} top="#a07840" front="#6b4a2a" />
-          <div className="absolute left-2 top-1 h-2 w-8 bg-[#ecd07a]" />
+        <div className="flex w-14 flex-col items-center">
+          <div className="flex items-end gap-1">
+            <Px className="h-1.5 w-1.5 bg-[#7eb3c9]" />
+            <Px className="h-1.5 w-1.5 bg-[#f4fcfc]" />
+          </div>
+          <Px className="h-1.5 w-7 bg-[#e4c36a]" />
+          <Px
+            className="h-2.5 w-8 border-t-0"
+            style={{
+              background: "#efe6d4",
+              boxShadow: "inset 2px 2px 0 rgba(255,248,220,0.65)",
+            }}
+          />
+          <Px className="h-1.5 w-2.5 border-t-0 bg-[#e8e0d0]" />
+          <div className="relative w-14">
+            <Iso w={56} topH={6} frontH={10} top="#e8e0d0" front="#c4b49c" />
+            <div className="absolute left-2 top-0.5 h-2 w-10 bg-[#6a9bb8]" />
+            <div className="absolute left-3 top-1 h-1 w-2 bg-[#f4fcfc]" />
+          </div>
         </div>
       );
     case "cow-box":

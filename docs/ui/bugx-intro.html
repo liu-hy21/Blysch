@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BugX 介绍 · 幻灯片</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --paper: #F4F1EA;
+  --paper-dark: #E8E3D5;
+  --ink: #1A1614;
+  --ink-soft: #3A322C;
+  --ink-fade: #6B6258;
+  --accent-red: #B33A2A;
+  --accent-blue: #1F3A5F;
+  --accent-amber: #C28A2C;
+  --accent-green: #4A6B3A;
+  --highlight: #F0D77A;
+  --nav-h: 78px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--ink);
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+}
+
+/* ── Deck ── */
+.deck {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  bottom: var(--nav-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 108px 48px;
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 58.5px, rgba(26,22,20,0.03) 58.5px, rgba(26,22,20,0.03) 60px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(60px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s, bottom 0.3s ease;
+  overflow-y: auto;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  z-index: 1;
+}
+
+.slide.prev {
+  transform: translateX(-60px);
+}
+
+/* ── Slide chrome ── */
+.slide-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent-red);
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.slide h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.slide h1 .dot { color: var(--accent-red); }
+
+.slide h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.slide .lede {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.75;
+  color: var(--ink-soft);
+  max-width: 820px;
+}
+
+.slide .lede strong { color: var(--ink); }
+
+.slide-inner {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  zoom: 1.5;
+}
+@supports not (zoom: 1) {
+  .slide-inner {
+    transform: scale(1.5);
+    transform-origin: top center;
+    width: 66.6667%;
+    max-width: none;
+  }
+}
+
+.slide-dense .hero-dark { padding: 24px 32px; margin-bottom: 16px; }
+.slide-dense .hero-dark p { font-size: clamp(16px, 1.8vw, 22px); }
+.slide-dense .grid-3 { margin-top: 12px; gap: 12px; }
+.slide-dense .grid-2 { gap: 12px; }
+.slide-dense .callback { margin-top: 14px; padding: 12px 18px; font-size: 13px; }
+.slide-dense .card { padding: 16px 18px; }
+.slide-dense .flow-row { margin: 14px 0; padding: 18px; }
+.slide-dense .pipe-bar { margin-top: 14px; padding: 18px; }
+.slide-dense .step-row { margin-bottom: 8px; }
+.slide-dense .step-row .s-body { padding: 12px 18px; }
+.slide-dense .box { padding: 12px 14px; font-size: 12px; }
+.slide-dense .case-dark { margin-top: 10px; padding: 14px 18px; font-size: 13px; }
+.slide-dense .symptom { margin-bottom: 10px; padding-bottom: 10px; font-size: 12px; }
+.slide-dense .chat .chat-b { padding: 12px 16px; font-size: 12px; }
+.slide-dense h2 { margin-bottom: 12px; }
+.slide-dense .split-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--accent-blue);
+  font-weight: 700;
+  margin: 18px 0 10px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--paper-dark);
+}
+.slide-dense .split-head:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+/* 金字塔 */
+.pyramid-apex {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 22px;
+  border: 2px solid var(--ink);
+  margin-bottom: 14px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+.pyramid-apex .apex-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--highlight);
+  margin-bottom: 6px;
+}
+.pyramid-apex code {
+  background: var(--paper-dark);
+  color: var(--ink);
+  border-color: rgba(26, 22, 20, 0.2);
+}
+.pyramid-tier {
+  border-left: 3px solid var(--accent-blue);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: var(--paper-dark);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.pyramid-tier strong { color: var(--ink); }
+.pyramid-tier .tier-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--accent-blue);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.w5-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  line-height: 1.45;
+  margin-top: 12px;
+}
+.w5-table th, .w5-table td {
+  border: 1px solid var(--ink);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.w5-table th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.w5-table td:first-child {
+  font-weight: 700;
+  color: var(--accent-red);
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+.w5-table .bad { color: var(--accent-red); }
+.w5-table .good { color: var(--accent-green); }
+
+.why-when-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+.why-when-grid h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+}
+.why-when-grid ul {
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.why-when-grid ul li { padding: 6px 0; border-bottom: 1px dashed var(--paper-dark); }
+.why-when-grid ul li:last-child { border-bottom: none; }
+.why-when-grid ul li::before { content: "— "; color: var(--ink-fade); }
+.why-when-grid .not-when {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px dashed var(--ink-fade);
+  font-size: 12px;
+  color: var(--ink-fade);
+}
+
+/* ── Reusable blocks ── */
+.hero-dark {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 36px 44px;
+  border: 2px solid var(--ink);
+  margin-bottom: 24px;
+}
+.hero-dark p {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 700;
+  line-height: 1.55;
+}
+.hero-dark .hint {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(244,241,234,0.7);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  border: 1px solid var(--ink);
+  padding: 22px 24px;
+  background: var(--paper);
+}
+.card .big {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent-red);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.card p, .card li {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.card ul { list-style: none; padding: 0; }
+.card ul li::before { content: "— "; color: var(--ink-fade); }
+
+.callback {
+  border: 2px solid var(--accent-amber);
+  background: rgba(194,138,44,0.08);
+  padding: 16px 22px;
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.callback .cb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--accent-amber);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.callback strong { color: var(--ink); }
+
+/* Data flow */
+.flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 24px 0;
+  padding: 28px;
+  background: var(--paper-dark);
+  border: 1px solid var(--ink);
+}
+.flow-node {
+  padding: 10px 16px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.35;
+}
+.flow-node.dim {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-fade);
+  border-style: dashed;
+}
+.flow-node.hl { background: var(--ink); color: var(--highlight); }
+.flow-arrow { color: var(--accent-red); font-weight: 700; font-size: 14px; }
+
+/* Pipeline bar */
+.pipe-bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  background: var(--accent-blue);
+  color: var(--paper);
+  padding: 24px;
+  border: 1px solid var(--ink);
+  margin-top: 20px;
+}
+.pipe-step {
+  flex: 1 1 80px;
+  max-width: 110px;
+  text-align: center;
+  padding: 14px 6px;
+  border: 1px solid rgba(244,241,234,0.2);
+}
+.pipe-step .num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--highlight);
+  line-height: 1;
+}
+.pipe-step .lbl { font-size: 12px; font-weight: 700; margin-top: 4px; }
+.pipe-step .who {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  opacity: 0.55;
+  margin-top: 3px;
+}
+.pipe-arr { color: rgba(244,241,234,0.35); padding: 0 2px; align-self: center; }
+
+/* Step row */
+.step-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  border: 1px solid var(--ink);
+  margin-bottom: 12px;
+}
+.step-row .s-num {
+  background: var(--ink);
+  color: var(--highlight);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 26px;
+  font-weight: 900;
+}
+.step-row .s-num small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  opacity: 0.65;
+}
+.step-row .s-body { padding: 16px 22px; }
+.step-row .s-body h3 { font-size: 17px; font-weight: 900; font-family: 'Noto Serif SC', serif; margin-bottom: 4px; }
+.step-row .s-body p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+.case-dark {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 18px 22px;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 14px;
+}
+.case-dark strong { color: var(--highlight); }
+
+.symptom {
+  font-size: 13px;
+  color: var(--ink-fade);
+  font-style: italic;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--paper-dark);
+}
+
+.box {
+  background: var(--paper-dark);
+  border: 1px solid var(--ink);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.case-page {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 14px;
+  align-items: start;
+  margin-top: 10px;
+}
+.case-page.case-page-wide {
+  grid-template-columns: 1fr;
+}
+.case-page.mermaid-compact .mermaid {
+  zoom: 0.82;
+}
+@supports not (zoom: 1) {
+  .case-page.mermaid-compact .mermaid {
+    transform: scale(0.82);
+    transform-origin: top left;
+    width: 82%;
+  }
+}
+.slide .mermaid {
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: auto;
+  display: block;
+  width: 100%;
+}
+.slide .mermaid svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+.slide .mermaid .node.symptom .label,
+.slide .mermaid .node.symptom foreignObject div,
+.slide .mermaid .node.symptom span,
+.slide .mermaid .node.symptom .nodeLabel {
+  font-size: 22px !important;
+  line-height: 1.4;
+}
+script.md-mermaid { display: none; }
+
+.box h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--accent-red);
+  margin-bottom: 6px;
+}
+
+.chat {
+  border: 1px solid var(--ink);
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.chat .chat-h {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.chat .chat-b {
+  padding: 14px 18px;
+  background: rgba(31,58,95,0.06);
+  color: var(--ink-soft);
+}
+
+.closing-list {
+  list-style: none;
+  margin-top: 20px;
+}
+.closing-list li {
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.7;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--paper-dark);
+  color: var(--ink-soft);
+}
+.closing-list li strong { color: var(--accent-red); }
+.closing-list li:last-child { border-bottom: none; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  background: var(--paper-dark);
+  padding: 1px 6px;
+  border: 1px solid rgba(26,22,20,0.15);
+}
+
+/* Title slide special */
+.slide.title-slide {
+  justify-content: center;
+  text-align: left;
+}
+.slide.title-slide h1 { font-size: clamp(40px, 5.5vw, 64px); margin-bottom: 16px; }
+.slide.title-slide .meta {
+  margin-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-fade);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.slide.title-slide .stamp {
+  display: inline-block;
+  border: 1.5px solid var(--accent-blue);
+  color: var(--accent-blue);
+  padding: 2px 10px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+/* Section divider（黑底章节页） */
+.slide.section-slide {
+  background-color: var(--ink);
+  background-image: none;
+  color: var(--paper);
+  justify-content: center;
+  text-align: center;
+}
+.slide.section-slide .slide-tag { color: var(--highlight); }
+.slide.section-slide h2 {
+  font-size: clamp(36px, 5vw, 56px);
+  color: var(--paper);
+}
+.slide.section-slide .lede {
+  color: rgba(244, 241, 234, 0.88);
+  margin: 0 auto;
+  text-align: center;
+  max-width: 720px;
+}
+/* 黑底上禁止沿用浅色页的深色 strong / 链接 */
+.slide.section-slide .lede strong {
+  color: var(--highlight);
+}
+.slide.section-slide a {
+  color: var(--highlight);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.slide.section-slide code {
+  background: rgba(244, 241, 234, 0.12);
+  border-color: rgba(244, 241, 234, 0.28);
+  color: var(--paper);
+}
+
+/* ── Nav bar ── */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  gap: 24px;
+  z-index: 100;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+body.nav-hidden .nav-bar {
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+body.nav-hidden .slide {
+  bottom: 0;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1.5px solid rgba(244,241,234,0.35);
+  color: var(--paper);
+  padding: 9px 21px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 18px;
+  transition: background 0.15s;
+}
+.nav-btn:hover { background: rgba(244,241,234,0.12); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+.nav-btn-toggle {
+  padding: 9px 14px;
+  font-size: 15px;
+  opacity: 0.75;
+}
+
+.nav-btn-toggle:hover { opacity: 1; }
+
+.nav-progress {
+  flex: 1;
+  height: 4.5px;
+  background: rgba(244,241,234,0.15);
+  position: relative;
+}
+.nav-progress-fill {
+  height: 100%;
+  background: var(--highlight);
+  transition: width 0.35s ease;
+}
+
+.nav-counter { min-width: 84px; text-align: center; opacity: 0.7; }
+
+.nav-hint {
+  opacity: 0.45;
+  font-size: 15px;
+  letter-spacing: 0.75px;
+}
+
+.nav-bar a { color: var(--highlight); text-decoration: none; font-size: 10px; }
+
+@media (max-width: 800px) {
+  .slide { padding: 48px 36px 36px; }
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .nav-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- 01 封面 -->
+  <section class="slide title-slide active" data-title="封面">
+    <div class="slide-inner">
+      <div class="stamp">入门介绍 · 幻灯片</div>
+      <h1>BugX<span class="dot">·</span><br>数据异常怎么查？</h1>
+      <p class="lede"><strong>是什么 → 为什么用 → 什么时候用 → 怎么用</strong></p>
+    </div>
+  </section>
+
+  <!-- 02 是什么 -->
+  <section class="slide slide-dense" data-title="是什么">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 01 · 是什么</div>
+      <h2>BugX 是什么？先建立三个认识</h2>
+      <div class="hero-dark">
+        <p>页面上某个数字、列表、日期「看着不对」——让 AI 沿真实数据链路往上追，找到<strong style="color:var(--highlight)">断在哪一步</strong>。</p>
+        <p class="hint">知识库（kb）指引链路 · SQL-X 查库验证 · 固定格式输出报告</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="big">90%</div>
+          <h3>多半是数据侧</h3>
+          <p>后端多是读表 + 组装。表没数、分区断了、上游没跑 → 页面空或错。</p>
+        </div>
+        <div class="card">
+          <div class="big">↓↑</div>
+          <h3>从下往上查</h3>
+          <p>从接口出发，查 Doris → 对比 Hive → 追数仓任务和源表。从下往上，不要从上往下。</p>
+        </div>
+        <div class="card">
+          <div class="big">📋</div>
+          <h3>必须出报告</h3>
+          <p>不是聊天里一句猜测「应该是数据问题」，而是 §A.1 + §A.2 竖向链路图。</p>
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">💡 记住这句</div>
+        听到「页面不对」，第一反应：<strong>这条数据从哪张表来、那张表有没有数</strong>——不要先想改代码。
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 章节：Why & When -->
+  <section class="slide section-slide" data-title="为什么 & 什么时候">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 01b</div>
+      <h2>为什么要用？<br>什么时候用？</h2>
+      <p class="lede">光知道「是什么」不够——<br>得先对齐<strong>价值</strong>和<strong>触发场景</strong>，再进入「怎么用」。</p>
+    </div>
+  </section>
+
+  <!-- 04 Why + When -->
+  <section class="slide slide-dense" data-title="为什么用 · 什么时候用">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 01b · 价值和场景</div>
+      <h2>为什么用 BugX · 什么时候该排查</h2>
+      <div class="why-when-grid">
+        <div>
+          <h3>为什么要用它</h3>
+          <ul>
+            <li><strong>先查数据，再动代码</strong>——90% 是表没数/导出断/口径不一致，查清根因再动手。</li>
+            <li><strong>减少反复争论</strong>——用同一套链路 + 实查证据，用查询结果对齐。</li>
+            <li><strong>输出规范的排查报告</strong>——§A.1 一句话 + §A.2 链路图，不是「应该是数据问题」。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>什么时候用它</h3>
+          <ul>
+            <li>页面/接口<strong>数据不对、缺数、数值异常</strong></li>
+            <li>产品说「和计算器/常识对不上」（如案例 003）</li>
+            <li>同一指标<strong>多出口不一致</strong>（顶部率 vs 下钻明细）</li>
+            <li>只问「某张表有没有数」——可直查，不必走全流程</li>
+          </ul>
+          <div class="not-when">❌ 不必用：纯 UI 文案/颜色、权限鉴权、排序分页导出样式——这些不是数据链路 bug。</div>
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">💡 记住这句</div>
+        解决的是「查不清、难对齐、没留档」；看见「数」不对就可以用 BugX。
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 章节：数据从哪来 -->
+  <section class="slide section-slide" data-title="Part 02–03">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 02–03</div>
+      <h2>数据从哪来？<br>你要做什么？</h2>
+      <p class="lede">页面在最上面，原始报文在最下面。<br>排查从下往上核对 · 你把信息给全即可。</p>
+    </div>
+  </section>
+
+  <!-- 05 Part02+03 合并 -->
+  <section class="slide slide-dense" data-title="数据链路与你的角色">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 02–03 · 链路 + 你要做什么</div>
+      <h2>六步数据链 · 你要做的三件事</h2>
+      <div class="flow-row">
+        <div class="flow-node dim">⑥ ODS</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node dim">⑤ 源表</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node dim">④ 数仓任务</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node dim">③ Hive</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node dim">② Doris</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node hl">① 页面</div>
+      </div>
+      <div class="callback" style="margin-top:10px;margin-bottom:14px">
+        <div class="cb-label">💡 记住这句</div>
+        步骤②没数 → 先别查 Java 代码。步骤②没数、步骤③有数 → 多半是<strong>导出/同步断了</strong>。
+      </div>
+      <div class="split-head">不用会 SQL · 把信息给全 · 剩下 AI 走流程</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="big">🗺️</div>
+          <h3>指知识库 · Step 0</h3>
+          <p>告诉 AI kb 路径，如 <code>docs/architecture/kb/02-单车数据查询.md</code></p>
+        </div>
+        <div class="card">
+          <div class="big">📝</div>
+          <h3>说症状 · Step 1</h3>
+          <p>接口 + 参数 + 字段 + 期望 vs 实际。描述越具体越好。</p>
+        </div>
+        <div class="card">
+          <div class="big">🔑</div>
+          <h3>填 Cookie · Step 2.5</h3>
+          <p>碰到 NDH：提供工号 + Cookie，拉取节点 SQL 并保存到 <code>docs/ndh/</code>。证据够了就停止。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 章节：六步 -->
+  <section class="slide section-slide" data-title="Part 04 · 怎么用">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 04 · 怎么用</div>
+      <h2>六步流水线</h2>
+      <p class="lede">从提问到报告 · Step 2.5 与 Step 3 可并行<br>报告先写结论，再用证据说明各步骤情况</p>
+    </div>
+  </section>
+
+  <!-- 07 Part04 合并：总览+0-1 -->
+  <section class="slide slide-dense" data-title="六步 · 总览与准备">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 04 · Step 0–1</div>
+      <h2>六步一览 · 准备 + 说清问题</h2>
+      <div class="pipe-bar">
+        <div class="pipe-step"><div class="num">0</div><div class="lbl">指 kb</div><div class="who">你</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">1</div><div class="lbl">说症状</div><div class="who">你</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">2</div><div class="lbl">画链路</div><div class="who">AI</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num" style="font-size:22px">2.5</div><div class="lbl">NDH</div><div class="who">Cookie</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">3</div><div class="lbl">查库</div><div class="who">AI</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">4</div><div class="lbl">报告</div><div class="who">AI</div></div>
+      </div>
+      <p class="lede" style="margin-top:12px;font-size:13px">Step 3 查步骤②③；Step 2.5 对准步骤④；根因常在步骤④⑤⑥。</p>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="step-row" style="margin:0">
+          <div class="s-num">0<small>kb</small></div>
+          <div class="s-body"><h3>定位知识库</h3><p>AI 不猜路径。你告诉它功能对应哪篇 kb，它才能从接口追到表和数仓任务。</p></div>
+        </div>
+        <div class="step-row" style="margin:0">
+          <div class="s-num">1<small>症状</small></div>
+          <div class="s-body"><h3>说成可验证的描述</h3><p>不够具体：「某个率不对」。足够具体：「哪个接口、哪些参数、哪个返回字段、期望值 vs 实际值、下钻条数」。具体写法见案例章节。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 Part04 合并：2-4 -->
+  <section class="slide slide-dense" data-title="六步 · 链路至报告">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 04 · Step 2–4</div>
+      <h2>画链路 · 保存 NDH SQL · 查库 · 出报告</h2>
+      <div class="grid-2">
+        <div class="step-row" style="margin:0">
+          <div class="s-num">2<small>链路</small></div>
+          <div class="s-body"><h3>接口 → 表 → 数仓任务</h3><p>从代码和 kb 拼出链路草图：接口 → 后端方法 → 查询库表 → 数仓表 → NDH 节点 → 上游源表。</p></div>
+        </div>
+        <div class="step-row" style="margin:0">
+          <div class="s-num" style="font-size:18px">2.5<small>SQL</small></div>
+          <div class="s-body"><h3>填 Cookie，SQL 存 docs/ndh</h3><p>kb 是链路说明；过滤条件、聚合口径等细节只能看节点 SQL。识别到 NDH 后，提供工号 + Cookie，AI 会把节点 SQL 保存到 <code>docs/ndh/</code> 目录。</p></div>
+        </div>
+        <div class="box">
+          <h4>Step 3 · SQL-X 分层查库</h4>
+          <strong>Tier 1</strong>：Doris 症状日期有没有行？<br>
+          <strong>Tier 2</strong>：Doris vs Hive，排除「只是没同步」。<br>
+          对齐就停，通常 ≤6 条 SQL。
+        </div>
+        <div class="box">
+          <h4>Step 4 · 规范报告</h4>
+          <strong>§A.1</strong> = 一句话结论：根因 + 断点步骤 + 是否代码 bug<br>
+          <strong>§A.2</strong> = 链路图：每步 ✓/✗ + 量化<br>
+          只有口头说明 = 排查未完成
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">💡 记住这句</div>
+        报告里标「← 根因」的那一步，就是结论里要重点说清楚的那一步。
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="怎么写报告">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 04 · 怎么写报告</div>
+      <h2>先写结论，再用证据说明</h2>
+      <p class="lede" style="font-size:13px;margin-bottom:12px">结论只有一句；下面用现象、原因、范围、改法逐条补充。结构如下（具体数字与表名见案例章节）：</p>
+      <div class="pyramid-apex">
+        <div class="apex-label">▲ 一句话结论 · §A.1</div>
+        是否代码 bug + 根因在哪一步 + 下一步改什么（数仓 / 导出 / 配置，或确认非平台问题）。
+      </div>
+      <div class="grid-2">
+        <div class="pyramid-tier">
+          <div class="tier-tag">分论点一 · 现象和原因</div>
+          <strong>现象</strong>：接口返回什么、页面看到什么，用数字写清。<br>
+          <strong>原因</strong>：已验证的根因，不是猜测。
+        </div>
+        <div class="pyramid-tier">
+          <div class="tier-tag">分论点二 · 时间和断点</div>
+          <strong>时间</strong>：查询窗口、起止日期。<br>
+          <strong>断点</strong>：链路第几步、哪一层有数 / 没数 / 口径不一致。
+        </div>
+        <div class="pyramid-tier" style="grid-column:1/-1">
+          <div class="tier-tag">分论点三 · 改法</div>
+          能执行的下一步：补跑任务、修正节点 SQL、补导出分区，或说明无需改代码。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="出报告前自检">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 04 · 出报告前自检</div>
+      <h2>出报告前：检查容易遗漏的地方</h2>
+      <table class="w5-table">
+        <thead>
+          <tr><th>检查项</th><th>问自己</th><th>❌ 常见问题</th><th>✓ 改成这样</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>现象</td>
+            <td>量化了吗？</td>
+            <td class="bad">「某个指标不对」</td>
+            <td class="good">「汇总值 0.97，下钻 4 条，窗口内总数 2335」</td>
+          </tr>
+          <tr>
+            <td>原因</td>
+            <td>根因还是猜测？</td>
+            <td class="bad">「应该是数据没同步吧」</td>
+            <td class="good">「数仓表有 4 条，查询库同区间 0 条 → 导出断档」</td>
+          </tr>
+          <tr>
+            <td>时间</td>
+            <td>日期区间明确吗？</td>
+            <td class="bad">「最近几天」</td>
+            <td class="good">「查询窗口 7 天，起止日期写清楚」</td>
+          </tr>
+          <tr>
+            <td>断点</td>
+            <td>第几步、哪张表？</td>
+            <td class="bad">「数仓有问题」</td>
+            <td class="good">「第③步有数、第②步无数；或第④步的节点 SQL 口径不一致」</td>
+          </tr>
+          <tr>
+            <td>改法</td>
+            <td>下一步能动手吗？</td>
+            <td class="bad">「让数据同学看看」</td>
+            <td class="good">「补跑导出任务 + 修正数仓节点 SQL」</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callback" style="margin-top:12px">
+        <div class="cb-label">💡 记住这句</div>
+        先把结论写清楚，再逐项补充<strong>量化现象、已验证原因、具体改法</strong>——避免把措施当结论、把空泛说法当方案。
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 章节：案例 -->
+  <section class="slide section-slide" data-title="Part 05">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 05</div>
+      <h2>四个真案例</h2>
+      <p class="lede">docs/bugs/00-历史排查案例.md<br>建议讲法：001 查不到 → 002 有数无完整率 → 003 综合 → 004 日期选不到最新</p>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="案例 001">
+    <div class="slide-inner">
+      <div class="slide-tag">Case 001</div>
+      <p class="symptom">车型数据质量监测 · CAN分类指标查询页面：配置正常，页面没数。8 月查不到精确车系码 C589。跟国标报文表无关。</p>
+      <div class="case-page mermaid-compact">
+        <script type="text/markdown" class="md-mermaid">
+```mermaid
+%%{init: {"flowchart": {"curve": "linear", "nodeSpacing": 24, "rankSpacing": 28}}}%%
+flowchart TB
+  HI["【云器表】<br/>dwd_vhc_data_quality_compute_signal_hi"]
+  TOTAL["【云器 / Hive 表】<br/>dwd_vhc_data_quality_compute_signal_total_di<br/>精确 C589 还没有"]
+  VEH["【Hive 表】<br/>dwd_vhc_data_quality_can_vehicle_index_ds"]
+  VEHD["【Doris 表】<br/>dw.dwd_vhc_data_quality_can_vehicle_index_ds<br/>canVehicleDetail 只读这里"]
+  API["★ 表面问题点：查不到精确 C589<br/>指标接口 canVehicleDetail"]
+  INFO["【云器表】<br/>dwd_vhc_data_quality_signal_info"]
+  MON["【Hive 表】<br/>dwd_data_quality_monitor_car_series"]
+
+  INFO --> HI
+  MON --> HI
+  HI --> TOTAL --> VEH --> VEHD --> API
+
+  classDef hive fill:#DCE8D4,stroke:#4A6B3A,stroke-width:2.5px,color:#1A1614
+  classDef yunqi fill:#E8D9C8,stroke:#8A5A2B,stroke-width:2.5px,color:#1A1614
+  classDef doris fill:#D6E0EC,stroke:#1F3A5F,stroke-width:2.5px,color:#1A1614
+  classDef issue fill:#F0D77A,stroke:#B33A2A,stroke-width:2.5px,color:#1A1614
+  classDef symptom fill:#F4F1EA,stroke:#B33A2A,stroke-width:2px,stroke-dasharray: 6 4,color:#1A1614,font-size:22px
+  class VEH,MON hive
+  class HI,INFO yunqi
+  class VEHD doris
+  class TOTAL issue
+  class API symptom
+```
+        </script>
+        <div>
+          <div class="box"><h4>结论</h4>26 号改配置；27 号配置同步到云器；28 号在页面上能看到数据。28 号再看。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="CAN分类指标查询页面无完整率">
+    <div class="slide-inner">
+      <div class="slide-tag">Case 002</div>
+      <p class="symptom">车型数据质量监测 · CAN分类指标查询页面：有有效率、及时率，没有完整率。C589 全量车 xml_version=20200000000000、date=2026/08/27、duration=1，状态「未达标」。</p>
+      <div class="case-page mermaid-compact">
+        <script type="text/markdown" class="md-mermaid">
+```mermaid
+%%{init: {"flowchart": {"curve": "linear", "nodeSpacing": 24, "rankSpacing": 28}}}%%
+flowchart TB
+  SIG["【Hive 表】<br/>★ 根因：全量挂载没有周期采集信号<br/>dwd_vhc_data_quality_signal_info<br/>xml_version=20200000000000"]
+  LACK["【Hive 表】<br/>dwd_vhc_data_quality_lack_detail_ds<br/>完整率只对周期采集应采 vs 实采"]
+  COL["【Hive 表】<br/>dwd_vhc_data_quality_collect_signal_ds<br/>实采统计，不限周期采集"]
+  INDEX["【Hive 表】<br/>dwd_vhc_data_quality_index_ds<br/>采集完整率空；有效率及时率有值"]
+  VEH["【Hive 表】<br/>dwd_vhc_data_quality_can_vehicle_index_ds"]
+  VEHD["【Doris 表】<br/>dw.dwd_vhc_data_quality_can_vehicle_index_ds<br/>canVehicleDetail 只读这里"]
+  API["★ 表面问题点：完整率空，有效率及时率有，未达标<br/>指标接口 canVehicleDetail"]
+
+  SIG --> LACK
+  LACK -->|采集完整率空| INDEX
+  COL -->|有效率及时率有值| INDEX
+  INDEX --> VEH --> VEHD --> API
+  SIG ~~~ COL
+
+  classDef hive fill:#DCE8D4,stroke:#4A6B3A,stroke-width:2.5px,color:#1A1614
+  classDef doris fill:#D6E0EC,stroke:#1F3A5F,stroke-width:2.5px,color:#1A1614
+  classDef issue fill:#F0D77A,stroke:#B33A2A,stroke-width:2.5px,color:#1A1614
+  classDef symptom fill:#F4F1EA,stroke:#B33A2A,stroke-width:2px,stroke-dasharray: 6 4,color:#1A1614,font-size:22px
+  class LACK,INDEX,VEH,COL hive
+  class VEHD doris
+  class SIG issue
+  class API symptom
+```
+        </script>
+        <div>
+          <div class="box"><h4>结论</h4>三个率看的不是同一批信号。有效率、及时率看车上实际采到的，采到就能算。完整率只看清单里标了「周期采集」的：该采的有没有采到。这个 XML 版本全量挂载里一项周期采集都没有，完整率就空着。要算出完整率，需要业务人员去采集平台，给全量挂载补上周期采集信号。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="案例 003">
+    <div class="slide-inner">
+      <div class="slide-tag">Case 003</div>
+      <p class="symptom">单车数据异常分析 · 国标：顶部及时率、间隔率对了，明细对不上。VIN=LVRHDCEM9SN010167，7 日，08/19：gbTmyRate=0.97，gbDelayRate=0.99830，总数 2335；gbRealtimeDelayMessage 4 条；gbDelayMessage 0 条。</p>
+      <div class="case-page case-page-wide mermaid-compact">
+        <script type="text/markdown" class="md-mermaid">
+```mermaid
+%%{init: {"flowchart": {"curve": "linear", "nodeSpacing": 28, "rankSpacing": 40}}}%%
+flowchart LR
+  subgraph L[" "]
+    direction TB
+    DDELAY["【Hive 表】<br/>dwd_vhc_data_quality_gb_delay_data<br/>间隔源 全量"]
+    DETMSGX["【Hive 表】<br/>dwd_vhc_data_quality_gb_delay_message_di"]
+    DETMSG["【Doris 表】<br/>★ 根因：没建分区<br/>dw.dwd_vhc_data_quality_gb_delay_message_di<br/>08-13~08-19 无分区无数据"]
+    DM["★ 表面问题点：只有 0 条数据，和指标接口对不上<br/>报文间隔率明细接口 gbDelayMessage"]
+    DDELAY --> DETMSGX --> DETMSG --> DM
+  end
+
+  subgraph C[" "]
+    direction TB
+    RATE["【Hive 表】<br/>dwd_vhc_data_quality_mult_vehicle_index_di<br/>及时率 0.97 = 1 − 75/2335<br/>间隔率 0.998 = 1 − 4/2335<br/>只出率、不出明细"]
+    DORIS["【Doris 表】<br/>dw.dwd_vhc_data_quality_mult_vehicle_index_di<br/>vehicle-index 只读这里"]
+    API[指标接口 vehicle-index]
+    RATE --> DORIS --> API
+  end
+
+  subgraph R[" "]
+    direction TB
+    TDIFF["【Hive 表】<br/>dwd_vhc_data_quality_gb_time_diff<br/>及时率源 全量 is_delay=1"]
+    DET4["【Hive 表】<br/>★ 根因：指标和明细的计算口径不一致<br/>dwd_vhc_data_quality_gb_report_abnormal_data_detail_di<br/>data_type=4 rank=1 每天每车只留 1 条"]
+    DET4D["【Doris 表】<br/>dw.dwd_vhc_data_quality_gb_report_abnormal_data_detail_di<br/>及时率明细接口只读这里"]
+    RT["★ 表面问题点：只有 4 条数据，和指标接口对不上<br/>及时率明细接口 gbRealtimeDelayMessage"]
+    TDIFF --> DET4 --> DET4D --> RT
+  end
+
+  DDELAY -->|4/2335 算间隔率| RATE
+  TDIFF -->|75/2335 算及时率| RATE
+
+  classDef hive fill:#DCE8D4,stroke:#4A6B3A,stroke-width:2.5px,color:#1A1614
+  classDef doris fill:#D6E0EC,stroke:#1F3A5F,stroke-width:2.5px,color:#1A1614
+  classDef issue fill:#F0D77A,stroke:#B33A2A,stroke-width:2.5px,color:#1A1614
+  classDef symptom fill:#F4F1EA,stroke:#B33A2A,stroke-width:2px,stroke-dasharray: 6 4,color:#1A1614,font-size:22px
+  class DDELAY,RATE,TDIFF,DETMSGX hive
+  class DORIS,DET4D doris
+  class DETMSG,DET4 issue
+  class DM,RT symptom
+
+  style L fill:none,stroke:none
+  style C fill:none,stroke:none
+  style R fill:none,stroke:none
+```
+        </script>
+        <div class="grid-2">
+          <div class="box">
+            <h4>① 及时率 97% vs 明细 4 条</h4>
+            率：<code>dwd_vhc_data_quality_gb_time_diff</code> 全量 75/2335。明细：<code>dwd_vhc_data_quality_gb_report_abnormal_data_detail_di</code> rank=1 每天每车 1 条。<br>
+            <strong>改：</strong>去掉 rank=1 → 改 Hive SQL 任务。
+          </div>
+          <div class="box">
+            <h4>② 间隔率 99.83% vs 明细 0 条</h4>
+            Hive <code>dwd_vhc_data_quality_gb_delay_data</code> 有 4 条；Doris <code>dwd_vhc_data_quality_gb_delay_message_di</code> 08-13~19 无数据。<br>
+            <strong>改：</strong>补分区 + 补跑同步任务。Hive 源表不用改。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide-dense" data-title="案例 004">
+    <div class="slide-inner">
+      <div class="slide-tag">Case 004</div>
+      <p class="symptom">单车查询页面：VIN=LS5A3DME6SA200061，近 7 天日期只能选到 2026-08-11（近 1 天只能选到 2026-08-04）。vehicle-index duration=7、pDay=2026-08-11 看起来没数据。</p>
+      <div class="case-page case-page-wide mermaid-compact">
+        <script type="text/markdown" class="md-mermaid">
+```mermaid
+%%{init: {"flowchart": {"curve": "linear", "nodeSpacing": 28, "rankSpacing": 40}}}%%
+flowchart LR
+  subgraph L[" "]
+    direction TB
+    COL["【Hive 表】<br/>★ 根因：这辆车 08-05 没采到<br/>dwd_vhc_data_quality_collect_signal_ds<br/>近 1 天 0 行"]
+    INDEX["【Hive 表】<br/>dwd_vhc_data_quality_index_ds<br/>无数据有效率，进不了融合"]
+    COL --> INDEX
+  end
+
+  subgraph C[" "]
+    direction TB
+    RATE["【Hive 表】<br/>dwd_vhc_data_quality_mult_vehicle_index_di<br/>近 1 天只到 08-04<br/>近 7 天日期是 DTC 撑到 08-11"]
+    DORIS["【Doris 表】<br/>dw.dwd_vhc_data_quality_mult_vehicle_index_di<br/>日期列表和指标都只读这里"]
+    DATES["★ 表面问题点：近 7 天只能选到 08-11<br/>日期接口 vehicle-data-dates"]
+    API["★ 表面问题点：打开 08-11 像没数据<br/>指标接口 vehicle-index"]
+    RATE --> DORIS
+    DORIS --> DATES
+    DORIS --> API
+  end
+
+  subgraph R[" "]
+    direction TB
+    ODS["【Hive 表】<br/>★ 根因：这辆车 08-05 没有国标报文<br/>ods.ods_us_packet_log_di<br/>08-04 有 1228 包；08-05 为 0"]
+    GB["【Hive 表】<br/>dwd_vhc_data_quality_gb_vin_ds<br/>任务跑了，本车 0 行"]
+    ODS --> GB
+  end
+
+  INDEX -->|没数据有效率| RATE
+  GB -->|本车 0 行| RATE
+
+  classDef hive fill:#DCE8D4,stroke:#4A6B3A,stroke-width:2.5px,color:#1A1614
+  classDef doris fill:#D6E0EC,stroke:#1F3A5F,stroke-width:2.5px,color:#1A1614
+  classDef issue fill:#F0D77A,stroke:#B33A2A,stroke-width:2.5px,color:#1A1614
+  classDef symptom fill:#F4F1EA,stroke:#B33A2A,stroke-width:2px,stroke-dasharray: 6 4,color:#1A1614,font-size:22px
+  class INDEX,RATE,GB hive
+  class DORIS doris
+  class COL,ODS issue
+  class DATES,API symptom
+
+  style L fill:none,stroke:none
+  style C fill:none,stroke:none
+  style R fill:none,stroke:none
+```
+        </script>
+        <div>
+          <div class="box"><h4>结论</h4>不是接口的事。这辆车 08-05 没再报国标、CAN 也没采到，近 1 天只能选到 08-04。能选到 08-11 是故障码还在，打开国标和 CAN 是空的。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 对话框使用 -->
+  <section class="slide slide-dense" data-title="对话框里怎么使用">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 06 · 实操</div>
+      <h2>在对话框里怎么使用</h2>
+      <p class="lede" style="font-size:13px;margin-bottom:12px">打开 agent 对话框，输入 <code>@bugx</code> 或直接描述问题；把<strong>症状 + kb 路径</strong>一次说清，AI 会按六步流水线执行。</p>
+      <div class="chat">
+        <div class="chat-h">① 完整排查 · 粘贴到对话框（案例 003）</div>
+        <div class="chat-b">用 bugx 排查：国标单车 VIN=LVRHDCEM9SN010167，date=2026/08/19，duration=7。gbTmyRate=0.97 但 gbRealtimeDelayMessage 只有 4 条；gbDelayMessage 为 0。kb 在 docs/architecture/kb/02-单车数据查询.md</div>
+      </div>
+      <div class="chat" style="margin-top:8px">
+        <div class="chat-h">② 只查表 · 粘贴到对话框</div>
+        <div class="chat-b">查一下 Doris dw.dwd_vhc_data_quality_gb_delay_message_di，VIN=LVR…，p_day 在 2026-08-13 到 2026-08-19 有没有数据。</div>
+      </div>
+      <div class="split-head">对话框里配合 AI 时注意</div>
+      <div class="grid-2" style="margin-top:0">
+        <div class="box"><h4>不用会 SQL</h4>你负责指 kb、说症状、填 Cookie；看 §A.1 和关键数字即可。</div>
+        <div class="box"><h4>NDH 时要填 Cookie</h4>AI 问到时提供工号 + Cookie，用于拉取节点 SQL 并保存到 <code>docs/ndh/</code>。仅当次使用，不写 git。</div>
+        <div class="box"><h4>等报告再动手</h4>看 §A.1「是否代码 bug」再决定改 Java 还是数仓。案例 003 改法都在数仓侧。</div>
+        <div class="box"><h4>kb 和 NDH SQL 分工</h4>kb 指路；NDH SQL 是实际逻辑。不能把 kb 一句话当已验证结论。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 23 收尾 -->
+  <section class="slide" data-title="收尾">
+    <div class="slide-inner">
+      <div class="slide-tag">Part 07 · 收尾</div>
+      <h2>记住这三条</h2>
+      <ul class="closing-list">
+        <li><strong>① 先查数据，再查代码</strong>——页面上的数，多半来自某张表；表里没有或断了，改代码也无法解决。</li>
+        <li><strong>② 从接口往上追溯，证据够了就停止探索</strong>——接口 → 数据库 → 数仓任务；能对上根因就写报告，不必每张表都扫一遍。</li>
+        <li><strong>③ 先说结论，再摆证据</strong>——一句话讲清楚「是不是 bug、断在哪」；下面用关键数字和链路图补充说明结论。</li>
+      </ul>
+      <p class="lede" style="margin-top:24px">开始排查时记住两件事：<strong>把症状说具体</strong>（哪个接口、哪个字段、期望 vs 实际），<strong>告诉 AI 知识库在哪</strong>。</p>
+    </div>
+  </section>
+
+  <!-- 24 谢谢 -->
+  <section class="slide title-slide" data-title="结束">
+    <div class="slide-inner" style="text-align:center">
+      <div class="stamp" style="margin:0 auto 24px">BUGX INTRO</div>
+      <h1 style="font-size:clamp(36px,5vw,56px)">谢谢<br><span style="font-size:0.55em;color:var(--ink-soft);font-weight:500">有问题就用 bugx 排查</span></h1>
+    </div>
+  </section>
+
+</div>
+
+<!-- Nav -->
+<nav class="nav-bar" aria-label="幻灯片导航">
+  <button class="nav-btn" id="btn-prev" aria-label="上一页">← 上一页</button>
+  <div class="nav-progress" aria-hidden="true"><div class="nav-progress-fill" id="progress"></div></div>
+  <span class="nav-counter" id="counter">1 / 19</span>
+  <button class="nav-btn" id="btn-next" aria-label="下一页">下一页 →</button>
+  <button class="nav-btn nav-btn-toggle" id="btn-toggle-nav" aria-label="隐藏导航栏">隐藏</button>
+  <span class="nav-hint">← →</span>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: 'default',
+      flowchart: {
+        htmlLabels: true,
+        useMaxWidth: false
+      }
+    });
+  }
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const btnToggleNav = document.getElementById('btn-toggle-nav');
+
+  function setNavHidden(hidden) {
+    document.body.classList.toggle('nav-hidden', hidden);
+    if (btnToggleNav) {
+      btnToggleNav.textContent = hidden ? '显示' : '隐藏';
+      btnToggleNav.setAttribute('aria-label', hidden ? '显示导航栏' : '隐藏导航栏');
+    }
+  }
+
+  function toggleNav() {
+    setNavHidden(!document.body.classList.contains('nav-hidden'));
+  }
+
+  btnToggleNav?.addEventListener('click', toggleNav);
+
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) s.classList.add('active');
+      else if (i < index) s.classList.add('prev');
+    });
+    current = index;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + total;
+    document.title = (slides[current].dataset.title || 'BugX') + ' · BugX 介绍';
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+    history.replaceState(null, '', '#slide-' + (current + 1));
+    renderMermaid(slides[current]);
+  }
+
+  let mermaidSeq = 0;
+  function renderMermaid(slide) {
+    if (!window.mermaid || !slide) return;
+    const scripts = Array.from(slide.querySelectorAll('script.md-mermaid'));
+    scripts.forEach((script) => {
+      const raw = script.textContent || '';
+      const match = raw.match(/```mermaid\s*([\s\S]*?)```/);
+      const code = (match ? match[1] : raw).trim();
+      const id = 'mmd-' + (++mermaidSeq);
+      mermaid.render(id, code).then(({ svg }) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'mermaid';
+        wrap.innerHTML = svg;
+        const svgEl = wrap.querySelector('svg');
+        if (svgEl) {
+          svgEl.removeAttribute('height');
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+        }
+        if (script.parentNode) script.replaceWith(wrap);
+      }).catch((err) => {
+        const fail = document.createElement('pre');
+        fail.textContent = String(err);
+        if (script.parentNode) script.replaceWith(fail);
+      });
+    });
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === ' ') {
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
+      e.preventDefault();
+      toggleNav();
+    } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goTo(total - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  });
+
+  // Touch swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].screenX - touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+  });
+
+  // Hash on load
+  const hash = location.hash.match(/slide-(\d+)/);
+  if (hash) goTo(Math.min(parseInt(hash[1], 10) - 1, total - 1));
+  else goTo(0);
+})();
+</script>
+</body>
+</html>

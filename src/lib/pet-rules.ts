@@ -34,6 +34,13 @@ export type PetMood = "calm" | "content" | "miss";
 export const MAX_LEVEL = 30;
 export const MAX_FEEDS_PER_DAY = 3;
 
+/** 10 intimacy → 1 lowest mark. 4-up after that: 4 → next, 16 → next, 64 → top. */
+export const INTIMACY_UNIT = 10;
+export const INTIMACY_STEP = 4;
+export const INTIMACY_TIERS = ["crown", "sun", "moon", "star"] as const;
+export type IntimacyTier = (typeof INTIMACY_TIERS)[number];
+export type IntimacyRank = Record<IntimacyTier, number>;
+
 export function expToNext(level: number) {
   if (level >= MAX_LEVEL) return 0;
   return 15 + level * 10;
@@ -144,7 +151,7 @@ export function nextCareGain(
     };
   }
   const continuing = pet.lastCareDate === addDaysKey(today, -1);
-  const streak = continuing ? Math.min(pet.careStreak + 1, 7) : 1;
+  const streak = continuing ? pet.careStreak + 1 : 1;
   const extra = streak >= 2 ? 1 : 0;
   return {
     intimacyDelta: 3 + extra,
@@ -222,17 +229,76 @@ export function skillsFor(species: PetSpecies, level: number) {
   }));
 }
 
-export const FOODS = [
+export const DAILY_FOODS = [
   { id: "berry", name: "树果", exp: 12, intimacy: 1, desc: "路上随便摘的。" },
+  { id: "carrot", name: "胡萝卜", exp: 14, intimacy: 1, desc: "洗干净了。" },
+  { id: "candy", name: "糖豆", exp: 16, intimacy: 1, desc: "口袋里剩的几颗。" },
+  { id: "hay", name: "干草捆", exp: 18, intimacy: 1, desc: "香香的一束。" },
+  { id: "peach", name: "水蜜桃", exp: 20, intimacy: 1, desc: "咬一口会淌汁。" },
   { id: "block", name: "能量块", exp: 22, intimacy: 1, desc: "压得方方正正。" },
+  { id: "milk", name: "鲜牛奶", exp: 24, intimacy: 1, desc: "还温着。" },
+  { id: "soup", name: "热汤", exp: 26, intimacy: 1, desc: "小碗，吹一吹。" },
+  { id: "cookie", name: "饼干", exp: 28, intimacy: 2, desc: "边角有点碎。" },
+  { id: "honey", name: "蜂蜜罐", exp: 32, intimacy: 2, desc: "粘手，但是甜。" },
+  { id: "dumpling", name: "小笼包", exp: 34, intimacy: 2, desc: "刚出笼。" },
   { id: "cake", name: "蛋糕", exp: 36, intimacy: 2, desc: "今天有点想吃甜的。" },
-  { id: "apple", name: "金苹果", exp: 60, intimacy: 3, desc: "一天只能吃一颗。", gold: true },
 ] as const;
 
+export const GOLD_FOOD = {
+  id: "apple",
+  name: "金苹果",
+  exp: 60,
+  intimacy: 3,
+  desc: "一天只能吃一颗。",
+  gold: true as const,
+};
+
+export const FOODS = [...DAILY_FOODS, GOLD_FOOD] as const;
+export const DAILY_BACKPACK_SIZE = 3;
+
 export type FoodId = (typeof FOODS)[number]["id"];
+export type Food = (typeof FOODS)[number];
+
+function hashString(input: string) {
+  let h = 0;
+  for (let i = 0; i < input.length; i++) {
+    h = (Math.imul(31, h) + input.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+function mulberry32(seed: number) {
+  return function rand() {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export function todaysBackpack(today = todayKey()): Food[] {
+  const rand = mulberry32(hashString(`${today}:pet-backpack`));
+  const pool = [...DAILY_FOODS];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    const a = pool[i];
+    const b = pool[j];
+    if (a === undefined || b === undefined) continue;
+    pool[i] = b;
+    pool[j] = a;
+  }
+  const daily = pool
+    .slice(0, DAILY_BACKPACK_SIZE)
+    .toSorted((a, b) => a.exp - b.exp);
+  return [...daily, GOLD_FOOD];
+}
 
 export function foodById(id: string) {
   return FOODS.find((f) => f.id === id);
+}
+
+export function isTodaysBackpackFood(id: string, today = todayKey()) {
+  return todaysBackpack(today).some((f) => f.id === id);
 }
 
 export function feedsLeft(pet: Pick<Pet, "feedDate" | "feedsToday">, today = todayKey()) {
@@ -242,6 +308,53 @@ export function feedsLeft(pet: Pick<Pet, "feedDate" | "feedsToday">, today = tod
 
 export function goldFoodReady(pet: Pick<Pet, "goldFoodDate">, today = todayKey()) {
   return pet.goldFoodDate !== today;
+}
+
+export function intimacyRank(intimacy: number): IntimacyRank {
+  const n = Math.max(0, Math.floor(Number.isFinite(intimacy) ? intimacy : 0));
+  const marks = Math.floor(n / INTIMACY_UNIT);
+  const moonWorth = INTIMACY_STEP;
+  const sunWorth = INTIMACY_STEP ** 2;
+  const crownWorth = INTIMACY_STEP ** 3;
+  return {
+    crown: Math.floor(marks / crownWorth),
+    sun: Math.floor((marks % crownWorth) / sunWorth),
+    moon: Math.floor((marks % sunWorth) / moonWorth),
+    star: marks % moonWorth,
+  };
+}
+
+export function intimacyBadgeList(intimacy: number): IntimacyTier[] {
+  const rank = intimacyRank(intimacy);
+  return INTIMACY_TIERS.flatMap((tier) => Array.from({ length: rank[tier] }, () => tier));
+}
+
+const INTIMACY_MARK_NAME: Record<IntimacyTier, string> = {
+  star: "星星",
+  moon: "月亮",
+  sun: "太阳",
+  crown: "皇冠",
+};
+
+const SPECIES_MARK_NAME: Partial<Record<PetSpecies, Record<IntimacyTier, string>>> = {
+  rabbit: { star: "胡萝卜", moon: "高脚杯", sun: "绒球", crown: "黄金" },
+  cow: { star: "三叶草", moon: "云朵", sun: "奶罐", crown: "钻石" },
+};
+
+export function intimacyMarkName(tier: IntimacyTier, species?: PetSpecies) {
+  const named = species ? SPECIES_MARK_NAME[species] : undefined;
+  return named?.[tier] ?? INTIMACY_MARK_NAME[tier];
+}
+
+export function intimacyRankLabel(intimacy: number, species?: PetSpecies) {
+  const rank = intimacyRank(intimacy);
+  const parts = INTIMACY_TIERS.flatMap((tier) => {
+    const count = rank[tier];
+    if (count <= 0) return [];
+    return [`${count} 个${intimacyMarkName(tier, species)}`];
+  });
+  if (parts.length === 0) return "亲密度";
+  return `亲密度，${parts.join("、")}`;
 }
 
 export function serializePet(pet: Pet) {
@@ -266,6 +379,7 @@ export function serializePet(pet: Pet) {
     maxLevel: pet.level >= MAX_LEVEL,
     feedsLeft: feedsLeft(pet, today),
     goldFoodReady: goldFoodReady(pet, today),
+    backpack: todaysBackpack(today),
     skills: skillsFor(pet.species, pet.level),
     furniture: furnitureFor(pet.species, pet.level ?? 1),
   };

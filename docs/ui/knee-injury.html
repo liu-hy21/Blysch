@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1A1614">
+<title>膝盖受伤 · 幻灯片</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --paper: #F4F1EA;
+  --paper-dark: #E8E3D5;
+  --ink: #1A1614;
+  --ink-soft: #3A322C;
+  --ink-fade: #6B6258;
+  --accent-red: #B33A2A;
+  --accent-blue: #1F3A5F;
+  --accent-amber: #C28A2C;
+  --highlight: #F0D77A;
+  --phone-w: 393px;
+  --phone-h: 852px;
+  --nav-h: 56px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: #0E0C0B;
+  color: var(--ink);
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.deck {
+  width: min(var(--phone-w), 100vw);
+  height: min(var(--phone-h), 100dvh);
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px #3A322C;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 8px;
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27.5px, rgba(26,22,20,0.035) 27.5px, rgba(26,22,20,0.035) 29px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(40px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide.active { opacity: 1; visibility: visible; transform: translateX(0); z-index: 1; }
+.slide.prev { transform: translateX(-40px); }
+
+.stamp {
+  display: inline-block;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  padding: 1px 7px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.4px;
+}
+
+.slide-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  color: var(--accent-red);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.slide h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.28;
+  margin-bottom: 8px;
+}
+.slide h2 .dot { color: var(--accent-red); }
+
+.hero-dark {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  margin-bottom: 8px;
+}
+.hero-dark p {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.hero-dark .hint {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: rgba(244,241,234,0.7);
+  line-height: 1.45;
+}
+
+.rice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  margin-bottom: 8px;
+}
+.rice-cell {
+  background: var(--accent-blue);
+  color: var(--paper);
+  padding: 8px 10px;
+}
+.rice-cell .num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--highlight);
+  line-height: 1;
+}
+.rice-cell .lbl { font-size: 13px; font-weight: 700; margin: 2px 0 1px; }
+.rice-cell .who {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  opacity: 0.65;
+  line-height: 1.3;
+}
+
+.box {
+  background: var(--paper-dark);
+  border: 1px solid var(--ink);
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.box h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.6px;
+  color: var(--accent-red);
+  margin-bottom: 4px;
+}
+.box:last-child { margin-bottom: 0; }
+
+.card {
+  border: 1px solid var(--ink);
+  padding: 8px 10px;
+  background: var(--paper);
+  margin-bottom: 8px;
+}
+.card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 3px;
+}
+.card ul { list-style: none; }
+.card li {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  padding: 1px 0;
+}
+.card.danger { border-color: var(--accent-red); background: rgba(179,58,42,0.05); margin-bottom: 0; }
+
+.callback {
+  border: 1.5px solid var(--accent-amber);
+  background: rgba(194,138,44,0.08);
+  padding: 8px 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.callback .cb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  color: var(--accent-amber);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.callback strong { color: var(--ink); }
+
+.drug {
+  border: 1px solid var(--ink);
+  margin-bottom: 8px;
+}
+.drug-h {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.drug-h .otc { color: var(--highlight); font-size: 9px; }
+.drug-b {
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+.drug-b strong { color: var(--ink); }
+.need-md {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--accent-red);
+  margin-bottom: 5px;
+}
+.drug-b .ban {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--paper-dark);
+  font-size: 11px;
+  color: var(--accent-red);
+}
+
+.split-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--accent-blue);
+  font-weight: 700;
+  margin: 2px 0 6px;
+}
+
+.stack { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+
+.nav-bar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  padding: 0 12px env(safe-area-inset-bottom, 0px);
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid rgba(244,241,234,0.35);
+  color: var(--paper);
+  min-width: 44px;
+  height: 36px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:active { background: rgba(244,241,234,0.12); }
+.nav-btn:disabled { opacity: 0.28; }
+
+.nav-progress { flex: 1; height: 3px; background: rgba(244,241,234,0.15); }
+.nav-progress-fill { height: 100%; background: var(--highlight); transition: width 0.3s ease; }
+.nav-counter { min-width: 36px; text-align: center; opacity: 0.7; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <section class="slide active" data-title="立刻处理">
+    <div class="stamp">应急指南 · 2 页</div>
+    <div class="slide-tag">01 · 立刻处理</div>
+    <h2>膝盖掉坑<span class="dot">·</span>半月板 / 副韧带<br>先看伤到哪一步，别硬扛</h2>
+    <div class="hero-dark">
+      <p>先别走，也别撑着负重。再走会加重撕裂。非走不可，用没伤的那条腿，或让人扶着。<strong style="color:var(--highlight)">还能走路，不代表没伤。</strong></p>
+      <p class="hint">现在能不能正常走路、膝盖有没有肿，这两条决定今天要不要去医院。</p>
+    </div>
+
+    <div class="rice">
+      <div class="rice-cell"><div class="num">R</div><div class="lbl">休息</div><div class="who">不承重 · 坐或躺</div></div>
+      <div class="rice-cell"><div class="num">I</div><div class="lbl">冰敷</div><div class="who">15–20min · 隔≥2h · 隔毛巾</div></div>
+      <div class="rice-cell"><div class="num">C</div><div class="lbl">加压</div><div class="who">下→上绷带 · 不麻不紫</div></div>
+      <div class="rice-cell"><div class="num">E</div><div class="lbl">抬高</div><div class="who">高于心脏 · 助消肿</div></div>
+    </div>
+
+    <div class="box">
+      <h4>可先观察 1–2 天</h4>
+      只是轻微疼、能正常走路、肿得不明显，可以先按上面处理 1–2 天。<strong>2–3 天</strong>还不缓解或加重，也去骨科。
+    </div>
+
+    <div class="card danger">
+      <h3>48 小时内不要做</h3>
+      <ul>
+        <li><strong>热敷</strong>：伤后 48 小时内会加重肿胀</li>
+        <li><strong>用力揉、按摩</strong>：会加重损伤</li>
+        <li><strong>活血化瘀膏药</strong>：急性期会加重出血和肿胀</li>
+      </ul>
+    </div>
+
+    <div class="callback">
+      <div class="cb-label">伤后两天</div>
+      先冰敷、少动。别热敷、别揉、别贴活血膏。下一页的药只能止痛。
+    </div>
+  </section>
+
+  <section class="slide" data-title="用药与恢复">
+    <div class="slide-tag">02 · 用药与恢复</div>
+    <h2>没有药能把半月板或韧带的撕裂直接修好</h2>
+    <div class="hero-dark">
+      <p>半月板是纤维软骨，韧带是结缔组织，血供差，<strong style="color:var(--highlight)">药很难让它们长回去。</strong> 少动、做康复；裂得严重时可能要关节镜。先做 <strong style="color:var(--highlight)">膝关节 MRI</strong>，看清是Ⅰ、Ⅱ还是Ⅲ级。</p>
+      <p class="hint">下面每一种都要医生看过，并在医生监督下用。口服布洛芬和外用药只选一种，不要一起用。</p>
+    </div>
+
+    <div class="drug">
+      <div class="drug-h"><span>布洛芬 · 口服</span><span class="otc">OTC</span></div>
+      <div class="drug-b">
+        <div class="need-md">须经医生确认，并在医生监督下服用</div>
+        片剂 0.2g：一次 1 片，疼了隔 4–6 小时可再服，<strong>24 小时不超过 4 次</strong>。缓释胶囊 0.3g：一次 1 粒，早晚各一次。<strong>饭后吃</strong>。止痛不要超过 5 天。
+        <div class="ban">对阿司匹林或其他非甾体抗炎药过敏、严重肝肾不全、心功能不全：禁用。有胃溃疡、消化道出血史：慎用。正在吃抗凝药（如华法林）或降压药：先问医生。服药期间不要喝酒。不要和感冒药里的对乙酰氨基酚一起吃。</div>
+      </div>
+    </div>
+
+    <div class="drug">
+      <div class="drug-h"><span>扶他林 · 外用首选</span><span class="otc">OTC</span></div>
+      <div class="drug-b">
+        <div class="need-md">须经医生确认，并在医生监督下使用</div>
+        取适量涂在疼处，轻轻揉 1–2 分钟，一天 3–4 次。肌肉关节损伤 <strong>不超过 2 周</strong>。用了 7 天还疼或肿，去医院。用完洗手，别弄到眼睛和嘴里。
+        <div class="ban">皮肤破损、皮疹、湿疹处不能用。对阿司匹林或其他非甾体抗炎药过敏者禁用。孕妇禁用。不要长期大面积用。</div>
+      </div>
+    </div>
+
+    <div class="drug">
+      <div class="drug-h"><span>氟比洛芬贴膏 · 泽普思/得百安</span><span class="otc">处方</span></div>
+      <div class="drug-b">
+        <div class="need-md">须经医生确认，并在医生监督下使用</div>
+        一天贴 2 次，每次 6–12 小时。白天要活动、不方便反复涂药时用。
+        <div class="ban">皮肤破损、皮疹处不能贴。对氟比洛芬或阿司匹林过敏者禁用。贴处发红、瘙痒，立刻撕掉并清洗。不要和其他外用止痛药贴在同一部位。</div>
+      </div>
+    </div>
+
+    <div class="split-head">氨糖、软骨素帮不了撕裂长回去</div>
+    <div class="stack">
+      <div class="box">
+        <h4>硫酸氨基葡萄糖 · 处方</h4>
+        <div class="need-md">须经医生确认，并在医生监督下服用</div>
+        一次 0.25–0.5g，一日 3 次。连续吃 <strong>2–3 个月</strong>才能看效果。对轻度损伤、软骨退变或有帮助，因人而异。对本品过敏者禁用。怀孕头 3 个月内应避免。肝肾功能不全者慎用。药品级才有治疗适应症，保健品只是补充。
+      </div>
+      <div class="box">
+        <h4>硫酸软骨素</h4>
+        <div class="need-md">须经医生确认，并在医生监督下服用</div>
+        常和氨糖一起用，润滑关节、保护软骨。替代不了休息和康复。
+      </div>
+      <div class="box">
+        <h4>伤要怎么好</h4>
+        少动，给组织愈合的时间。康复时练股四头肌，把关节稳住。Ⅲ级或血供差的区域，可能要关节镜。轻度可以氨糖加康复；裂得明显，光吃药不够。
+      </div>
+    </div>
+
+    <div class="callback">
+      <div class="cb-label">别叠用</div>
+      外敷药和口服布洛芬不要一起用。伤后 48 小时先冰敷，外用药放在两次冰敷之间。肿得厉害、踩不住、关节卡住，尽快去骨科。
+    </div>
+  </section>
+
+  <nav class="nav-bar" aria-label="翻页">
+    <button class="nav-btn" id="btn-prev" aria-label="上一页">←</button>
+    <div class="nav-progress" aria-hidden="true"><div class="nav-progress-fill" id="progress"></div></div>
+    <span class="nav-counter" id="counter">1/2</span>
+    <button class="nav-btn" id="btn-next" aria-label="下一页">→</button>
+  </nav>
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) s.classList.add('active');
+      else if (i < index) s.classList.add('prev');
+    });
+    current = index;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    counter.textContent = (current + 1) + '/' + total;
+    document.title = (slides[current].dataset.title || '膝盖受伤') + ' · 膝盖受伤';
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+    history.replaceState(null, '', '#slide-' + (current + 1));
+    slides[current].scrollTop = 0;
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].screenX - touchX;
+    if (Math.abs(dx) > 40) dx < 0 ? next() : prev();
+  }, { passive: true });
+
+  const hash = location.hash.match(/slide-(\d+)/);
+  if (hash) goTo(Math.min(parseInt(hash[1], 10) - 1, total - 1));
+  else goTo(0);
+})();
+</script>
+</body>
+</html>

@@ -49,7 +49,7 @@ const COW: Omit<FurnitureDef, "unlockLevel">[] = [
   { id: "cow-bed", name: "厚实木床", desc: "占卧室主位。", scene: "house", area: "bedroom", slot: at(38, 34) },
   { id: "cow-lantern", name: "谷仓灯", desc: "暖黄一盏。", scene: "house", area: "living", slot: at(36, 40) },
   { id: "cow-blanket", name: "羊毛毯", desc: "搭在床尾。", scene: "house", area: "bedroom", slot: at(42, 46) },
-  { id: "cow-trough", name: "木食槽", desc: "装饰用，不真喂。", scene: "yard", area: "yard", slot: { top: "74%", left: "28%" } },
+  { id: "cow-fountain", name: "汉白玉喷泉", desc: "双层白石，水面会亮。", scene: "yard", area: "yard", slot: { top: "74%", left: "28%" } },
   { id: "cow-box", name: "栅栏花箱", desc: "钉在篱笆上。", scene: "yard", area: "yard", slot: { top: "18%", left: "72%" } },
   { id: "cow-mill", name: "石磨小景", desc: "角落一盘石。", scene: "yard", area: "yard", slot: { top: "78%", left: "58%" } },
   { id: "cow-porch", name: "铜铃门廊", desc: "门楣上的铜铃。", scene: "yard", area: "yard", slot: { top: "16%", left: "46%" } },

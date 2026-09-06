@@ -4,10 +4,10 @@ import { startTransition, useState, ViewTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PixelPet, GuardianPet } from "@/components/pets/pixel-pet";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
+import { IntimacyRow } from "@/components/pets/intimacy-badges";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import {
-  FOODS,
   SPECIES,
   SPECIES_LABEL,
   TYPE_COLOR,
@@ -230,7 +230,7 @@ export function PetsClient({
                   value={shown.maxLevel ? 1 : shown.exp}
                   max={shown.maxLevel ? 1 : shown.expToNext}
                 />
-                <Bar label={`亲密度 ${shown.intimacy}`} value={Math.min(shown.intimacy, 100)} max={100} />
+                <IntimacyRow intimacy={shown.intimacy} species={shown.species} />
               </div>
             </div>
             <p className="border-t-2 border-ink px-3 py-2 text-[11px] text-ink-soft">
@@ -270,7 +270,7 @@ export function PetsClient({
             <section className="pixel-box p-3">
               <h3 className="mb-2 text-sm">背包</h3>
               <div className="grid grid-cols-2 gap-2">
-                {FOODS.map((f) => {
+                {shown.backpack.map((f) => {
                   const gold = "gold" in f && f.gold;
                   const disabled =
                     busy ||
