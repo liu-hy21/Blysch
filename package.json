@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/uploads.test.ts src/lib/dream-furniture.test.ts src/lib/pet-mood.test.ts src/lib/pet-food.test.ts src/lib/pet-intimacy.test.ts src/lib/home-bond.test.ts",
+    "test": "tsx --test src/lib/uploads.test.ts src/lib/dream-furniture.test.ts src/lib/pet-mood.test.ts src/lib/pet-food.test.ts src/lib/pet-intimacy.test.ts src/lib/home-bond.test.ts src/lib/memory-page.test.ts",
     "db:ensure": "node scripts/ensure-db.mjs",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",

@@ -26,6 +26,8 @@ export const MEMORY_CATEGORIES = [
 export const MEMORY_IMAGE_MAX = 20;
 /** 时间轴卡片上预览的照片数 */
 export const MEMORY_IMAGE_PREVIEW = 6;
+/** 时间轴一页条数 */
+export const MEMORY_PAGE_SIZE = 5;
 
 export const WISH_CATEGORIES = ["旅行", "体验", "知识"] as const;
 export const WISH_REGIONS = ["国内", "国外"] as const;

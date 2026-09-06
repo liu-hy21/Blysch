@@ -1,21 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
+import { listMemoryPage } from "@/lib/memory-page";
 import { memorySchema } from "@/lib/validators";
 
-export async function GET() {
+export async function GET(req: Request) {
   const ctx = await requireApiCouple();
   if ("error" in ctx) return ctx.error;
-  const memories = await prisma.memory.findMany({
-    where: { coupleId: ctx.coupleId },
-    include: {
-      images: { where: { hidden: false }, orderBy: { sortOrder: "asc" } },
-      author: { select: { nickname: true, username: true } },
-      place: { select: { id: true, name: true } },
-    },
-    orderBy: { date: "desc" },
-  });
-  return NextResponse.json(memories);
+  const url = new URL(req.url);
+  const page = Number(url.searchParams.get("page") ?? 0);
+  const category = url.searchParams.get("category") ?? "全部";
+  const around = url.searchParams.get("around") ?? undefined;
+  const through = url.searchParams.get("through") === "1";
+  const data = await listMemoryPage(ctx.coupleId, { page, category, around, through });
+  return NextResponse.json(data);
 }
 
 export async function POST(req: Request) {

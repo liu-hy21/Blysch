@@ -5,6 +5,24 @@ import { memorySchema } from "@/lib/validators";
 
 type Params = { params: Promise<{ id: string }> };
 
+export async function GET(_req: Request, { params }: Params) {
+  const ctx = await requireApiCouple();
+  if ("error" in ctx) return ctx.error;
+  const { id } = await params;
+  const memory = await prisma.memory.findFirst({
+    where: { id, coupleId: ctx.coupleId },
+    include: {
+      images: { where: { hidden: false }, orderBy: { sortOrder: "asc" } },
+    },
+  });
+  if (!memory) return jsonError("回忆不存在", 404);
+  return NextResponse.json({
+    id: memory.id,
+    content: memory.content,
+    images: memory.images.map((i) => i.url),
+  });
+}
+
 export async function PATCH(req: Request, { params }: Params) {
   const ctx = await requireApiCouple();
   if ("error" in ctx) return ctx.error;
