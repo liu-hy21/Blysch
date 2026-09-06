@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { clampMemoryPage, memoryPageRange, mergeMemoryPages } from "./memory-paging";
+import { clampMemoryPage, memoryPageRange, mergeMemoryPages, type MemoryCard } from "./memory-paging";
 
 describe("clampMemoryPage", () => {
   it("keeps a single empty page", () => {
@@ -51,19 +51,18 @@ describe("memoryPageRange", () => {
 });
 
 describe("mergeMemoryPages", () => {
-  const card = (id: string) =>
-    ({
-      id,
-      title: id,
-      content: null,
-      category: "旅行",
-      date: "2026-01-01",
-      images: [],
-      imageCount: 0,
-      author: "航羽",
-      placeId: null,
-      placeName: null,
-    }) as const;
+  const card = (id: string): MemoryCard => ({
+    id,
+    title: id,
+    content: null,
+    category: "旅行",
+    date: "2026-01-01",
+    images: [],
+    imageCount: 0,
+    author: "航羽",
+    placeId: null,
+    placeName: null,
+  });
 
   it("appends unseen memories", () => {
     const merged = mergeMemoryPages([card("a"), card("b")], [card("b"), card("c")]);
