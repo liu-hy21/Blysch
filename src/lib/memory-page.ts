@@ -1,4 +1,5 @@
 import { MEMORY_IMAGE_PREVIEW } from "@/lib/constants";
+import { shuffleMemoryImages } from "@/lib/memory-images";
 import { memoryPageRange, type MemoryCard } from "@/lib/memory-paging";
 import { prisma } from "@/lib/prisma";
 
@@ -20,7 +21,10 @@ function serializeMemory(m: {
     content: m.content,
     category: m.category,
     date: m.date.toISOString().slice(0, 10),
-    images: m.images.map((i) => i.url),
+    images: shuffleMemoryImages(
+      m.images.map((i) => i.url),
+      m.id,
+    ).slice(0, MEMORY_IMAGE_PREVIEW),
     imageCount: m._count.images,
     author: m.author.nickname,
     placeId: m.placeId,
@@ -60,7 +64,6 @@ export async function listMemoryPage(
       images: {
         where: { hidden: false },
         orderBy: { sortOrder: "asc" },
-        take: MEMORY_IMAGE_PREVIEW,
       },
       author: { select: { nickname: true } },
       place: { select: { id: true, name: true } },

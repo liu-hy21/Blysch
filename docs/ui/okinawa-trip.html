@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冲绳 6天5晚 · 行程</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --paper: #F4F1EA;
+  --paper-dark: #E8E3D5;
+  --ink: #1A1614;
+  --ink-soft: #3A322C;
+  --ink-fade: #6B6258;
+  --accent-red: #B33A2A;
+  --accent-blue: #1F3A5F;
+  --accent-amber: #C28A2C;
+  --accent-green: #4A6B3A;
+  --highlight: #F0D77A;
+  --nav-h: 78px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--ink);
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+}
+
+.deck {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  bottom: var(--nav-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 108px 48px;
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 58.5px, rgba(26,22,20,0.03) 58.5px, rgba(26,22,20,0.03) 60px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(60px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s, bottom 0.3s ease;
+  overflow-y: auto;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  z-index: 1;
+}
+
+.slide.prev { transform: translateX(-60px); }
+
+.slide-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent-red);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.slide h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.slide h1 .dot { color: var(--accent-red); }
+
+.slide h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.slide .lede {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.75;
+  color: var(--ink-soft);
+  max-width: 820px;
+}
+
+.slide .lede strong { color: var(--ink); }
+
+.slide-inner {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  zoom: 1.5;
+}
+@supports not (zoom: 1) {
+  .slide-inner {
+    transform: scale(1.5);
+    transform-origin: top center;
+    width: 66.6667%;
+    max-width: none;
+  }
+}
+
+.slide-dense .hero-dark { padding: 24px 32px; margin-bottom: 16px; }
+.slide-dense .hero-dark p { font-size: clamp(16px, 1.8vw, 22px); }
+.slide-dense .grid-3 { margin-top: 12px; gap: 12px; }
+.slide-dense .grid-2 { gap: 12px; }
+.slide-dense .callback { margin-top: 14px; padding: 12px 18px; font-size: 13px; }
+.slide-dense .card { padding: 16px 18px; }
+.slide-dense .flow-row { margin: 14px 0; padding: 18px; }
+.slide-dense .pipe-bar { margin-top: 14px; padding: 18px; }
+.slide-dense .step-row { margin-bottom: 8px; }
+.slide-dense .step-row .s-body { padding: 12px 18px; }
+.slide-dense .box { padding: 12px 14px; font-size: 12px; }
+.slide-dense .case-dark { margin-top: 10px; padding: 14px 18px; font-size: 13px; }
+.slide-dense h2 { margin-bottom: 12px; }
+.slide-dense .split-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--accent-blue);
+  font-weight: 700;
+  margin: 18px 0 10px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--paper-dark);
+}
+.slide-dense .split-head:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+.hero-dark {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 36px 44px;
+  border: 2px solid var(--ink);
+  margin-bottom: 24px;
+}
+.hero-dark p {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 700;
+  line-height: 1.55;
+}
+.hero-dark .hint {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(244,241,234,0.7);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.card {
+  border: 1px solid var(--ink);
+  padding: 22px 24px;
+  background: var(--paper);
+}
+.card .big {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent-red);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.card p, .card li {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.card p + p { margin-top: 8px; }
+.card ul { list-style: none; padding: 0; }
+.card ul li::before { content: "— "; color: var(--ink-fade); }
+
+.callback {
+  border: 2px solid var(--accent-amber);
+  background: rgba(194,138,44,0.08);
+  padding: 16px 22px;
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.callback .cb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--accent-amber);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.callback strong { color: var(--ink); }
+
+.flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 24px 0;
+  padding: 28px;
+  background: var(--paper-dark);
+  border: 1px solid var(--ink);
+}
+.flow-node {
+  padding: 10px 16px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.35;
+}
+.flow-node.dim {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-fade);
+  border-style: dashed;
+}
+.flow-node.hl { background: var(--ink); color: var(--highlight); }
+.flow-arrow { color: var(--accent-red); font-weight: 700; font-size: 14px; }
+
+.pipe-bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  background: var(--accent-blue);
+  color: var(--paper);
+  padding: 24px;
+  border: 1px solid var(--ink);
+  margin-top: 20px;
+}
+.pipe-step {
+  flex: 1 1 80px;
+  max-width: 140px;
+  text-align: center;
+  padding: 14px 8px;
+  border: 1px solid rgba(244,241,234,0.2);
+}
+.pipe-step .num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--highlight);
+  line-height: 1;
+}
+.pipe-step .lbl { font-size: 12px; font-weight: 700; margin-top: 4px; }
+.pipe-step .who {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  opacity: 0.55;
+  margin-top: 3px;
+}
+.pipe-arr { color: rgba(244,241,234,0.35); padding: 0 2px; align-self: center; }
+
+.step-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  border: 1px solid var(--ink);
+  margin-bottom: 12px;
+}
+.step-row .s-num {
+  background: var(--ink);
+  color: var(--highlight);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+  padding: 8px 4px;
+  line-height: 1.15;
+}
+.step-row .s-num small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  opacity: 0.65;
+  margin-top: 4px;
+}
+.step-row .s-body { padding: 16px 22px; }
+.step-row .s-body h3 { font-size: 17px; font-weight: 900; font-family: 'Noto Serif SC', serif; margin-bottom: 4px; }
+.step-row .s-body p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+.case-dark {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 18px 22px;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 14px;
+}
+.case-dark strong { color: var(--highlight); }
+
+.box {
+  background: var(--paper-dark);
+  border: 1px solid var(--ink);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.box h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--accent-red);
+  margin-bottom: 6px;
+}
+
+.why-when-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+.why-when-grid h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+}
+.why-when-grid ul {
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.why-when-grid ul li { padding: 6px 0; border-bottom: 1px dashed var(--paper-dark); }
+.why-when-grid ul li:last-child { border-bottom: none; }
+.why-when-grid ul li::before { content: "— "; color: var(--ink-fade); }
+
+.w5-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  line-height: 1.45;
+  margin-top: 12px;
+}
+.w5-table th, .w5-table td {
+  border: 1px solid var(--ink);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.w5-table th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.w5-table td:first-child {
+  font-weight: 700;
+  color: var(--accent-red);
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  background: var(--paper-dark);
+  padding: 1px 6px;
+  border: 1px solid rgba(26,22,20,0.15);
+}
+
+.slide.title-slide { justify-content: center; text-align: left; }
+.slide.title-slide h1 { font-size: clamp(40px, 5.5vw, 64px); margin-bottom: 16px; }
+.slide.title-slide .meta {
+  margin-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-fade);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.slide.title-slide .stamp {
+  display: inline-block;
+  border: 1.5px solid var(--accent-blue);
+  color: var(--accent-blue);
+  padding: 2px 10px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.slide.section-slide {
+  background-color: var(--ink);
+  background-image: none;
+  color: var(--paper);
+  justify-content: center;
+  text-align: center;
+}
+.slide.section-slide .slide-tag { color: var(--highlight); }
+.slide.section-slide h2 {
+  font-size: clamp(36px, 5vw, 56px);
+  color: var(--paper);
+}
+.slide.section-slide .lede {
+  color: rgba(244, 241, 234, 0.88);
+  margin: 0 auto;
+  text-align: center;
+  max-width: 720px;
+}
+.slide.section-slide .lede strong { color: var(--highlight); }
+.slide.section-slide code {
+  background: rgba(244, 241, 234, 0.12);
+  border-color: rgba(244, 241, 234, 0.28);
+  color: var(--paper);
+}
+
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  gap: 24px;
+  z-index: 100;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+body.nav-hidden .nav-bar {
+  transform: translateY(100%);
+  pointer-events: none;
+}
+body.nav-hidden .slide { bottom: 0; }
+
+.nav-btn {
+  background: transparent;
+  border: 1.5px solid rgba(244,241,234,0.35);
+  color: var(--paper);
+  padding: 9px 21px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 18px;
+  transition: background 0.15s;
+}
+.nav-btn:hover { background: rgba(244,241,234,0.12); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.nav-btn-toggle { padding: 9px 14px; font-size: 15px; opacity: 0.75; }
+.nav-btn-toggle:hover { opacity: 1; }
+
+.nav-progress {
+  flex: 1;
+  height: 4.5px;
+  background: rgba(244,241,234,0.15);
+  position: relative;
+}
+.nav-progress-fill {
+  height: 100%;
+  background: var(--highlight);
+  transition: width 0.35s ease;
+}
+
+.nav-counter { min-width: 84px; text-align: center; opacity: 0.7; }
+.nav-hint { opacity: 0.45; font-size: 15px; letter-spacing: 0.75px; }
+
+.prio {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  padding: 1px 6px;
+  margin-right: 6px;
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+}
+.prio.alt {
+  border-color: var(--ink-fade);
+  color: var(--ink-fade);
+}
+
+.spot-pick {
+  border: 1px dashed var(--ink-fade);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--ink-fade);
+  margin-top: 10px;
+}
+
+.shop-row {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  border: 1px solid var(--ink);
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.shop-row .name {
+  background: var(--paper-dark);
+  padding: 7px 10px;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+.shop-row.must .name {
+  background: var(--ink);
+  color: var(--highlight);
+}
+.shop-row .desc {
+  padding: 7px 12px;
+  color: var(--ink-soft);
+}
+.shop-row .desc strong { color: var(--ink); }
+
+.slide.title-slide.list-slide { justify-content: flex-start; }
+.slide.title-slide.list-slide .slide-inner { zoom: 1.22; }
+.slide.title-slide.list-slide .stamp { margin-bottom: 8px; }
+.slide.title-slide.list-slide .grid-4 { margin-top: 8px; gap: 8px; }
+.slide.title-slide.list-slide .card { padding: 10px 12px; }
+.slide.title-slide.list-slide .card .big { font-size: 22px; margin-bottom: 2px; }
+.slide.title-slide.list-slide .card h3 { font-size: 13px; margin-bottom: 2px; }
+.slide.title-slide.list-slide .card p { font-size: 11px; }
+.slide.title-slide.list-slide .meta { margin-top: 8px; font-size: 11px; gap: 12px; }
+.dir-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.dir-box {
+  border: 1px solid var(--ink);
+  padding: 8px 10px 6px;
+  background: var(--paper);
+}
+.dir-box h4 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--ink);
+}
+.dir-box h4 span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--ink-fade);
+  margin-left: 6px;
+}
+.dir-box ul { list-style: none; padding: 0; }
+.dir-box li {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--paper-dark);
+}
+.dir-box li:last-child { border-bottom: none; }
+.dir-box li b { color: var(--ink); font-weight: 700; }
+.dir-box li.must b {
+  background: var(--ink);
+  color: var(--highlight);
+  padding: 0 4px;
+}
+.dir-box .addr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-fade);
+}
+
+@media (max-width: 800px) {
+  .slide { padding: 48px 36px 36px; }
+  .grid-3, .grid-2, .grid-4, .why-when-grid, .dir-grid { grid-template-columns: 1fr; }
+  .nav-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- 01 本岛清单 -->
+  <section class="slide title-slide list-slide active" data-title="本岛清单">
+    <div class="slide-inner">
+      <div class="stamp">冲绳本岛清单 · 10.1–10.3</div>
+      <div class="grid-4">
+        <div class="card">
+          <div class="big">衣</div>
+          <h3>衣服</h3>
+          <p>泳衣、防晒、好走路的鞋。</p>
+        </div>
+        <div class="card">
+          <div class="big">器</div>
+          <h3>设备</h3>
+          <p>充电头、转换插头、充电宝。</p>
+        </div>
+        <div class="card">
+          <div class="big">¥</div>
+          <h3>钱</h3>
+          <p>信用卡 · 日元 · 港币。</p>
+        </div>
+        <div class="card">
+          <div class="big">3</div>
+          <h3>包</h3>
+          <p>行李箱 · 挎包 · 背包。托运 20kg。</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span>10.1 国际通 / 久茂地 / 泊港优先</span>
+        <span>10.2 北部 · 回程美国村 / PARCO</span>
+        <span>10.3 奥莱 + 濑长岛</span>
+        <span>价格为别人实录</span>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-box">
+          <h4>药妆手信<span>见到就收</span></h4>
+          <ul>
+            <li><b>首里石碱</b>　护手霜 / 洗脸皂 / 白泥。机场镜水 150：国内线 2F 出发口 A、B，2F ゆいにちストリート；PARCO 1F 也有。</li>
+            <li><b>药</b>　大正感冒药、太田胃散、久光膏药贴。糖、萤火珠。</li>
+            <li><b>e 大饼</b>　ryubo 1F 久茂地 1-1-1，奥尔滨旁边，台面很小。退税后约 600 人民币。</li>
+            <li><b>SUQQU</b>　DFS 等有专柜。粉霜 110，两盒约 1000 人民币。</li>
+            <li><b>香奈儿</b>　市区 DFS 护肤品便宜；洗面奶约 375。机场免税店无香奈儿专柜。</li>
+            <li><b>黑皮 Kitty</b>　唐吉诃德赶开门。有人没淘到，只有黑皮小新。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>商场怎么选<span>全市</span></h4>
+          <ul>
+            <li><b>国际通</b>　松尾 / 牧志。游客店多，主逛 Stussy、Figure、史努比、唐吉诃德。</li>
+            <li><b>ryubo</b>　久茂地 1-1-1，县厅前直结。e 大饼。</li>
+            <li><b>DFS T ギャラリア</b>　おもろまち 4-1，站旁。单轨去，不是走路。奢品 / 香奈儿 / Le Labo。1F 满 5000 手信九折券，Chanel LV 不适用。</li>
+            <li><b>PARCO CITY</b>　浦添西洲 3-1-1。chiikawa 全套。满 5500 一楼退税。</li>
+            <li><b>奥莱 あしびなー</b>　豊崎 1-188。TK02 约半小时。拉夫巨折。和濑长岛连着走。</li>
+            <li><b>Sports DEPO</b>　天久 1-2-1；丰崎店 1-411 更靠近奥莱。点评有时 95 折。</li>
+            <li><b>那霸机场</b>　镜水 150。首里石碱、猪肉蛋饭糰 3F、newQ 2F。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>国际通 · 买<span>酒店走路</span></h4>
+          <ul>
+            <li class="must"><b>Mango House</b>　牧志 2-7-28。花衬衫 1 号店。10:00–22:00。</li>
+            <li class="must"><b>史努比 那霸</b>　松尾 2-3-13。冲浪限定。店里有 UCHINA CAFE。</li>
+            <li><b>STUSSY</b>　松尾 2-1-13 RYUBI 1F。浮岛通巷子，货比东京全。</li>
+            <li><b>FIGURE</b>　同楼 1F。日潮。Bearbrick 盲盒约 500。</li>
+            <li><b>唐吉诃德</b>　松尾 2-8-19。五层，3 万日元以上常有 92 折。</li>
+            <li><b>Calbee Plus</b>　牧志 3-2-2，てんぶす旁。</li>
+            <li><b>雪塩菓房</b>　久茂地 3-1-1 日本生命ビル 1F。</li>
+            <li><b>newQ</b>　松尾 2-8-2。菠萝饮 750，偏甜。机场 2F 也有。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>国际通 · 吃喝<span>10.1</span></h4>
+          <ul>
+            <li><b>猪肉蛋饭糰</b>　松尾 2-8-35，唐吉诃德旁。7:00–20:00。下午比早上好排。</li>
+            <li><b>花はな商店</b>　牧志 1-3-14。荞麦。饭点冷面易售完。</li>
+            <li><b>鳥貴族</b>　松尾 1-2-7 真喜屋ビル 2F。</li>
+            <li><b>一蘭</b>　牧志 1-2-24 琉球セントラル B1。24 小时。爱辣四倍起。</li>
+            <li><b>暖暮</b>　牧志 2-16-10 冲映通。</li>
+            <li><b>人生酒場</b>　松山 2-9-6。韩料，营业到清晨。粉色樱花好拍。</li>
+            <li><b>もとぶ牧場 国际通</b>　松尾 1-1-2 ロコアナハ 2F。建议预约。</li>
+            <li><b>T&amp;M Coffee</b>　牧志 1-2-6。提拉米苏必点，有 2F。</li>
+            <li><b>HUU's</b>　牧志 2-5-23。猪扒三明治一份就饱。</li>
+            <li><b>Y's Cafe</b>　牧志 1-13-5。老夫妻店。周日可能休。</li>
+            <li><b>Tasokare</b>　牧志 1-14-3。姜汁 / 黑糖拿铁。</li>
+            <li><b>Blue Seal</b>　牧志 1-2-32。盐冰淇淋。「雪屋」按这家或雪塩记。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>久茂地 · 烤肉<span>一晚只挑一家</span></h4>
+          <ul>
+            <li><b>しまぶた屋 とんかつ</b>　久茂地 2-10-20 白馬マンション 101。阿古猪，也做涮。别走去 3-29-41 蒸汽锅店。</li>
+            <li><b>炭火ぶち</b>　久茂地 3-12-1。石垣牛，有人 7170 日元。</li>
+            <li><b>肉久茂地本店</b>　久茂地 3-23-10。牛舌。4 人人均约 100 人民币。和ぶち不是一家。</li>
+            <li><b>もとぶ牧場 那霸</b>　久茂地 2-1-3 MKビル 3F。两人近 1000 人民币。</li>
+            <li><b>ここから</b>　放题约 8320。松山 2-12-3 / 久茂地 3-16-17。</li>
+            <li><b>鶴亀合戦</b>　久茂地 3-11-22。17:00–01:00。</li>
+            <li><b>クサワケ</b>　安里 388-1。安里站 1 分钟，栄町西口。</li>
+            <li><b>おいで家</b>　久茂地 2-7-21。铁板烧，石垣牛一小碟近 300 人民币。</li>
+            <li><b>BAR ALCHEMIST</b>　久茂地 2-10-19。座位费 1000。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>泊港 / 波上宫<span>海鲜 · 10.3 上午</span></h4>
+          <ul>
+            <li><b>泊いゆまち</b>　港町 1-1-18。进门右手走到头。711 &gt; 全家。</li>
+            <li><b>魚まる</b>　前岛 2-19-10。刺身新鲜，店小要排队。约 3146 日元。</li>
+            <li><b>鳥輝</b>　前岛 3-2-15 102。泊港烧鸟。日、一休息。</li>
+            <li><b>ぬちがふぅ</b>　壶屋 1-28-3。琉球料理古民家。</li>
+            <li><b>TURNER</b>　若狭 1-20-12。波上宫步行 2 分钟。</li>
+            <li><b>串一</b>　泉崎 1-14-11。带现金。</li>
+            <li><b>万丸</b>　泉崎 1-9-7。名古屋早午。周末可能休。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>PARCO / 港川<span>西洲 3-1-1</span></h4>
+          <ul>
+            <li class="must"><b>chiikawa</b>　3F シーサーのおみやげやさん。限定狮萨。</li>
+            <li class="must"><b>三丽鸥</b>　不在 PARCO。おもろまち 4-4-9 Main Place 2F Gift Gate。</li>
+            <li><b>Sora</b>　馆内集合店，多在 2F。Patagonia / Keen / Barbour。</li>
+            <li><b>拉夫劳伦</b>　PARCO 货全可退税。只够一处去奥莱。</li>
+            <li><b>MUJI / GU / JINS / Seed / warm</b>　家里买、配镜。warm 退税后约 465。</li>
+            <li><b>ちいかわ餐厅</b>　1F グリーンゾーン。</li>
+            <li><b>鳥玉</b>　2F。牛肉生鸡蛋饭，份量大。</li>
+            <li><b>美山</b>　1F。寿喜烧放题，牛肉限量。</li>
+            <li><b>Beans 港川</b>　浦添港川 2-15-6 No.28。彩色老街拿铁。别和 PARCO 搞混。</li>
+          </ul>
+        </div>
+        <div class="dir-box">
+          <h4>美国村 / 北部 / 濑长<span>10.2–10.3</span></h4>
+          <ul>
+            <li><b>CALIF KITCHEN</b>　美浜 9-21 Depot 3F。看海日落。</li>
+            <li><b>Jetta Burger</b>　美浜 9-19 2F。周三休。</li>
+            <li><b>回転寿司 市場</b>　美浜 2-4-5。份量大。</li>
+            <li><b>MARUMARO</b>　美浜 34-3 デポセントラル 3F。琉球牛骨拉面。</li>
+            <li><b>ZHYVAGO Roastery</b>　美浜 34-1 LeQu 1F。</li>
+            <li><b>史努比 北谷</b>　美浜 9-7。去过那霸可跳过。</li>
+            <li><b>长七屋</b>　美浜 9-1 Depot A 馆 1F。萤火珠。</li>
+            <li><b>琉球沙翁</b>　美丽海本部町石川 424 餐车。</li>
+            <li><b>Colombin</b>　名护市幸喜 71-1。</li>
+            <li><b>Crab Noodle 3.0</b>　名护為又 1220-71 水果乐园。不在美丽海里。</li>
+            <li><b>AOMI</b>　恩纳名嘉真 1967-1 ハレクラニ。这趟很难塞。</li>
+            <li><b>奥莱</b>　豊崎 1-188。TK02。</li>
+            <li><b>SunRoom</b>　瀬長 174-6 ウミカジテラス 11。约 3500 日元。</li>
+            <li><b>&amp;shake</b>　同上店铺 8。抹茶焦糖奶昔。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="box" style="margin-top:8px">
+        <h4>南部备选 · 这趟默认不去</h4>
+        いとま〜る 字糸满 989-83　·　スシロー 西崎町 4-22-3　·　肉御殿 西崎 2-25-6　·　大城天ぷら 奥武 193　·　しまねこぷりん 奥武 232-1　·　琉球玻璃村 福地 169（「山城用品」进村再找）　·　麺匠竹虎 おもろまち 4-7-18（不在国际通）　·　和风亭 Main Place 1F（和三丽鸥同一商场）
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 香港去程 -->
+  <section class="slide slide-dense" data-title="香港去程">
+    <div class="slide-inner">
+      <div class="slide-tag">Region 01 · 香港去程 · 9.30–10.1</div>
+      <div class="flow-row">
+        <div class="flow-node">重庆江北<br>9.30 18:00</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node hl">HB869<br>大湾区航空</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node">香港 T1<br>20:25</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node dim">机场过夜</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node hl">HB336<br>T2 07:40</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node">那霸<br>11:20</div>
+      </div>
+      <div class="grid-2">
+        <div class="box">
+          <h4>9.30 今晚</h4>
+          <code>HB869</code> 托运 <strong>20kg</strong>。落地 T1 就中转等候，别跑远。<br>
+          下一班是明天 <strong>07:40 T2</strong>，留足航站楼换乘和安检。
+        </div>
+        <div class="box">
+          <h4>10.1 明早</h4>
+          大湾区航空 <code>HB336</code> · 托运 <strong>20kg</strong><br>
+          香港 T2 07:40 → 那霸 11:20。落地后进本岛页。
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">记住</div>
+        去程两段都是 20kg 托运。落地 <strong>T1</strong>，起飞 <strong>T2</strong>。
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 冲绳本岛 -->
+  <section class="slide slide-dense" data-title="冲绳本岛">
+    <div class="slide-inner">
+      <div class="slide-tag">Region 02 · 冲绳本岛 · 10.1–10.3</div>
+      <div class="pipe-bar">
+        <div class="pipe-step"><div class="num">10.1</div><div class="lbl">国际通</div><div class="who">入住休整</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">10.2</div><div class="lbl">美丽海</div><div class="who">往北一天</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">10.3</div><div class="lbl">半日</div><div class="who">11:00 离店</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">15:25</div><div class="lbl">那霸 D</div><div class="who">NU565</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="box">
+          <h4>10.2 美丽海</h4>
+          <span class="prio">首选</span>一日游；<span class="prio alt">次选</span>OAS / 117 路，单程约 2.5 小时。可选：万座毛 → 古宇利 → 水族馆 → 美国村。
+        </div>
+        <div class="box">
+          <h4>10.3 半日离开</h4>
+          11:00 离店。14:00 前优先<strong>波上宫、濑长岛</strong>。15:25 <code>NU565</code> → 宫古 16:20。
+        </div>
+      </div>
+      <div class="split-head">10.1 下午晚上　入住格拉斯丽 松尾 1-3-6（先问 12:30）</div>
+      <div class="shop-row must">
+        <div class="name">必去 · Mango House</div>
+        <div class="desc">冲绳花衬衫全是自家设计，国际通有三家，先去<strong>1 号店</strong>（牧志 2-7-28，10:00–22:00）。</div>
+      </div>
+      <div class="shop-row must">
+        <div class="name">必去 · 史努比</div>
+        <div class="desc">Snoopy’s Surf Shop 那霸店，PEANUTS 官方冲绳店，冲浪风限定周边；<strong>松尾 2-3-13</strong>，酒店走路就到。平日 12:00–20:00，周末 11:00–20:00。</div>
+      </div>
+      <div class="shop-row must">
+        <div class="name">必去 · chiikawa</div>
+        <div class="desc">国际通没有专卖。10.1 落地先去那霸机场<strong>狮萨伴手礼店</strong>（7:00–20:30）；要全套去浦添 PARCO CITY 3F。唐吉诃德也能淘限定。</div>
+      </div>
+      <div class="shop-row must">
+        <div class="name">必去 · 三丽鸥</div>
+        <div class="desc">那霸唯一官方 Gift Gate：SAN-A 那霸 Main Place 2F（おもろまち 4-4-9）。县厅前单轨到おもろまち约 6 分钟再走 5 分钟，10:00–22:00。</div>
+      </div>
+      <div class="box" style="margin-top:8px">
+        <h4>顺路吃买</h4>
+        <strong>猪肉蛋饭糰本店</strong>：唐吉诃德旁巷子，下午比早上好排。<strong>牧志市场</strong>：一楼买海鲜二楼代煮。<strong>御菓子御殿</strong>：红芋塔。<strong>Blue Seal</strong>：盐金楚糕冰淇淋。<strong>唐吉诃德</strong>：24 小时，提袋最重放最后。
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 宫古岛 -->
+  <section class="slide slide-dense" data-title="宫古岛">
+    <div class="slide-inner">
+      <div class="slide-tag">Region 03 · 宫古岛 · 10.3–10.6</div>
+      <div class="pipe-bar">
+        <div class="pipe-step"><div class="num">10.3晚</div><div class="lbl">抵达</div><div class="who">微笑酒店</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">10.4</div><div class="lbl">海上</div><div class="who">潜 · 板 · 船</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">10.5</div><div class="lbl">环岛</div><div class="who">换 Canopy</div></div>
+        <span class="pipe-arr">→</span>
+        <div class="pipe-step"><div class="num">10.6</div><div class="lbl">离岛</div><div class="who">11:00 离店</div></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="card">
+          <div class="big">晚</div>
+          <h3>10.3 落地先住下</h3>
+          <p>16:20 到宫古，先去<strong>机场服务台</strong>。住宫古岛微笑酒店（16:20 到，直接办入住）。</p>
+          <p>晚上：17end 沙滩、吃饭、坐公交。</p>
+        </div>
+        <div class="card">
+          <div class="big">海</div>
+          <h3>10.4 浮潜桨板船</h3>
+          <p>酒店无早，出门自己找。浮潜、桨板；博爱沙滩海底观光船，<strong>Shigira 各酒店前台都能约</strong>。</p>
+          <p>船先约，再排潜和板。当晚继续微笑酒店。</p>
+        </div>
+        <div class="card">
+          <div class="big">岛</div>
+          <h3>10.5–10.6 环岛再走</h3>
+          <p>无早。07:50 离店，08:00 平良港。牧山展望台（伊良部大桥）→ 宫古神社 → Donki → 午餐待定 → 雪盐/Gelato（可砍）→ 与那霸前浜。14:00 回港。</p>
+          <p><strong>Canopy by Hilton</strong> 确认号 <code>3523999746</code>，14:30 入住后在酒店玩。10.6 早餐、逛设施，11:00 离店。</p>
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">离开宫古</div>
+        <code>NH1728</code> 15:45 宫古 → 16:40 那霸。那霸换乘约 <strong>3 小时 45 分</strong>，接 <code>UO825</code> 20:25 → 香港 T1 22:10（托运 20kg）。不要再排那霸市区。
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 回家 -->
+  <section class="slide slide-dense" data-title="香港回家">
+    <div class="slide-inner">
+      <div class="slide-tag">Region 04 · 香港回家 · 10.6夜–10.8</div>
+      <div class="hero-dark">
+        <p>买包 · 买手机 · 买漫画。</p>
+        <p class="hint">中信银行需提前确认，提前把钱转走。</p>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node">香港西九龙<br>10.7 17:54</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node hl">G5650</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node">深圳北<br>18:12</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node hl">D864<br>18:32</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node">重庆西<br>10.8 06:05</div>
+      </div>
+      <div class="grid-2">
+        <div class="box">
+          <h4>过关窗口</h4>
+          西九龙到深圳北只有约 18 分钟车程，再转 <code>D864</code> 只剩 <strong>20 分钟</strong>。别出站逗留。
+        </div>
+        <div class="box">
+          <h4>10.8 到家</h4>
+          重庆西出站打车，回长安科技园。行李多就直接打车，别换乘折腾。
+        </div>
+      </div>
+      <div class="callback">
+        <div class="cb-label">托运回顾</div>
+        <code>HB869</code>、<code>HB336</code>、<code>UO825</code> 都是 <strong>20kg</strong>。宫古短途自己看行李额。
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<nav class="nav-bar" aria-label="幻灯片导航">
+  <button class="nav-btn" id="btn-prev" aria-label="上一页">← 上一页</button>
+  <div class="nav-progress" aria-hidden="true"><div class="nav-progress-fill" id="progress"></div></div>
+  <span class="nav-counter" id="counter">1 / 5</span>
+  <button class="nav-btn" id="btn-next" aria-label="下一页">下一页 →</button>
+  <button class="nav-btn nav-btn-toggle" id="btn-toggle-nav" aria-label="隐藏导航栏">隐藏</button>
+  <span class="nav-hint">← →</span>
+</nav>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const btnToggleNav = document.getElementById('btn-toggle-nav');
+
+  function setNavHidden(hidden) {
+    document.body.classList.toggle('nav-hidden', hidden);
+    if (btnToggleNav) {
+      btnToggleNav.textContent = hidden ? '显示' : '隐藏';
+      btnToggleNav.setAttribute('aria-label', hidden ? '显示导航栏' : '隐藏导航栏');
+    }
+  }
+
+  function toggleNav() {
+    setNavHidden(!document.body.classList.contains('nav-hidden'));
+  }
+
+  btnToggleNav?.addEventListener('click', toggleNav);
+
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) s.classList.add('active');
+      else if (i < index) s.classList.add('prev');
+    });
+    current = index;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + total;
+    document.title = (slides[current].dataset.title || '冲绳') + ' · 冲绳 6天5晚';
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+    history.replaceState(null, '', '#slide-' + (current + 1));
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === ' ') {
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
+      e.preventDefault();
+      toggleNav();
+    } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goTo(total - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].screenX - touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+  });
+
+  const hash = location.hash.match(/slide-(\d+)/);
+  if (hash) goTo(Math.min(parseInt(hash[1], 10) - 1, total - 1));
+  else goTo(0);
+})();
+</script>
+</body>
+</html>

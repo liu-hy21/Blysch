@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { shuffleMemoryImages } from "@/lib/memory-images";
 import { PageStack } from "@/components/app/page-stack";
 import { MemoryPhotosClient } from "./photos-client";
 
@@ -27,7 +28,10 @@ export default async function MemoryPhotosPage({
       <MemoryPhotosClient
         id={memory.id}
         title={memory.title}
-        images={memory.images.map((i) => i.url)}
+        images={shuffleMemoryImages(
+          memory.images.map((i) => i.url),
+          memory.id,
+        )}
       />
     </PageStack>
   );
