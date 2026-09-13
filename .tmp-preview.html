@@ -1,0 +1,928 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>乐园 3/4 斜俯视预览</title>
+<style>
+body { background: #2a241e; font-family: monospace; color: #efe6d4; display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; }
+.scene { position: relative; width: 480px; height: 640px; overflow: hidden; outline: 2px solid #5a4a3a; }
+.dream-la-sky {
+  background: #9ec0d8;
+}
+.dream-la-street {
+  background: #8a8474;
+}
+.dream-la-cast {
+  background: #b08a62;
+}
+.dream-la-dirt {
+  background-color: #d8c4a0;
+}
+.dream-la-lawn {
+  background-color: #5a9a38;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #5a9a38 0 7px,
+    #3d7a28 7px 8px
+  );
+}
+.dream-la-lawn-tuft {
+  background: #3d7a28;
+}
+.dream-la-gravel {
+  background-color: #c4bba8;
+  background-image:
+    linear-gradient(#b0a898 1px, transparent 1px),
+    linear-gradient(90deg, #b0a898 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px;
+}
+.dream-la-lamp {
+  background: #3d3228;
+  box-shadow: inset 0 10px 0 #e4c36a, inset 0 0 0 2px #1c1917;
+}
+.dream-la-lamp-glow {
+  background: #e4c36a;
+  box-shadow: inset 0 0 0 2px #c4a06a;
+}
+.dream-la-spill {
+  background: #e8d48a;
+}
+.dream-la-planter {
+  background: #8c5a3a;
+  box-shadow: inset 0 -2px 0 #6b4a2a, inset 0 2px 0 #a07a50;
+}
+.dream-la-hedge {
+  background: repeating-linear-gradient(
+    to bottom,
+    #2f5a22 0 5px,
+    #3d7a28 5px 10px,
+    #5a9a38 10px 14px
+  );
+  box-shadow: inset 4px 0 0 #2f5a22, inset -2px 0 0 #6a9a38;
+}
+.dream-la-hedge-tuft {
+  background: #3d7a28;
+}
+.dream-la-roof-mass {
+  background: #8a3a32;
+}
+.dream-la-tile {
+  background: #c45a4a;
+  box-shadow: inset 0 -2px 0 #8a3a32, inset -2px 0 0 #8a3a32, inset 0 2px 0 #e07a5a;
+}
+.dream-la-tile-hi {
+  background: #e07a5a;
+  box-shadow: inset 0 -2px 0 #c45a4a, inset -2px 0 0 #c45a4a, inset 0 2px 0 #f0a080;
+}
+.dream-la-tile-dk {
+  background: #8a3a32;
+  box-shadow: inset 0 -2px 0 #6a2a24, inset 2px 0 0 #c45a4a;
+}
+.dream-la-shingle-dk {
+  background: #c45a4a;
+}
+.dream-la-chimney {
+  background: #efe6d4;
+  box-shadow: inset 0 0 0 2px #d4c4b0, inset 0 -6px 0 #8a8474;
+}
+.dream-la-chimney-cap {
+  background: #8a8474;
+}
+.dream-la-stucco {
+  background: #f3eee4;
+  box-shadow:
+    inset 0 0 0 2px #d4c4b0,
+    inset 10px 0 0 #e4d8c4,
+    inset -8px 0 0 #fff8ec;
+}
+.dream-la-arch-cap {
+  background: #fff8ec;
+}
+.dream-la-shutter {
+  background: #6b4a2a;
+  box-shadow: inset -2px 0 0 #3d2a1e;
+}
+.dream-la-window {
+  background:
+    linear-gradient(#3d3228, #3d3228) 50% 50% / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 50% 50% / 100% 2px no-repeat,
+    #5a7a90;
+  box-shadow: inset 0 0 0 2px #1c1917;
+}
+.dream-la-window-lit {
+  background:
+    linear-gradient(#3d3228, #3d3228) 50% 50% / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 50% 50% / 100% 2px no-repeat,
+    #7aa0b4;
+}
+.dream-la-door {
+  background: #5a3a1e;
+  box-shadow: inset 0 0 0 2px #3d2a1e, inset 2px 2px 0 #8b6239;
+}
+.dream-la-arch-step {
+  background: #efe6d4;
+}
+.dream-la-knob {
+  background: #e4c36a;
+}
+.dream-la-pool {
+  background: #3db8c8;
+  box-shadow:
+    inset 0 0 0 2px #c4bba8,
+    inset 0 0 0 8px #ebe4d4,
+    inset 10px 10px 0 8px #7ec8d4;
+}
+.dream-la-water-deep {
+  background: #2c6a78;
+}
+.dream-la-coping {
+  background: #ebe4d4;
+}
+.dream-la-path {
+  background-color: #d4cec0;
+  background-image:
+    linear-gradient(#b8b0a0 1px, transparent 1px),
+    linear-gradient(90deg, #b8b0a0 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px;
+}
+.dream-la-stoop {
+  background: #ebe4d4;
+}
+.dream-la-wall-top {
+  background: #d4c4b0;
+}
+.dream-la-street-wall {
+  background:
+    linear-gradient(#c4a06a, #c4a06a) top / 100% 8px no-repeat,
+    repeating-linear-gradient(
+      90deg,
+      #8b6239 0 6px,
+      #6b4a2a 6px 8px,
+      #a07a50 8px 14px
+    );
+  box-shadow: inset 0 0 0 2px #6b4a2a;
+}
+.dream-la-terra {
+  background: repeating-linear-gradient(
+    90deg,
+    #c4784a 0 10px,
+    #8c5a3a 10px 12px,
+    #e8c090 12px 16px
+  );
+}
+.dream-la-iron {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #1c1917 0 4px,
+      #3d3228 4px 6px,
+      #d4cec0 6px 10px
+    );
+  box-shadow: inset 0 0 0 2px #1c1917;
+}
+.dream-la-iron-rail {
+  background: #1c1917;
+}
+.dream-la-fountain {
+  background: #8c5a3a;
+  box-shadow: inset 0 0 0 2px #6b4a2a, inset 0 2px 0 #c4784a;
+}
+.dream-la-fountain-stem {
+  background: #8c5a3a;
+}
+.dream-la-water {
+  background: #3db8c8;
+}
+.dream-la-glint {
+  background: #f4fcfc;
+}
+.dream-la-palm-frond {
+  background: #3d7a28;
+}
+.dream-la-palm-frond-dark {
+  background: #2f5a22;
+}
+.dream-la-palm-hi {
+  background: #6a9a38;
+}
+.dream-la-palm-trunk {
+  background: repeating-linear-gradient(
+    to bottom,
+    #8c6a45 0 6px,
+    #6b4a2a 6px 8px
+  );
+  box-shadow: inset 2px 0 0 #c4a06a;
+}
+.dream-la-bougainvillea {
+  background: #c45a6e;
+}
+.dream-la-bougainvillea-lite {
+  background: #ee99ac;
+}
+.dream-la-bougainvillea-dk {
+  background: #8a2a4a;
+}
+.dream-la-agave {
+  background: #7a9a7a;
+}
+.dream-la-agave-dk {
+  background: #4a6a58;
+}
+.dream-la-agave-hi {
+  background: #c4d4b8;
+}
+.dream-la-lounge-frame {
+  background: #6b4a2a;
+}
+.dream-la-lounge-head {
+  background: #d4c4b0;
+}
+.dream-la-lounge-pad {
+  background: #efe6d4;
+  box-shadow: inset 0 -2px 0 #d4c4b0;
+}
+.dream-la-lounge-leg {
+  background: #3d3228;
+}
+.dream-la-bbq-body {
+  background: #3d3228;
+  box-shadow: inset 0 0 0 2px #1c1917, inset 0 2px 0 #6b4a2a;
+}
+.dream-la-bbq-lid {
+  background: #1c1917;
+}
+.dream-la-bbq-coal {
+  background: #c45a4a;
+}
+.dream-la-bbq-legs {
+  background: #1c1917;
+}
+.dream-la-bbq-shelf {
+  background: #6b4a2a;
+}
+.dream-la-in-ceiling {
+  background: #3d3228;
+}
+.dream-la-in-beam {
+  background: #6b4a2a;
+  box-shadow: inset 0 -2px 0 #3d2a1e, inset 0 2px 0 #8b6239;
+}
+.dream-la-in-saltillo {
+  background-color: #c4784a;
+  background-image:
+    linear-gradient(#8a3a32 1px, transparent 1px),
+    linear-gradient(90deg, #8a3a32 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.dream-la-in-wood {
+  background: #5a3a1e;
+  box-shadow: inset 0 0 0 2px #3d2a1e, inset 2px 2px 0 #8b6239;
+}
+.dream-la-in-wood-hi {
+  background: #8b6239;
+  box-shadow: inset 0 2px 0 #a07a50, inset 0 -2px 0 #6b4a2a;
+}
+.dream-la-in-steel {
+  background: #1c1917;
+  box-shadow: inset 0 0 0 2px #3d3228, inset 2px 2px 0 #6b4a2a;
+}
+.dream-la-in-steel-hi {
+  background: #3d3228;
+}
+.dream-la-in-sink {
+  background: #3d3228;
+  box-shadow: inset 0 0 0 2px #1c1917, inset 2px 2px 0 #5a7a90;
+}
+.dream-la-in-rug {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #8a3a32 0 8px,
+      #c45a4a 8px 16px,
+      #efe6d4 16px 20px
+    );
+}
+.dream-la-in-sofa-front {
+  background: #3d2a1e;
+}
+.dream-la-in-sofa-arm {
+  background: #6b4a2a;
+  box-shadow: inset 2px 0 0 #8b6239;
+}
+.dream-la-in-nicho {
+  background: #e4d8c4;
+  box-shadow: inset 0 0 0 2px #d4c4b0;
+}
+.dream-la-in-nicho-in {
+  background: #d4c4b0;
+  box-shadow: inset 4px 4px 0 #c4b49c;
+}
+.dream-la-in-linen {
+  background: #fff8ec;
+  box-shadow: inset 0 -2px 0 #e4d8c4;
+}
+.dream-la-in-stair {
+  background: repeating-linear-gradient(
+    to bottom,
+    #8b6239 0 6px,
+    #6b4a2a 6px 8px
+  );
+  box-shadow: inset 0 0 0 2px #3d2a1e;
+}
+.dream-la-in-tub {
+  background: #efe6d4;
+  box-shadow: inset 0 0 0 2px #d4c4b0, inset 0 4px 0 #fff8ec;
+}
+.dream-la-up-ceiling {
+  background: #efe6d4;
+}
+.dream-la-up-beam {
+  background: #5a3a1e;
+  box-shadow: inset 0 -2px 0 #3d2a1e, inset 0 2px 0 #8b6239;
+}
+.dream-la-up-wall {
+  background: #f5f0e6;
+  box-shadow: inset 0 0 0 2px #e4d8c4, inset 8px 0 0 #fff8ec;
+}
+.dream-la-up-floor {
+  background-color: #d8c09a;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 14px,
+    #c4a478 14px 16px
+  );
+}
+.dream-la-up-stair {
+  background: repeating-linear-gradient(
+    to bottom,
+    #d8c09a 0 6px,
+    #b89068 6px 8px
+  );
+  box-shadow: inset 0 0 0 2px #8b6239;
+}
+.dream-la-up-walnut {
+  background: #3d2a1e;
+  box-shadow: inset 0 0 0 2px #2a1c14, inset 2px 2px 0 #6b4a2a;
+}
+.dream-la-up-cream {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #e4d8c4, inset 2px 2px 0 #fffef8;
+}
+.dream-la-up-grey {
+  background: #c8c0b8;
+  box-shadow: inset 0 -2px 0 #a8a098;
+}
+.dream-la-up-grey-dk {
+  background: #8a847c;
+  box-shadow: inset 2px 0 0 #a8a098;
+}
+.dream-la-up-pillow {
+  background: #e8e2da;
+  box-shadow: inset 0 -2px 0 #c8c0b8;
+}
+.dream-la-up-rug {
+  background: #efe6d4;
+  box-shadow: inset 0 0 0 2px #e4d8c4;
+}
+.dream-la-up-tub {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #d4c4b0, inset 0 4px 0 #ffffff, inset 4px 4px 0 #efe6d4;
+}
+.dream-la-up-basin {
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 2px #c4b49c, inset 2px 2px 0 #efe6d4;
+}
+.dream-la-up-mirror {
+  background: #c8d4dc;
+  box-shadow: inset 0 0 0 2px #3d3228, inset 2px 2px 0 #e8f0f4;
+}
+.dream-la-up-towel {
+  background: #e8e2da;
+  box-shadow: inset 0 -2px 0 #c8c0b8;
+}
+.dream-la-up-glass {
+  background:
+    linear-gradient(#3d3228, #3d3228) 33% 0 / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 67% 0 / 2px 100% no-repeat,
+    linear-gradient(#3d3228, #3d3228) 0 33% / 100% 2px no-repeat,
+    linear-gradient(#3d3228, #3d3228) 0 67% / 100% 2px no-repeat,
+    #8eb8c8;
+  box-shadow: inset 0 0 0 2px #1c1917;
+}
+.dream-la-b1-ceiling {
+  background: #241c16;
+}
+.dream-la-b1-beam {
+  background: #3d2a1e;
+  box-shadow: inset 0 -2px 0 #241c16, inset 0 2px 0 #5a3a1e;
+}
+.dream-la-b1-wall {
+  background: #8a7a66;
+  box-shadow: inset 0 0 0 2px #7a6a58, inset 8px 0 0 #9a8a76;
+}
+.dream-la-b1-floor {
+  background-color: #6b5138;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 14px,
+    #573f2c 14px 16px
+  );
+}
+.dream-la-b1-stair {
+  background: repeating-linear-gradient(
+    to bottom,
+    #6b4a2a 0 6px,
+    #5a3a1e 6px 8px
+  );
+  box-shadow: inset 0 0 0 2px #3d2a1e;
+}
+.dream-la-b1-screen {
+  background: #d8e8e4;
+  box-shadow: inset 0 0 0 2px #1c1917, inset 3px 3px 0 #f2faf6;
+}
+.dream-la-b1-seat {
+  background: #8a3a32;
+  box-shadow: inset 0 -2px 0 #6a2a26, inset 2px 0 0 #a04a3e;
+}
+.dream-la-b1-seat-dk {
+  background: #6a2a26;
+}
+.dream-la-b1-felt {
+  background: #4a7a30;
+  box-shadow: inset 0 0 0 2px #3d6626;
+}
+.dream-la-b1-mat {
+  background: #3d3a34;
+  box-shadow: inset 0 0 0 2px #2c2924;
+}
+.dream-la-b1-well {
+  background-color: #eef2dc;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 14px,
+    #3d3228 14px 16px
+  );
+  box-shadow: inset 0 0 0 2px #3d3228;
+}
+.dream-la-b1-well-glow {
+  background: #f4f0d8;
+}
+.dream-la-b1-bar {
+  background: #5a3a1e;
+  box-shadow: inset 0 0 0 2px #3d2a1e, inset 0 -3px 0 #c4a06a;
+}
+</style></head><body>
+<section><h2>院子</h2><div class="scene"><div class="dream-la-sky" style="position:absolute;box-sizing:border-box;left:0px;top:0px;width:480px;height:64px;z-index:0;"></div>
+<div class="dream-la-street" style="position:absolute;box-sizing:border-box;left:0px;top:608px;width:480px;height:32px;z-index:0;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:64px;top:336px;width:32px;height:16px;z-index:2;border-radius:2px;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:56px;top:352px;width:64px;height:16px;z-index:2;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:48px;top:368px;width:96px;height:32px;z-index:2;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:64px;top:400px;width:88px;height:32px;z-index:2;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:80px;top:432px;width:64px;height:24px;z-index:2;"></div>
+<div class="dream-la-lawn-tuft" style="position:absolute;box-sizing:border-box;left:72px;top:384px;width:16px;height:16px;z-index:2;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-lawn-tuft" style="position:absolute;box-sizing:border-box;left:128px;top:376px;width:8px;height:16px;z-index:2;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-lawn-tuft" style="position:absolute;box-sizing:border-box;left:96px;top:416px;width:16px;height:8px;z-index:2;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-lawn" style="position:absolute;box-sizing:border-box;left:64px;top:448px;width:48px;height:16px;z-index:2;border-radius:0 0 4px 4px;"></div>
+<div class="dream-la-lawn-tuft" style="position:absolute;box-sizing:border-box;left:80px;top:464px;width:32px;height:8px;z-index:2;border-radius:2px;"></div>
+<div class="dream-la-gravel" style="position:absolute;box-sizing:border-box;left:80px;top:288px;width:64px;height:48px;z-index:2;border-radius:6px;"></div>
+<div class="dream-la-hedge" style="position:absolute;box-sizing:border-box;left:0px;top:80px;width:24px;height:400px;z-index:4;border-radius:4px;"></div>
+<div class="dream-la-hedge-tuft" style="position:absolute;box-sizing:border-box;left:8px;top:72px;width:16px;height:16px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-hedge" style="position:absolute;box-sizing:border-box;left:456px;top:80px;width:24px;height:400px;z-index:4;border-radius:4px;"></div>
+<div class="dream-la-hedge-tuft" style="position:absolute;box-sizing:border-box;left:456px;top:72px;width:16px;height:16px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-street-wall" style="position:absolute;box-sizing:border-box;left:0px;top:480px;width:208px;height:128px;z-index:4;"></div>
+<div class="dream-la-street-wall" style="position:absolute;box-sizing:border-box;left:256px;top:480px;width:224px;height:128px;z-index:4;"></div>
+<div class="dream-la-iron" style="position:absolute;box-sizing:border-box;left:208px;top:480px;width:48px;height:160px;z-index:5;border-radius:3px 3px 0 0;"></div>
+<div class="dream-la-iron-rail" style="position:absolute;box-sizing:border-box;left:208px;top:544px;width:48px;height:8px;z-index:6;"></div>
+<div class="dream-la-path" style="position:absolute;box-sizing:border-box;left:208px;top:272px;width:48px;height:208px;z-index:2;"></div>
+<div class="dream-la-stoop" style="position:absolute;box-sizing:border-box;left:208px;top:256px;width:48px;height:24px;z-index:3;border-radius:2px;"></div>
+<div class="dream-la-spill" style="position:absolute;box-sizing:border-box;left:216px;top:248px;width:32px;height:8px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-pool" style="position:absolute;box-sizing:border-box;left:336px;top:176px;width:80px;height:128px;z-index:3;border-radius:10px;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:360px;top:208px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:384px;top:224px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:368px;top:256px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:392px;top:240px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:352px;top:272px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-lounge-frame" style="position:absolute;box-sizing:border-box;left:344px;top:320px;width:32px;height:56px;z-index:5;border-radius:4px;"></div>
+<div class="dream-la-lounge-head" style="position:absolute;box-sizing:border-box;left:344px;top:320px;width:32px;height:16px;z-index:6;border-radius:4px 4px 0 0;"></div>
+<div class="dream-la-lounge-pad" style="position:absolute;box-sizing:border-box;left:344px;top:336px;width:32px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-lounge-leg" style="position:absolute;box-sizing:border-box;left:352px;top:368px;width:16px;height:8px;z-index:6;"></div>
+<div class="dream-la-lounge-frame" style="position:absolute;box-sizing:border-box;left:384px;top:320px;width:32px;height:56px;z-index:5;border-radius:4px;"></div>
+<div class="dream-la-lounge-head" style="position:absolute;box-sizing:border-box;left:384px;top:320px;width:32px;height:16px;z-index:6;border-radius:4px 4px 0 0;"></div>
+<div class="dream-la-lounge-pad" style="position:absolute;box-sizing:border-box;left:384px;top:336px;width:32px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-lounge-leg" style="position:absolute;box-sizing:border-box;left:392px;top:368px;width:16px;height:8px;z-index:6;"></div>
+<div class="dream-la-bbq-legs" style="position:absolute;box-sizing:border-box;left:272px;top:328px;width:40px;height:8px;z-index:5;"></div>
+<div class="dream-la-bbq-body" style="position:absolute;box-sizing:border-box;left:272px;top:304px;width:40px;height:24px;z-index:6;border-radius:3px;"></div>
+<div class="dream-la-bbq-lid" style="position:absolute;box-sizing:border-box;left:280px;top:288px;width:24px;height:16px;z-index:7;border-radius:12px 12px 0 0;"></div>
+<div class="dream-la-bbq-coal" style="position:absolute;box-sizing:border-box;left:280px;top:312px;width:24px;height:8px;z-index:7;border-radius:2px;"></div>
+<div class="dream-la-bbq-shelf" style="position:absolute;box-sizing:border-box;left:312px;top:312px;width:16px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:32px;top:128px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:48px;top:120px;width:16px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-dk" style="position:absolute;box-sizing:border-box;left:40px;top:136px;width:24px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:32px;top:144px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:56px;top:144px;width:16px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:48px;top:152px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-dk" style="position:absolute;box-sizing:border-box;left:32px;top:168px;width:24px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:64px;top:160px;width:8px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:40px;top:176px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:56px;top:184px;width:16px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-agave-dk" style="position:absolute;box-sizing:border-box;left:352px;top:144px;width:8px;height:32px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-agave" style="position:absolute;box-sizing:border-box;left:360px;top:136px;width:16px;height:40px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-agave-hi" style="position:absolute;box-sizing:border-box;left:376px;top:128px;width:16px;height:48px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-agave-dk" style="position:absolute;box-sizing:border-box;left:392px;top:144px;width:8px;height:32px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-fountain" style="position:absolute;box-sizing:border-box;left:96px;top:304px;width:48px;height:48px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-water" style="position:absolute;box-sizing:border-box;left:104px;top:320px;width:32px;height:24px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-fountain-stem" style="position:absolute;box-sizing:border-box;left:112px;top:288px;width:16px;height:32px;z-index:7;border-radius:2px;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:112px;top:328px;width:8px;height:8px;z-index:8;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:128px;top:336px;width:8px;height:8px;z-index:8;border-radius:50%;"></div>
+<div class="dream-la-planter" style="position:absolute;box-sizing:border-box;left:64px;top:384px;width:32px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:72px;top:368px;width:8px;height:16px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:80px;top:376px;width:16px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-dk" style="position:absolute;box-sizing:border-box;left:88px;top:368px;width:8px;height:16px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-lamp" style="position:absolute;box-sizing:border-box;left:32px;top:400px;width:16px;height:64px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-lamp" style="position:absolute;box-sizing:border-box;left:432px;top:400px;width:16px;height:64px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-cast" style="position:absolute;box-sizing:border-box;left:136px;top:112px;width:160px;height:160px;z-index:2;border-radius:8px;"></div>
+<div class="dream-la-roof-mass" style="position:absolute;box-sizing:border-box;left:160px;top:96px;width:160px;height:64px;z-index:7;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:192px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:208px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:224px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:240px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:256px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:272px;top:96px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:184px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:200px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:216px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:232px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:248px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:264px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:280px;top:112px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:160px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:176px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:192px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:208px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:224px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:240px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:256px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:272px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:288px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:304px;top:128px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:168px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:184px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:200px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:216px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:232px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:248px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:264px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:280px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:296px;top:144px;width:16px;height:16px;z-index:8;border-radius:2px;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:160px;top:160px;width:160px;height:112px;z-index:5;"></div>
+<div class="dream-la-lamp-glow" style="position:absolute;box-sizing:border-box;left:224px;top:168px;width:16px;height:16px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-spill" style="position:absolute;box-sizing:border-box;left:216px;top:184px;width:32px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-door" style="position:absolute;box-sizing:border-box;left:208px;top:192px;width:64px;height:80px;z-index:6;border-radius:24px 24px 0 0;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:256px;top:240px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:160px;top:176px;width:8px;height:32px;z-index:6;"></div>
+<div class="dream-la-window-lit" style="position:absolute;box-sizing:border-box;left:168px;top:176px;width:24px;height:32px;z-index:6;border-radius:8px 8px 0 0;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:192px;top:176px;width:8px;height:32px;z-index:6;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:280px;top:176px;width:8px;height:32px;z-index:6;"></div>
+<div class="dream-la-window" style="position:absolute;box-sizing:border-box;left:288px;top:176px;width:24px;height:32px;z-index:6;border-radius:8px 8px 0 0;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:312px;top:176px;width:8px;height:32px;z-index:6;"></div>
+<div class="dream-la-planter" style="position:absolute;box-sizing:border-box;left:160px;top:208px;width:40px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-planter" style="position:absolute;box-sizing:border-box;left:280px;top:208px;width:40px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:168px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:176px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:184px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:288px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-lite" style="position:absolute;box-sizing:border-box;left:296px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:304px;top:200px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-palm-trunk" style="position:absolute;box-sizing:border-box;left:80px;top:64px;width:16px;height:80px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-palm-frond-dark" style="position:absolute;box-sizing:border-box;left:64px;top:24px;width:56px;height:40px;z-index:9;border-radius:50%;"></div>
+<div class="dream-la-palm-frond" style="position:absolute;box-sizing:border-box;left:72px;top:8px;width:40px;height:32px;z-index:10;border-radius:50%;"></div>
+<div class="dream-la-palm-hi" style="position:absolute;box-sizing:border-box;left:80px;top:0px;width:24px;height:24px;z-index:11;border-radius:50%;"></div>
+<div class="dream-la-palm-frond-dark" style="position:absolute;box-sizing:border-box;left:56px;top:40px;width:24px;height:24px;z-index:10;border-radius:50%;"></div>
+<div class="dream-la-palm-frond" style="position:absolute;box-sizing:border-box;left:104px;top:40px;width:24px;height:24px;z-index:10;border-radius:50%;"></div>
+<div class="dream-la-palm-trunk" style="position:absolute;box-sizing:border-box;left:384px;top:64px;width:16px;height:80px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-palm-frond-dark" style="position:absolute;box-sizing:border-box;left:368px;top:24px;width:56px;height:40px;z-index:9;border-radius:50%;"></div>
+<div class="dream-la-palm-frond" style="position:absolute;box-sizing:border-box;left:376px;top:8px;width:40px;height:32px;z-index:10;border-radius:50%;"></div>
+<div class="dream-la-palm-hi" style="position:absolute;box-sizing:border-box;left:384px;top:0px;width:24px;height:24px;z-index:11;border-radius:50%;"></div>
+<div class="dream-la-palm-frond-dark" style="position:absolute;box-sizing:border-box;left:360px;top:40px;width:24px;height:24px;z-index:10;border-radius:50%;"></div>
+<div class="dream-la-palm-frond" style="position:absolute;box-sizing:border-box;left:408px;top:40px;width:24px;height:24px;z-index:10;border-radius:50%;"></div></div></section>
+<section><h2>一楼</h2><div class="scene"><div class="dream-la-in-ceiling" style="position:absolute;box-sizing:border-box;left:0px;top:0px;width:480px;height:48px;z-index:0;"></div>
+<div class="dream-la-in-beam" style="position:absolute;box-sizing:border-box;left:0px;top:8px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-in-beam" style="position:absolute;box-sizing:border-box;left:0px;top:24px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-in-beam" style="position:absolute;box-sizing:border-box;left:0px;top:40px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:480px;height:128px;z-index:2;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:208px;height:80px;z-index:4;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:272px;top:560px;width:208px;height:80px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:208px;height:8px;z-index:5;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:272px;top:560px;width:208px;height:8px;z-index:5;"></div>
+<div class="dream-la-in-saltillo" style="position:absolute;box-sizing:border-box;left:24px;top:176px;width:432px;height:384px;z-index:1;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:24px;top:160px;width:432px;height:16px;z-index:3;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:16px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:248px;top:176px;width:8px;height:96px;z-index:4;"></div>
+<div class="dream-la-in-stair" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:80px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:8px;z-index:6;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:248px;top:264px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:32px;top:56px;width:40px;height:40px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-roof-mass" style="position:absolute;box-sizing:border-box;left:32px;top:104px;width:48px;height:24px;z-index:3;"></div>
+<div class="dream-la-roof-mass" style="position:absolute;box-sizing:border-box;left:88px;top:104px;width:88px;height:40px;z-index:3;"></div>
+<div class="dream-la-tile-hi" style="position:absolute;box-sizing:border-box;left:96px;top:112px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:112px;top:112px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:128px;top:112px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:144px;top:112px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:160px;top:112px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile-dk" style="position:absolute;box-sizing:border-box;left:104px;top:128px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:120px;top:128px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:136px;top:128px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-tile" style="position:absolute;box-sizing:border-box;left:152px;top:128px;width:16px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:32px;top:160px;width:144px;height:24px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:32px;top:144px;width:144px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:120px;top:112px;width:8px;height:16px;z-index:7;border-radius:1px;"></div>
+<div class="dream-la-in-sink" style="position:absolute;box-sizing:border-box;left:104px;top:128px;width:40px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-iron-rail" style="position:absolute;box-sizing:border-box;left:144px;top:64px;width:32px;height:8px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-fountain" style="position:absolute;box-sizing:border-box;left:144px;top:72px;width:16px;height:16px;z-index:7;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:160px;top:72px;width:16px;height:24px;z-index:7;border-radius:2px;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:88px;top:64px;width:8px;height:48px;z-index:6;"></div>
+<div class="dream-la-window-lit" style="position:absolute;box-sizing:border-box;left:96px;top:64px;width:40px;height:48px;z-index:6;border-radius:8px 8px 0 0;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:136px;top:64px;width:8px;height:48px;z-index:6;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:48px;top:208px;width:8px;height:160px;z-index:2;border-radius:0 2px 2px 0;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:24px;top:208px;width:24px;height:160px;z-index:3;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:24px;top:256px;width:24px;height:32px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-bbq-coal" style="position:absolute;box-sizing:border-box;left:32px;top:264px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-bbq-coal" style="position:absolute;box-sizing:border-box;left:32px;top:280px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:48px;top:312px;width:8px;height:40px;z-index:3;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:176px;top:192px;width:16px;height:32px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:176px;top:176px;width:16px;height:16px;z-index:5;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:176px;top:208px;width:16px;height:8px;z-index:6;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:184px;top:200px;width:8px;height:16px;z-index:7;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:72px;top:304px;width:80px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:72px;top:272px;width:80px;height:32px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-sink" style="position:absolute;box-sizing:border-box;left:88px;top:280px;width:16px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:80px;top:344px;width:16px;height:8px;z-index:4;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:80px;top:328px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:104px;top:344px;width:16px;height:8px;z-index:4;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:104px;top:328px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:128px;top:344px;width:16px;height:8px;z-index:4;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:128px;top:328px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:96px;top:400px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:120px;top:400px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:64px;top:424px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:64px;top:440px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:64px;top:448px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:64px;top:464px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:144px;top:424px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:144px;top:440px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:144px;top:448px;width:16px;height:16px;z-index:3;border-radius:50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:144px;top:464px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:80px;top:456px;width:64px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:80px;top:416px;width:64px;height:40px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:88px;top:472px;width:8px;height:16px;z-index:3;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:128px;top:472px;width:8px;height:16px;z-index:3;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:192px;top:176px;width:8px;height:96px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:200px;top:256px;width:32px;height:8px;z-index:5;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:200px;top:264px;width:32px;height:8px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:240px;top:256px;width:16px;height:8px;z-index:5;"></div>
+<div class="dream-la-stucco" style="position:absolute;box-sizing:border-box;left:240px;top:264px;width:16px;height:8px;z-index:4;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:200px;top:184px;width:16px;height:8px;z-index:5;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:200px;top:192px;width:16px;height:16px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:232px;top:184px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-up-mirror" style="position:absolute;box-sizing:border-box;left:232px;top:176px;width:16px;height:8px;z-index:6;"></div>
+<div class="dream-la-window-lit" style="position:absolute;box-sizing:border-box;left:272px;top:64px;width:24px;height:16px;z-index:6;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:352px;top:80px;width:8px;height:64px;z-index:6;"></div>
+<div class="dream-la-window-lit" style="position:absolute;box-sizing:border-box;left:360px;top:80px;width:64px;height:64px;z-index:6;border-radius:8px 8px 0 0;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:424px;top:80px;width:8px;height:64px;z-index:6;"></div>
+<div class="dream-la-in-rug" style="position:absolute;box-sizing:border-box;left:336px;top:304px;width:120px;height:176px;z-index:2;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:360px;top:288px;width:48px;height:8px;z-index:5;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:360px;top:296px;width:48px;height:24px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:368px;top:304px;width:32px;height:8px;z-index:7;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:352px;top:336px;width:64px;height:16px;z-index:3;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:352px;top:320px;width:64px;height:16px;z-index:4;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:360px;top:336px;width:8px;height:8px;z-index:5;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:400px;top:336px;width:8px;height:8px;z-index:5;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:344px;top:344px;width:32px;height:8px;z-index:4;border-radius:3px 3px 0 0;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:352px;top:376px;width:16px;height:8px;z-index:4;"></div>
+<div class="dream-la-lounge-pad" style="position:absolute;box-sizing:border-box;left:344px;top:352px;width:32px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:344px;top:352px;width:8px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:368px;top:352px;width:8px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:408px;top:344px;width:32px;height:8px;z-index:4;border-radius:3px 3px 0 0;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:416px;top:376px;width:16px;height:8px;z-index:4;"></div>
+<div class="dream-la-lounge-pad" style="position:absolute;box-sizing:border-box;left:408px;top:352px;width:32px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:408px;top:352px;width:8px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:432px;top:352px;width:8px;height:32px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:376px;top:384px;width:32px;height:16px;z-index:4;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:376px;top:400px;width:32px;height:8px;z-index:4;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:344px;top:416px;width:112px;height:56px;z-index:4;"></div>
+<div class="dream-la-lounge-pad" style="position:absolute;box-sizing:border-box;left:352px;top:424px;width:96px;height:40px;z-index:5;border-radius:4px;"></div>
+<div class="dream-la-in-sofa-front" style="position:absolute;box-sizing:border-box;left:344px;top:464px;width:112px;height:16px;z-index:6;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:344px;top:424px;width:24px;height:48px;z-index:7;border-radius:3px;"></div>
+<div class="dream-la-in-sofa-arm" style="position:absolute;box-sizing:border-box;left:432px;top:424px;width:24px;height:48px;z-index:7;border-radius:3px;"></div>
+<div class="dream-la-planter" style="position:absolute;box-sizing:border-box;left:424px;top:496px;width:32px;height:16px;z-index:5;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-agave-hi" style="position:absolute;box-sizing:border-box;left:432px;top:480px;width:8px;height:16px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-agave" style="position:absolute;box-sizing:border-box;left:440px;top:472px;width:16px;height:24px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-stoop" style="position:absolute;box-sizing:border-box;left:208px;top:544px;width:64px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-spill" style="position:absolute;box-sizing:border-box;left:216px;top:552px;width:32px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-door" style="position:absolute;box-sizing:border-box;left:208px;top:560px;width:64px;height:80px;z-index:6;border-radius:24px 24px 0 0;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:256px;top:608px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-in-rug" style="position:absolute;box-sizing:border-box;left:208px;top:480px;width:88px;height:48px;z-index:2;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:296px;top:512px;width:40px;height:16px;z-index:3;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:296px;top:504px;width:40px;height:8px;z-index:4;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:304px;top:512px;width:8px;height:8px;z-index:5;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:320px;top:512px;width:8px;height:8px;z-index:5;"></div></div></section>
+<section><h2>二楼</h2><div class="scene"><div class="dream-la-up-ceiling" style="position:absolute;box-sizing:border-box;left:0px;top:0px;width:480px;height:48px;z-index:0;"></div>
+<div class="dream-la-up-beam" style="position:absolute;box-sizing:border-box;left:0px;top:8px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-up-beam" style="position:absolute;box-sizing:border-box;left:0px;top:24px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-up-beam" style="position:absolute;box-sizing:border-box;left:0px;top:40px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:480px;height:128px;z-index:2;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:480px;height:80px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:480px;height:8px;z-index:5;"></div>
+<div class="dream-la-up-floor" style="position:absolute;box-sizing:border-box;left:24px;top:176px;width:432px;height:384px;z-index:1;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:24px;top:160px;width:432px;height:16px;z-index:3;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:16px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:248px;top:176px;width:8px;height:96px;z-index:4;"></div>
+<div class="dream-la-up-stair" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:80px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:8px;z-index:6;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:248px;top:264px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:176px;top:176px;width:8px;height:176px;z-index:4;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:176px;top:376px;width:8px;height:48px;z-index:4;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:176px;top:456px;width:8px;height:48px;z-index:4;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:176px;top:536px;width:8px;height:24px;z-index:4;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:24px;top:384px;width:152px;height:8px;z-index:4;"></div>
+<div class="dream-la-up-wall" style="position:absolute;box-sizing:border-box;left:24px;top:480px;width:152px;height:8px;z-index:4;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:88px;top:64px;width:8px;height:64px;z-index:6;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:96px;top:64px;width:40px;height:64px;z-index:6;border-radius:8px 8px 0 0;"></div>
+<div class="dream-la-shutter" style="position:absolute;box-sizing:border-box;left:136px;top:64px;width:8px;height:64px;z-index:6;"></div>
+<div class="dream-la-up-mirror" style="position:absolute;box-sizing:border-box;left:32px;top:64px;width:32px;height:48px;z-index:5;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:32px;top:184px;width:8px;height:72px;z-index:5;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:32px;top:248px;width:48px;height:8px;z-index:5;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:40px;top:192px;width:40px;height:56px;z-index:3;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:48px;top:200px;width:16px;height:16px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:64px;top:232px;width:8px;height:8px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:80px;top:200px;width:64px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:80px;top:184px;width:64px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:88px;top:184px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:120px;top:184px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:104px;top:200px;width:8px;height:16px;z-index:5;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:152px;top:192px;width:24px;height:16px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:152px;top:208px;width:16px;height:24px;z-index:5;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:152px;top:216px;width:16px;height:8px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-up-tub" style="position:absolute;box-sizing:border-box;left:32px;top:272px;width:128px;height:80px;z-index:6;border-radius:16px;"></div>
+<div class="dream-la-water" style="position:absolute;box-sizing:border-box;left:48px;top:288px;width:96px;height:48px;z-index:7;border-radius:10px;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:64px;top:304px;width:8px;height:8px;z-index:8;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:112px;top:312px;width:8px;height:8px;z-index:8;border-radius:50%;"></div>
+<div class="dream-la-up-towel" style="position:absolute;box-sizing:border-box;left:160px;top:288px;width:16px;height:48px;z-index:6;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:24px;top:392px;width:16px;height:88px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:32px;top:400px;width:8px;height:72px;z-index:5;border-radius:1px;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:32px;top:416px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:32px;top:448px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:128px;top:400px;width:40px;height:8px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:80px;top:440px;width:40px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:80px;top:424px;width:40px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:88px;top:440px;width:24px;height:8px;z-index:5;border-radius:1px;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:32px;top:520px;width:32px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:32px;top:496px;width:32px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:40px;top:504px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:64px;top:520px;width:32px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:64px;top:496px;width:32px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:72px;top:504px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:104px;top:520px;width:24px;height:16px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:104px;top:496px;width:24px;height:24px;z-index:5;"></div>
+<div class="dream-la-up-basin" style="position:absolute;box-sizing:border-box;left:112px;top:504px;width:8px;height:8px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:56px;top:568px;width:40px;height:32px;z-index:6;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:272px;top:64px;width:24px;height:16px;z-index:6;"></div>
+<div class="dream-la-up-rug" style="position:absolute;box-sizing:border-box;left:192px;top:288px;width:48px;height:24px;z-index:2;"></div>
+<div class="dream-la-up-rug" style="position:absolute;box-sizing:border-box;left:288px;top:336px;width:168px;height:144px;z-index:2;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:304px;top:352px;width:128px;height:96px;z-index:4;border-radius:3px;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:312px;top:368px;width:112px;height:64px;z-index:5;border-radius:4px;"></div>
+<div class="dream-la-up-pillow" style="position:absolute;box-sizing:border-box;left:312px;top:360px;width:40px;height:32px;z-index:6;border-radius:6px;"></div>
+<div class="dream-la-up-pillow" style="position:absolute;box-sizing:border-box;left:360px;top:360px;width:40px;height:32px;z-index:6;border-radius:6px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:272px;top:352px;width:24px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:272px;top:352px;width:8px;height:16px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-lamp-glow" style="position:absolute;box-sizing:border-box;left:272px;top:336px;width:16px;height:16px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-spill" style="position:absolute;box-sizing:border-box;left:272px;top:368px;width:16px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:440px;top:352px;width:16px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-lamp-glow" style="position:absolute;box-sizing:border-box;left:440px;top:336px;width:16px;height:16px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:360px;top:480px;width:8px;height:8px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:400px;top:480px;width:8px;height:8px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:352px;top:464px;width:64px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:360px;top:464px;width:48px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-lamp-glow" style="position:absolute;box-sizing:border-box;left:416px;top:272px;width:8px;height:16px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-lamp-glow" style="position:absolute;box-sizing:border-box;left:440px;top:272px;width:8px;height:16px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:408px;top:296px;width:48px;height:32px;z-index:4;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:408px;top:288px;width:48px;height:8px;z-index:5;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:248px;top:520px;width:32px;height:8px;z-index:4;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:248px;top:488px;width:32px;height:32px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:256px;top:496px;width:16px;height:16px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:224px;top:512px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:224px;top:496px;width:16px;height:16px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:288px;top:512px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:288px;top:496px;width:16px;height:16px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:424px;top:192px;width:32px;height:16px;z-index:5;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-agave-hi" style="position:absolute;box-sizing:border-box;left:432px;top:176px;width:8px;height:16px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-agave" style="position:absolute;box-sizing:border-box;left:440px;top:168px;width:16px;height:24px;z-index:6;border-radius:50% 50% 0 0;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:328px;top:568px;width:96px;height:48px;z-index:5;border-radius:3px 3px 0 0;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:376px;top:568px;width:8px;height:48px;z-index:6;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:328px;top:568px;width:96px;height:8px;z-index:6;"></div>
+<div class="dream-la-b1-well-glow" style="position:absolute;box-sizing:border-box;left:336px;top:536px;width:80px;height:32px;z-index:2;border-radius:30px;"></div></div></section>
+<section><h2>负一楼</h2><div class="scene"><div class="dream-la-b1-ceiling" style="position:absolute;box-sizing:border-box;left:0px;top:0px;width:480px;height:48px;z-index:0;"></div>
+<div class="dream-la-b1-beam" style="position:absolute;box-sizing:border-box;left:0px;top:8px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-b1-beam" style="position:absolute;box-sizing:border-box;left:0px;top:24px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-b1-beam" style="position:absolute;box-sizing:border-box;left:0px;top:40px;width:480px;height:8px;z-index:1;"></div>
+<div class="dream-la-b1-wall" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:480px;height:128px;z-index:2;"></div>
+<div class="dream-la-b1-wall" style="position:absolute;box-sizing:border-box;left:0px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-b1-wall" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:24px;height:528px;z-index:3;"></div>
+<div class="dream-la-b1-wall" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:480px;height:80px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:0px;top:560px;width:480px;height:8px;z-index:5;"></div>
+<div class="dream-la-b1-floor" style="position:absolute;box-sizing:border-box;left:24px;top:176px;width:432px;height:384px;z-index:1;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:24px;top:160px;width:432px;height:16px;z-index:3;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:16px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:456px;top:48px;width:8px;height:512px;z-index:4;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:248px;top:176px;width:8px;height:96px;z-index:4;"></div>
+<div class="dream-la-b1-stair" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:80px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:256px;top:192px;width:64px;height:8px;z-index:6;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:248px;top:264px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:40px;top:56px;width:112px;height:16px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:40px;top:104px;width:112px;height:8px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-b1-bar" style="position:absolute;box-sizing:border-box;left:40px;top:112px;width:112px;height:24px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:48px;top:64px;width:8px;height:8px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-agave-dk" style="position:absolute;box-sizing:border-box;left:68px;top:64px;width:8px;height:8px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-bougainvillea-dk" style="position:absolute;box-sizing:border-box;left:88px;top:64px;width:8px;height:8px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:108px;top:64px;width:8px;height:8px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-agave-hi" style="position:absolute;box-sizing:border-box;left:128px;top:64px;width:8px;height:8px;z-index:6;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:52px;top:160px;width:8px;height:8px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:48px;top:144px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:84px;top:160px;width:8px;height:8px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:80px;top:144px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:116px;top:160px;width:8px;height:8px;z-index:4;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:112px;top:144px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:24px;top:192px;width:24px;height:128px;z-index:4;border-radius:2px;"></div>
+<div class="dream-la-up-glass" style="position:absolute;box-sizing:border-box;left:48px;top:224px;width:16px;height:64px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:32px;top:200px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea-dk" style="position:absolute;box-sizing:border-box;left:32px;top:224px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-agave-dk" style="position:absolute;box-sizing:border-box;left:32px;top:248px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:32px;top:272px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:32px;top:296px;width:8px;height:8px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-rug" style="position:absolute;box-sizing:border-box;left:112px;top:256px;width:144px;height:96px;z-index:2;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:136px;top:336px;width:8px;height:16px;z-index:3;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:224px;top:336px;width:8px;height:16px;z-index:3;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:128px;top:272px;width:112px;height:64px;z-index:4;border-radius:3px;"></div>
+<div class="dream-la-b1-felt" style="position:absolute;box-sizing:border-box;left:136px;top:280px;width:96px;height:48px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:136px;top:280px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:224px;top:280px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:136px;top:320px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:224px;top:320px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:176px;top:280px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:176px;top:320px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:160px;top:296px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-knob" style="position:absolute;box-sizing:border-box;left:192px;top:304px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-bougainvillea" style="position:absolute;box-sizing:border-box;left:200px;top:288px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-b1-screen" style="position:absolute;box-sizing:border-box;left:336px;top:64px;width:112px;height:24px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:320px;top:64px;width:8px;height:32px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:448px;top:64px;width:8px;height:32px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:336px;top:120px;width:112px;height:40px;z-index:3;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:336px;top:184px;width:112px;height:40px;z-index:3;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:344px;top:128px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:344px;top:144px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:384px;top:128px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:384px;top:144px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:424px;top:128px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:424px;top:144px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:344px;top:192px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:344px;top:208px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:384px;top:192px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:384px;top:208px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-b1-seat" style="position:absolute;box-sizing:border-box;left:424px;top:192px;width:32px;height:24px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-seat-dk" style="position:absolute;box-sizing:border-box;left:424px;top:208px;width:32px;height:8px;z-index:6;border-radius:0 0 2px 2px;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:64px;top:416px;width:32px;height:32px;z-index:5;border-radius:2px;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:68px;top:424px;width:24px;height:16px;z-index:6;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:72px;top:400px;width:16px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-glint" style="position:absolute;box-sizing:border-box;left:76px;top:404px;width:8px;height:8px;z-index:7;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:128px;top:432px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:152px;top:432px;width:16px;height:16px;z-index:5;border-radius:50%;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:136px;top:424px;width:24px;height:8px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:136px;top:416px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:156px;top:416px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:176px;top:432px;width:64px;height:64px;z-index:2;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:40px;top:480px;width:8px;height:24px;z-index:5;"></div>
+<div class="dream-la-in-steel-hi" style="position:absolute;box-sizing:border-box;left:64px;top:480px;width:8px;height:24px;z-index:5;"></div>
+<div class="dream-la-in-steel" style="position:absolute;box-sizing:border-box;left:40px;top:488px;width:32px;height:8px;z-index:6;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:48px;top:496px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-b1-mat" style="position:absolute;box-sizing:border-box;left:56px;top:496px;width:8px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-up-mirror" style="position:absolute;box-sizing:border-box;left:24px;top:352px;width:8px;height:144px;z-index:5;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:360px;top:400px;width:88px;height:16px;z-index:4;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-up-grey" style="position:absolute;box-sizing:border-box;left:360px;top:368px;width:88px;height:40px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:360px;top:368px;width:16px;height:40px;z-index:6;border-radius:3px;"></div>
+<div class="dream-la-up-grey-dk" style="position:absolute;box-sizing:border-box;left:432px;top:368px;width:16px;height:40px;z-index:6;border-radius:3px;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:352px;top:472px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood" style="position:absolute;box-sizing:border-box;left:416px;top:472px;width:16px;height:8px;z-index:3;border-radius:0 0 50% 50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:352px;top:456px;width:16px;height:16px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-in-wood-hi" style="position:absolute;box-sizing:border-box;left:416px;top:456px;width:16px;height:16px;z-index:4;border-radius:50%;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:368px;top:480px;width:48px;height:8px;z-index:4;border-radius:0 0 3px 3px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:368px;top:448px;width:48px;height:32px;z-index:5;border-radius:3px;"></div>
+<div class="dream-la-b1-felt" style="position:absolute;box-sizing:border-box;left:376px;top:456px;width:32px;height:16px;z-index:6;border-radius:2px;"></div>
+<div class="dream-la-up-walnut" style="position:absolute;box-sizing:border-box;left:336px;top:368px;width:8px;height:48px;z-index:6;border-radius:1px;"></div>
+<div class="dream-la-up-cream" style="position:absolute;box-sizing:border-box;left:328px;top:352px;width:24px;height:16px;z-index:7;border-radius:2px 2px 0 0;"></div>
+<div class="dream-la-spill" style="position:absolute;box-sizing:border-box;left:328px;top:376px;width:24px;height:8px;z-index:6;border-radius:50%;"></div>
+<div class="dream-la-b1-well-glow" style="position:absolute;box-sizing:border-box;left:192px;top:528px;width:112px;height:32px;z-index:2;"></div>
+<div class="dream-la-b1-well" style="position:absolute;box-sizing:border-box;left:176px;top:568px;width:144px;height:40px;z-index:6;"></div></div></section>
+</body></html>

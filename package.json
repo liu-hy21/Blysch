@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/uploads.test.ts src/lib/dream-furniture.test.ts src/lib/pet-mood.test.ts src/lib/pet-food.test.ts src/lib/pet-intimacy.test.ts src/lib/home-bond.test.ts src/lib/memory-page.test.ts src/lib/memory-images.test.ts",
+    "test": "tsx --test src/lib/uploads.test.ts src/lib/dream-furniture.test.ts src/lib/pet-mood.test.ts src/lib/pet-food.test.ts src/lib/pet-intimacy.test.ts src/lib/home-bond.test.ts src/lib/memory-page.test.ts src/lib/memory-images.test.ts src/lib/park/park-scene.test.ts src/lib/park/furniture/furniture.test.ts",
     "db:ensure": "node scripts/ensure-db.mjs",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
@@ -17,6 +17,8 @@
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
@@ -29,6 +31,7 @@
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.6.0",
+    "three": "^0.186.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -36,6 +39,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",

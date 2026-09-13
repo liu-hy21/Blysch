@@ -1,4 +1,7 @@
-/** Outdoor atoms are 8px on screen. Scene stays 480×640. */
+/**
+ * Outdoor atoms are 8px on screen. Scene stays 480×640.
+ * 坐标支持 0.5 格步进(4px),更精细的部件用小数坐标即可。
+ */
 
 export const DREAM_ATOM = 8;
 export const DREAM_COLS = 60;

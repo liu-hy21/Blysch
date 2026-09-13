@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#efeee9" />
+    <title>LEGO McLaren P1 Atlas · Technic 42172</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <header>
+      <div class="eyebrow">LEGO ATLAS <span>TECHNIC</span></div>
+      <h1>McLAREN<span>P1</span><small>42172</small></h1>
+      <p id="subtitle">The anatomy of a hypercar.</p>
+    </header>
+    <main>
+      <div id="stage" aria-label="Interactive McLaren P1 model"></div>
+      <div id="tooltip" hidden></div>
+      <div id="loading">
+        <div class="load-line"></div>
+        <strong id="load-title">Preparing the P1</strong>
+        <p id="load-copy">Loading the community digital model…</p>
+      </div>
+      <aside class="panel library">
+        <div class="panel-heading"><span>PART LIBRARY</span><span id="part-count">—</span></div>
+        <input
+          id="search"
+          type="search"
+          aria-label="Search parts"
+          placeholder="Find a part or number…"
+        />
+        <div class="presets">
+          <button id="all" aria-pressed="true">All</button>
+          <button
+            id="structure"
+            aria-pressed="false"
+            title="Show beams, frames, axles and connectors"
+          >
+            Structure
+          </button>
+          <button
+            id="mechanisms"
+            aria-pressed="false"
+            title="Show engine, transmission, steering and suspension parts"
+          >
+            Mechanisms
+          </button>
+        </div>
+        <div id="families"></div>
+        <div id="results" hidden></div>
+        <div class="covers">
+          <button id="hood" aria-pressed="false">Lift front cover</button
+          ><button id="engine" aria-pressed="false">Lift engine cover</button>
+        </div>
+        <div class="panel-foot">
+          <span id="visible-count">Waiting for model</span><button id="restore">Restore</button>
+        </div>
+      </aside>
+      <nav class="camera panel" aria-label="Camera">
+        <button data-view="perspective" aria-label="Three-quarter view" aria-pressed="true">
+          ¾</button
+        ><button data-view="front" aria-label="Front view">F</button
+        ><button data-view="side" aria-label="Side view">S</button
+        ><button data-view="top" aria-label="Top view">T</button>
+        <hr />
+        <button id="rotate" aria-label="Auto rotate" aria-pressed="false">↻</button
+        ><button id="reset" aria-label="Reset">⟲</button>
+        <hr />
+        <button id="plus" aria-label="Zoom in">+</button
+        ><button id="minus" aria-label="Zoom out">−</button>
+      </nav>
+      <aside id="detail" class="panel detail" aria-hidden="true" aria-labelledby="part-name" inert>
+        <button id="close" aria-label="Close details">×</button>
+        <div class="eyebrow" id="part-family"></div>
+        <h2 id="part-name"></h2>
+        <dl>
+          <div>
+            <dt>Part reference</dt>
+            <dd id="part-id"></dd>
+          </div>
+          <div>
+            <dt>Color</dt>
+            <dd id="part-color"></dd>
+          </div>
+          <div>
+            <dt>Same part &amp; color</dt>
+            <dd id="part-total"></dd>
+          </div>
+        </dl>
+        <p id="part-note"></p>
+        <button id="isolate" class="primary">Isolate this piece ↗</button
+        ><button id="hide-part" class="secondary">Hide this piece</button
+        ><button id="clear" class="secondary">Clear selection</button>
+      </aside>
+      <div class="bottom">
+        <div class="caption">McLAREN P1 <span id="inventory-count"></span></div>
+        <div class="panel explosion">
+          <div class="explosion-slider">
+            <div class="explode-heading">
+              <label for="spread">Explode P1</label>
+              <output id="spread-value" for="spread">0%</output>
+            </div>
+            <div class="range-row">
+              <input
+                id="spread"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+                aria-label="Explode model"
+              />
+            </div>
+            <div class="range-labels">
+              <span>Assembled</span>
+              <span>Every piece</span>
+            </div>
+          </div>
+          <button id="assemble-reset" aria-label="Assemble and reset">
+            <span aria-hidden="true">⟲</span><span>Reset</span>
+          </button>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <span id="gesture-hint">Drag to orbit · Scroll to zoom · Hover to identify</span
+      ><button id="about">Model & credits ↗</button>
+    </footer>
+    <dialog id="credits">
+      <button id="close-credits" aria-label="Close credits">×</button>
+      <div class="eyebrow">MODEL PROVENANCE</div>
+      <h2>A community-built P1.</h2>
+      <p>
+        This explorer uses Vito Tarantini's Studio model shared on the LDraw forum. The model's part
+        count differs from the official set. Decals and printed surfaces may be incomplete. Part
+        families are classified from source part descriptions, not official assembly groups.
+      </p>
+      <p>
+        Cover controls lift source submodels; they do not simulate hinges or drivetrain physics.
+      </p>
+      <a
+        href="https://forums.ldraw.org/thread-27891-post-56319.html"
+        target="_blank"
+        rel="noreferrer"
+        >Community model source ↗</a
+      ><a
+        href="https://www.lego.com/en-us/service/building-instructions/42172"
+        target="_blank"
+        rel="noreferrer"
+        >Official building instructions ↗</a
+      >
+      <p>
+        LDraw primitives: CC BY 4.0. LEGO and McLaren are trademarks of their respective owners.
+        Unofficial independent project.
+      </p>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加州豪宅 · 建筑平面户型图</title>
+<style>
+  :root {
+    --paper: #f6efe2;
+    --paper-dk: #ece2cc;
+    --ink: #2b241f;
+    --ink-soft: #3d3228;
+    --furn: #7a6a58;
+    --label: #3d3228;
+    --sub: #9a8a72;
+    --dim: #a08b6c;
+    --terracotta: #c45a4a;
+    --terracotta-dk: #8a3a32;
+    --stucco: #f3eee4;
+    --wood: #8b6239;
+    --wood-dk: #6b4a2a;
+    --water: #7ec8d4;
+    --water-dk: #3db8c8;
+    --gold: #c4a06a;
+    --green: #7a9a7a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper-dk);
+    color: var(--ink);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    padding: 40px 20px 80px;
+  }
+  .sheet {
+    max-width: 920px;
+    margin: 0 auto 48px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 8px 8px 0 rgba(43, 36, 31, 0.15);
+    padding: 36px 40px 28px;
+  }
+  header.sheet { padding-bottom: 20px; }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--sub);
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: 30px;
+    margin: 6px 0 4px;
+    letter-spacing: 2px;
+  }
+  h1 .en { font-size: 15px; color: var(--sub); letter-spacing: 3px; margin-left: 10px; }
+  .meta { font-size: 13px; color: var(--sub); margin-top: 6px; line-height: 1.8; }
+  .floor-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+  .floor-title .badge {
+    background: var(--terracotta);
+    color: #fff8ec;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 10px;
+    letter-spacing: 2px;
+  }
+  .floor-title h2 { font-size: 21px; letter-spacing: 2px; }
+  .floor-title .en { font-size: 12px; color: var(--sub); letter-spacing: 2px; }
+  .floor-title .area { margin-left: auto; font-size: 12px; color: var(--sub); }
+  svg { display: block; width: 100%; height: auto; }
+  .notes { font-size: 12.5px; color: var(--ink-soft); line-height: 1.9; margin-top: 10px; }
+  .notes b { color: var(--terracotta-dk); }
+
+  /* —— SVG 图面样式 —— */
+  .wall { fill: var(--ink); }
+  .wall-cut { fill: none; stroke: var(--ink); stroke-width: 16; }
+  .partition { fill: var(--ink); }
+  .gap { fill: var(--paper); }
+  .leaf { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+  .swing { stroke: var(--sub); stroke-width: 1; fill: none; stroke-dasharray: 4 3; }
+  .win-glass { stroke: var(--ink); stroke-width: 1.4; }
+  .furn { fill: rgba(255, 252, 244, 0.55); stroke: var(--furn); stroke-width: 1.3; }
+  .furn-line { stroke: var(--furn); stroke-width: 1.1; fill: none; }
+  .furn-fill { stroke: var(--furn); stroke-width: 1.3; }
+  .water { fill: var(--water); stroke: var(--furn); stroke-width: 1.2; }
+  .room-name { font-size: 15px; font-weight: 700; fill: var(--label); letter-spacing: 2px; }
+  .room-en { font-size: 8.5px; fill: var(--sub); letter-spacing: 1.5px; }
+  .room-area { font-size: 9.5px; fill: var(--sub); }
+  .furn-label { font-size: 8px; fill: var(--furn); }
+  .dim-line { stroke: var(--dim); stroke-width: 1; }
+  .dim-text { font-size: 9.5px; fill: var(--dim); }
+  .dim-ext { stroke: var(--dim); stroke-width: 0.8; stroke-dasharray: 2 2; }
+
+  table.spec { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+  table.spec th, table.spec td {
+    border: 1px solid #cbbd9f;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  table.spec th { background: var(--ink); color: #fff8ec; font-weight: 600; letter-spacing: 1px; }
+  table.spec tr:nth-child(even) td { background: rgba(236, 226, 204, 0.4); }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px 20px;
+    margin-top: 12px;
+    font-size: 12.5px;
+  }
+  .legend-grid .item { display: flex; align-items: center; gap: 8px; }
+  .swatch { width: 28px; height: 16px; border: 1px solid var(--ink); flex: none; }
+  footer { text-align: center; font-size: 11px; color: var(--sub); letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== 图签 ==================== -->
+<header class="sheet">
+  <div class="eyebrow">Architectural Floor Plans</div>
+  <h1>加州豪宅 · 建筑平面户型图<span class="en">CALIFORNIA SPANISH REVIVAL RESIDENCE</span></h1>
+  <div class="meta">
+    洛杉矶西区西班牙复兴风格独栋 &nbsp;|&nbsp; 地上两层 + 地下一层 &nbsp;|&nbsp; 建筑轮廓 18.0m × 12.0m<br>
+    材料语言:奶油灰泥 · 赤陶瓦 · 深木百叶 · 铁艺 · 黑钢 &nbsp;·&nbsp; 与「乐园」小屋同一套设计语汇
+  </div>
+</header>
+
+<!-- ==================== 一楼 ==================== -->
+<section class="sheet">
+  <div class="floor-title">
+    <span class="badge">1F</span>
+    <h2>一楼 · 社交层</h2>
+    <span class="en">LIVING / KITCHEN / DINING</span>
+    <span class="area">建筑面积约 216 ㎡</span>
+  </div>
+
+  <svg viewBox="0 0 800 640" role="img" aria-label="一楼平面图">
+    <defs>
+      <pattern id="saltillo" width="17" height="17" patternUnits="userSpaceOnUse">
+        <rect width="17" height="17" fill="#efdfc2"/>
+        <path d="M0 0H17M0 0V17" stroke="#d9b98c" stroke-width="1"/>
+      </pattern>
+      <pattern id="loggia" width="12" height="12" patternUnits="userSpaceOnUse">
+        <rect width="12" height="12" fill="#e8dcc0"/>
+        <path d="M0 12L12 0" stroke="#d5c49e" stroke-width="1"/>
+      </pattern>
+      <pattern id="rug1" width="8" height="8" patternUnits="userSpaceOnUse">
+        <rect width="8" height="8" fill="#e9d3c2"/>
+        <circle cx="4" cy="4" r="1" fill="#d8b394"/>
+      </pattern>
+    </defs>
+
+    <!-- 室外:南侧廊下露台 -->
+    <rect x="96" y="498" width="612" height="68" fill="url(#loggia)"/>
+    <rect x="96" y="498" width="612" height="68" fill="none" stroke="#a08b6c" stroke-width="1"/>
+    <!-- 露台柱 -->
+    <rect x="100" y="556" width="10" height="10" class="wall"/>
+    <rect x="300" y="556" width="10" height="10" class="wall"/>
+    <rect x="494" y="556" width="10" height="10" class="wall"/>
+    <rect x="694" y="556" width="10" height="10" class="wall"/>
+    <text x="402" y="540" text-anchor="middle" class="room-name" fill="#8a7a5e">廊下露台</text>
+    <text x="402" y="553" text-anchor="middle" class="room-en">LOGGIA</text>
+
+    <!-- 房间地面 -->
+    <rect x="96" y="90" width="238" height="204" fill="url(#saltillo)"/>          <!-- 厨房 -->
+    <rect x="96" y="294" width="238" height="204" fill="url(#saltillo)"/>          <!-- 餐厅 -->
+    <rect x="334" y="90" width="374" height="408" fill="#f2e9d6"/>                 <!-- 客厅大区 -->
+    <rect x="334" y="90" width="183.6" height="108.8" fill="#ece0c8"/>             <!-- 楼梯/粉卫核心 -->
+    <rect x="391.8" y="379" width="125.8" height="119" fill="url(#rug1)"/>         <!-- 门厅毯 -->
+
+    <!-- 家具:厨房 -->
+    <rect x="98" y="92" width="22" height="180" class="furn"/>
+    <rect x="98" y="92" width="170" height="22" class="furn"/>
+    <rect x="170.8" y="188.4" width="108.8" height="40.8" class="furn"/>
+    <circle cx="190" cy="245" r="9" class="furn"/>
+    <circle cx="225" cy="245" r="9" class="furn"/>
+    <circle cx="260" cy="245" r="9" class="furn"/>
+    <rect x="303.4" y="92" width="28" height="34" class="furn"/>
+    <text x="109" y="186" class="furn-label">灶台</text>
+    <text x="180" y="103" class="furn-label">水槽</text>
+    <text x="206" y="212" class="furn-label">中岛</text>
+    <text x="305" y="86" class="furn-label">冰箱</text>
+
+    <!-- 家具:餐厅 -->
+    <rect x="177.6" y="355.2" width="88.4" height="47.6" class="furn"/>
+    <circle cx="160" cy="368" r="9" class="furn"/><circle cx="160" cy="392" r="9" class="furn"/>
+    <circle cx="283" cy="368" r="9" class="furn"/><circle cx="283" cy="392" r="9" class="furn"/>
+    <circle cx="200" cy="340" r="9" class="furn"/><circle cx="243" cy="340" r="9" class="furn"/>
+    <text x="197" y="383" class="furn-label">餐桌 6 人</text>
+
+    <!-- 家具:客厅 -->
+    <rect x="544.8" y="239.6" width="142.8" height="149.6" fill="url(#rug1)" stroke="#c9a98a" stroke-width="1"/>
+    <rect x="558.4" y="348.4" width="102" height="34" class="furn"/>
+    <rect x="558.4" y="273.6" width="102" height="14" class="furn"/>
+    <rect x="548.4" y="307.6" width="33.6" height="27.2" class="furn"/>
+    <rect x="650" y="307.6" width="33.6" height="27.2" class="furn"/>
+    <rect x="595.2" y="314.4" width="40.8" height="24" class="furn"/>
+    <text x="588" y="368" class="furn-label">三人沙发</text>
+    <text x="596" y="283" class="furn-label">电视柜</text>
+    <text x="548" y="345" class="furn-label">单人椅</text>
+    <text x="652" y="345" class="furn-label">单人椅</text>
+
+    <!-- 家具:门厅 -->
+    <rect x="340" y="420" width="34" height="12" class="furn"/>
+    <text x="342" y="429" class="furn-label">玄关柜</text>
+
+    <!-- 家具:粉卫 -->
+    <rect x="340" y="94" width="26" height="18" class="furn"/>
+    <circle cx="398" cy="103" r="8" class="furn"/>
+    <text x="340" y="130" class="furn-label">马桶</text>
+    <text x="388" y="126" class="furn-label">洗手盆</text>
+
+    <!-- 家具:楼梯(直跑,向北上行) -->
+    <g class="furn-line">
+      <line x1="425.8" y1="102" x2="517.6" y2="102"/>
+      <line x1="425.8" y1="112" x2="517.6" y2="112"/>
+      <line x1="425.8" y1="122" x2="517.6" y2="122"/>
+      <line x1="425.8" y1="132" x2="517.6" y2="132"/>
+      <line x1="425.8" y1="142" x2="517.6" y2="142"/>
+      <line x1="425.8" y1="152" x2="517.6" y2="152"/>
+      <line x1="425.8" y1="162" x2="517.6" y2="162"/>
+      <line x1="425.8" y1="172" x2="517.6" y2="172"/>
+      <line x1="425.8" y1="182" x2="517.6" y2="182"/>
+    </g>
+    <line x1="471.7" y1="192" x2="471.7" y2="96" class="furn-line" stroke-width="1.6"/>
+    <path d="M466 104 L471.7 94 L477.4 104" class="furn-line" stroke-width="1.6"/>
+    <text x="478" y="150" class="furn-label">上 2F</text>
+
+    <!-- 外墙 -->
+    <rect x="88" y="82" width="628" height="424" class="wall-cut"/>
+    <!-- 北墙窗洞:厨房 / 楼梯高窗 / 客厅 -->
+    <rect x="164" y="80" width="74.8" height="20" class="gap"/>
+    <rect x="453" y="80" width="34" height="20" class="gap"/>
+    <rect x="555" y="80" width="102" height="20" class="gap"/>
+    <!-- 西墙窗洞(厨房) -->
+    <rect x="86" y="158" width="20" height="54.4" class="gap"/>
+    <!-- 东墙窗洞(客厅) -->
+    <rect x="698" y="192" width="20" height="68" class="gap"/>
+    <rect x="698" y="328" width="20" height="68" class="gap"/>
+    <!-- 南墙:入户双开门洞 + 客厅推拉门洞 -->
+    <rect x="391.8" y="494" width="68" height="24" class="gap"/>
+    <rect x="538" y="494" width="149.6" height="24" class="gap"/>
+
+    <!-- 窗玻璃线 -->
+    <g class="win-glass">
+      <line x1="164" y1="86" x2="238.8" y2="86"/><line x1="164" y1="94" x2="238.8" y2="94"/>
+      <line x1="453" y1="86" x2="487" y2="86"/><line x1="453" y1="94" x2="487" y2="94"/>
+      <line x1="555" y1="86" x2="657" y2="86"/><line x1="555" y1="94" x2="657" y2="94"/>
+      <line x1="92" y1="158" x2="92" y2="212.4"/><line x1="100" y1="158" x2="100" y2="212.4"/>
+      <line x1="704" y1="192" x2="704" y2="260"/><line x1="712" y1="192" x2="712" y2="260"/>
+      <line x1="704" y1="328" x2="704" y2="396"/><line x1="712" y1="328" x2="712" y2="396"/>
+    </g>
+    <!-- 推拉门扇(客厅,三扇) -->
+    <g class="win-glass">
+      <line x1="538" y1="500" x2="687.6" y2="500"/>
+      <line x1="538" y1="506" x2="687.6" y2="506"/>
+      <line x1="538" y1="512" x2="687.6" y2="512"/>
+      <line x1="587.9" y1="498" x2="587.9" y2="514"/>
+      <line x1="637.8" y1="498" x2="637.8" y2="514"/>
+    </g>
+    <!-- 入户双开门 -->
+    <line x1="391.8" y1="498" x2="391.8" y2="464" class="leaf"/>
+    <path d="M391.8 464 A34 34 0 0 1 425.8 498" class="swing"/>
+    <line x1="459.8" y1="498" x2="459.8" y2="464" class="leaf"/>
+    <path d="M459.8 464 A34 34 0 0 0 425.8 498" class="swing"/>
+
+    <!-- 隔墙:楼梯/粉卫核心 -->
+    <rect x="334" y="90" width="5" height="108.8" class="partition"/>
+    <rect x="517.6" y="90" width="5" height="108.8" class="partition"/>
+    <rect x="425.8" y="90" width="5" height="81.6" class="partition"/>
+    <!-- 核心南墙(留粉卫门洞;楼梯间敞开) -->
+    <rect x="334" y="198.8" width="51" height="5" class="partition"/>
+    <rect x="412.2" y="198.8" width="13.6" height="5" class="partition"/>
+    <!-- 粉卫门 -->
+    <line x1="385" y1="198.8" x2="385" y2="171.6" class="leaf"/>
+    <path d="M385 171.6 A27.2 27.2 0 0 1 412.2 198.8" class="swing"/>
+
+    <!-- 房间标注 -->
+    <text x="215" y="150" text-anchor="middle" class="room-name">厨房</text>
+    <text x="215" y="164" text-anchor="middle" class="room-en">KITCHEN · 约 42 ㎡</text>
+    <text x="215" y="440" text-anchor="middle" class="room-name">餐厅</text>
+    <text x="215" y="454" text-anchor="middle" class="room-en">DINING · 约 42 ㎡</text>
+    <text x="610" y="220" text-anchor="middle" class="room-name">客厅</text>
+    <text x="610" y="234" text-anchor="middle" class="room-en">LIVING · 约 86 ㎡</text>
+    <text x="455" y="420" text-anchor="middle" class="room-area">门厅 FOYER · 约 19 ㎡</text>
+    <text x="382" y="152" text-anchor="middle" class="room-area">粉卫</text>
+    <text x="382" y="163" text-anchor="middle" class="room-en">POWDER</text>
+
+    <!-- 尺寸:顶部三段 + 总宽 -->
+    <g class="dim-line">
+      <line x1="96" y1="62" x2="708" y2="62"/>
+      <line x1="96" y1="56" x2="96" y2="68"/><line x1="334" y1="56" x2="334" y2="68"/>
+      <line x1="517.6" y1="56" x2="517.6" y2="68"/><line x1="708" y1="56" x2="708" y2="68"/>
+    </g>
+    <line x1="96" y1="70" x2="96" y2="82" class="dim-ext"/>
+    <line x1="334" y1="70" x2="334" y2="90" class="dim-ext"/>
+    <line x1="517.6" y1="70" x2="517.6" y2="90" class="dim-ext"/>
+    <line x1="708" y1="70" x2="708" y2="82" class="dim-ext"/>
+    <text x="215" y="56" text-anchor="middle" class="dim-text">7.00</text>
+    <text x="425.8" y="56" text-anchor="middle" class="dim-text">5.40</text>
+    <text x="612.8" y="56" text-anchor="middle" class="dim-text">5.60</text>
+    <text x="402" y="40" text-anchor="middle" class="dim-text" font-size="11">总面宽 18.00 m</text>
+    <!-- 左侧总深 -->
+    <g class="dim-line">
+      <line x1="62" y1="90" x2="62" y2="498"/>
+      <line x1="56" y1="90" x2="68" y2="90"/><line x1="56" y1="498" x2="68" y2="498"/>
+    </g>
+    <line x1="70" y1="90" x2="88" y2="90" class="dim-ext"/>
+    <line x1="70" y1="498" x2="88" y2="498" class="dim-ext"/>
+    <text x="48" y="300" text-anchor="middle" class="dim-text" transform="rotate(-90 48 300)">总进深 12.00 m</text>
+
+    <!-- 指北针 -->
+    <circle cx="752" cy="120" r="17" fill="none" stroke="#8a7a66" stroke-width="1.4"/>
+    <path d="M752 108 L758 128 L752 123 L746 128 Z" fill="#8a3a32"/>
+    <text x="752" y="100" text-anchor="middle" class="dim-text" font-weight="700">N</text>
+
+    <!-- 比例尺 -->
+    <g>
+      <rect x="560" y="600" width="34" height="6" fill="#2b241f"/>
+      <rect x="594" y="600" width="34" height="6" fill="none" stroke="#2b241f" stroke-width="1"/>
+      <rect x="628" y="600" width="34" height="6" fill="#2b241f"/>
+      <rect x="662" y="600" width="34" height="6" fill="none" stroke="#2b241f" stroke-width="1"/>
+      <rect x="696" y="600" width="34" height="6" fill="#2b241f"/>
+      <text x="560" y="596" class="dim-text">0</text>
+      <text x="594" y="596" class="dim-text">1</text>
+      <text x="628" y="596" class="dim-text">2</text>
+      <text x="662" y="596" class="dim-text">3</text>
+      <text x="696" y="596" class="dim-text">4</text>
+      <text x="730" y="606" class="dim-text">5 m</text>
+    </g>
+  </svg>
+
+  <p class="notes">
+    <b>布局要点:</b>西厨东厅的开间式大空间,地面赤陶 Saltillo 通铺;厨房带中岛与北窗水槽;
+    楼梯与粉卫收进北墙中段的核心筒,不占采光面;客厅整面三扇推拉门朝南开向廊下露台——
+    加州式的室内外连通。入户双开拱门对景穿过餐厅直抵北窗。
+  </p>
+</section>
+
+<!-- ==================== 二楼 ==================== -->
+<section class="sheet">
+  <div class="floor-title">
+    <span class="badge">2F</span>
+    <h2>二楼 · 寝居层</h2>
+    <span class="en">MASTER BEDROOM / BATH</span>
+    <span class="area">建筑面积约 216 ㎡</span>
+  </div>
+
+  <svg viewBox="0 0 800 640" role="img" aria-label="二楼平面图">
+    <defs>
+      <pattern id="woodfl" width="34" height="9" patternUnits="userSpaceOnUse">
+        <rect width="34" height="9" fill="#e6d3ae"/>
+        <path d="M0 0H34" stroke="#cfae7e" stroke-width="1"/>
+      </pattern>
+      <pattern id="bathfl" width="17" height="17" patternUnits="userSpaceOnUse">
+        <rect width="17" height="17" fill="#e2e9e6"/>
+        <path d="M0 0H17M0 0V17" stroke="#c3d2cc" stroke-width="1"/>
+      </pattern>
+      <pattern id="rug2" width="10" height="10" patternUnits="userSpaceOnUse">
+        <rect width="10" height="10" fill="#ece2d2"/>
+        <circle cx="5" cy="5" r="1.2" fill="#d5c4ac"/>
+      </pattern>
+    </defs>
+
+    <!-- 南侧阳台 -->
+    <rect x="313.6" y="498" width="394.4" height="48" fill="url(#loggia)"/>
+    <rect x="313.6" y="498" width="394.4" height="48" fill="none" stroke="#a08b6c" stroke-width="1"/>
+    <line x1="313.6" y1="542" x2="708" y2="542" stroke="#8a7a66" stroke-width="2"/>
+    <text x="510" y="530" text-anchor="middle" class="room-area" fill="#8a7a5e">阳台 BALCONY(赠送)</text>
+
+    <!-- 房间地面 -->
+    <rect x="96" y="90" width="217.6" height="217.6" fill="url(#bathfl)"/>   <!-- 主卫 -->
+    <rect x="96" y="307.6" width="217.6" height="108.8" fill="#e9e0cd"/>    <!-- 衣帽间 -->
+    <rect x="96" y="416.4" width="217.6" height="81.6" fill="#e2ddd2"/>     <!-- 洗衣房 -->
+    <rect x="313.6" y="90" width="394.4" height="408" fill="url(#woodfl)"/> <!-- 卧室大区 -->
+    <rect x="313.6" y="90" width="203.2" height="183.6" fill="#e0d5bc"/>    <!-- 楼梯/过道 -->
+    <rect x="425.8" y="90" width="96.8" height="102" fill="#d8cbae"/>       <!-- 楼梯间 -->
+
+    <!-- 卧室地毯 -->
+    <rect x="430" y="278" width="220" height="188" fill="url(#rug2)" stroke="#c9b898" stroke-width="1"/>
+
+    <!-- 家具:主卫 -->
+    <rect x="98" y="92" width="81.6" height="81.6" class="furn"/>
+    <line x1="98" y1="173.6" x2="179.6" y2="92" class="furn-line"/>
+    <circle cx="138.8" cy="132.8" r="4" class="furn"/>
+    <text x="112" y="120" class="furn-label">淋浴房</text>
+    <rect x="184.4" y="92" width="95.2" height="24" class="furn"/>
+    <circle cx="215" cy="104" r="8" class="furn"/>
+    <circle cx="249" cy="104" r="8" class="furn"/>
+    <text x="196" y="130" class="furn-label">双台盆</text>
+    <rect x="130" y="239.6" width="68" height="40.8" rx="18" class="furn"/>
+    <rect x="138" y="247.6" width="52" height="24.8" rx="12" class="water"/>
+    <text x="136" y="298" class="furn-label">独立浴缸</text>
+    <rect x="282" y="92" width="28" height="20" class="furn"/>
+    <text x="284" y="128" class="furn-label">马桶</text>
+
+    <!-- 家具:衣帽间 -->
+    <g class="furn-line">
+      <line x1="100" y1="316" x2="100" y2="410"/>
+      <line x1="100" y1="322" x2="300" y2="322"/>
+      <line x1="100" y1="410" x2="300" y2="410"/>
+    </g>
+    <rect x="170" y="352" width="70" height="34" class="furn"/>
+    <text x="178" y="372" class="furn-label">中岛柜</text>
+    <text x="104" y="316" class="furn-label">挂衣杆</text>
+
+    <!-- 家具:洗衣房 -->
+    <rect x="100" y="430" width="34" height="34" class="furn"/>
+    <rect x="138" y="430" width="34" height="34" class="furn"/>
+    <circle cx="117" cy="447" r="9" class="furn-line"/>
+    <circle cx="155" cy="447" r="9" class="furn-line"/>
+    <rect x="200" y="430" width="50" height="24" class="furn"/>
+    <text x="104" y="480" class="furn-label">洗 / 烘</text>
+    <text x="204" y="446" class="furn-label">水槽</text>
+
+    <!-- 家具:卧室 -->
+    <rect x="544.8" y="290.6" width="71.4" height="10" class="furn"/>
+    <rect x="544.8" y="300.6" width="71.4" height="68" class="furn"/>
+    <rect x="551" y="306" width="26" height="16" class="furn"/>
+    <rect x="584" y="306" width="26" height="16" class="furn"/>
+    <text x="562" y="340" class="furn-label">双人床</text>
+    <rect x="510" y="296" width="24" height="20" class="furn"/>
+    <rect x="627" y="296" width="24" height="20" class="furn"/>
+    <rect x="551" y="378" width="60" height="16" class="furn"/>
+    <text x="560" y="390" class="furn-label">床尾凳</text>
+    <circle cx="400" cy="430" r="20" class="furn"/>
+    <rect x="360" y="412" width="22" height="22" class="furn"/>
+    <rect x="418" y="412" width="22" height="22" class="furn"/>
+    <text x="384" y="466" class="furn-label">起居角</text>
+    <rect x="680" y="192" width="20" height="80" class="furn"/>
+    <text x="660" y="236" class="furn-label">斗柜</text>
+
+    <!-- 家具:楼梯(直跑,向南下行) -->
+    <g class="furn-line">
+      <line x1="425.8" y1="102" x2="517.6" y2="102"/>
+      <line x1="425.8" y1="112" x2="517.6" y2="112"/>
+      <line x1="425.8" y1="122" x2="517.6" y2="122"/>
+      <line x1="425.8" y1="132" x2="517.6" y2="132"/>
+      <line x1="425.8" y1="142" x2="517.6" y2="142"/>
+      <line x1="425.8" y1="152" x2="517.6" y2="152"/>
+      <line x1="425.8" y1="162" x2="517.6" y2="162"/>
+      <line x1="425.8" y1="172" x2="517.6" y2="172"/>
+      <line x1="425.8" y1="182" x2="517.6" y2="182"/>
+    </g>
+    <line x1="471.7" y1="96" x2="471.7" y2="192" class="furn-line" stroke-width="1.6"/>
+    <path d="M466 184 L471.7 194 L477.4 184" class="furn-line" stroke-width="1.6"/>
+    <text x="478" y="150" class="furn-label">下 1F</text>
+
+    <!-- 外墙 -->
+    <rect x="88" y="82" width="628" height="424" class="wall-cut"/>
+    <!-- 北墙窗:主卫 / 楼梯高窗 -->
+    <rect x="184.4" y="80" width="68" height="20" class="gap"/>
+    <rect x="453" y="80" width="34" height="20" class="gap"/>
+    <!-- 西墙窗:主卫 -->
+    <rect x="86" y="205.6" width="20" height="61.2" class="gap"/>
+    <!-- 东墙窗:卧室两扇 -->
+    <rect x="698" y="192" width="20" height="68" class="gap"/>
+    <rect x="698" y="345" width="20" height="68" class="gap"/>
+    <!-- 南墙:卧室落地推拉门 + 洗衣房小窗 -->
+    <rect x="531.2" y="494" width="136" height="24" class="gap"/>
+    <rect x="147" y="494" width="51" height="24" class="gap"/>
+
+    <g class="win-glass">
+      <line x1="184.4" y1="86" x2="252.4" y2="86"/><line x1="184.4" y1="94" x2="252.4" y2="94"/>
+      <line x1="453" y1="86" x2="487" y2="86"/><line x1="453" y1="94" x2="487" y2="94"/>
+      <line x1="92" y1="205.6" x2="92" y2="266.8"/><line x1="100" y1="205.6" x2="100" y2="266.8"/>
+      <line x1="704" y1="192" x2="704" y2="260"/><line x1="712" y1="192" x2="712" y2="260"/>
+      <line x1="704" y1="345" x2="704" y2="413"/><line x1="712" y1="345" x2="712" y2="413"/>
+      <line x1="147" y1="500" x2="198" y2="500"/><line x1="147" y1="512" x2="198" y2="512"/>
+    </g>
+    <!-- 卧室落地推拉门(两扇) -->
+    <g class="win-glass">
+      <line x1="531.2" y1="500" x2="667.2" y2="500"/>
+      <line x1="531.2" y1="506" x2="667.2" y2="506"/>
+      <line x1="531.2" y1="512" x2="667.2" y2="512"/>
+      <line x1="599.2" y1="498" x2="599.2" y2="514"/>
+    </g>
+
+    <!-- 隔墙 -->
+    <!-- 西条带(主卫/衣帽间/洗衣房)与卧室之间 -->
+    <rect x="313.6" y="90" width="5" height="190" class="partition"/>
+    <rect x="313.6" y="307.6" width="5" height="47.6" class="partition"/>
+    <rect x="313.6" y="382.4" width="5" height="47.6" class="partition"/>
+    <rect x="313.6" y="457.2" width="5" height="40.8" class="partition"/>
+    <!-- 主卫 / 衣帽间 / 洗衣房 之间 -->
+    <rect x="96" y="307.6" width="217.6" height="5" class="partition"/>
+    <rect x="96" y="416.4" width="217.6" height="5" class="partition"/>
+    <!-- 楼梯间 -->
+    <rect x="425.8" y="90" width="5" height="102" class="partition"/>
+    <rect x="517.6" y="90" width="5" height="102" class="partition"/>
+    <rect x="425.8" y="192" width="19" height="5" class="partition"/>
+    <rect x="476.8" y="192" width="40.8" height="5" class="partition"/>
+    <!-- 过道南墙(留卧室门洞) -->
+    <rect x="313.6" y="273.6" width="36.4" height="5" class="partition"/>
+    <rect x="384" y="273.6" width="133.6" height="5" class="partition"/>
+
+    <!-- 门:主卫 / 衣帽间 / 洗衣房 / 卧室 -->
+    <line x1="313.6" y1="280" x2="340.8" y2="280" class="leaf"/>
+    <path d="M340.8 280 A27.2 27.2 0 0 0 313.6 307.2" class="swing"/>
+    <line x1="313.6" y1="355.2" x2="340.8" y2="355.2" class="leaf"/>
+    <path d="M340.8 355.2 A27.2 27.2 0 0 0 313.6 382.4" class="swing"/>
+    <line x1="313.6" y1="430" x2="340.8" y2="430" class="leaf"/>
+    <path d="M340.8 430 A27.2 27.2 0 0 0 313.6 457.2" class="swing"/>
+    <line x1="350" y1="273.6" x2="350" y2="300.8" class="leaf"/>
+    <path d="M350 300.8 A27.2 27.2 0 0 0 377.2 273.6" class="swing"/>
+
+    <!-- 房间标注 -->
+    <text x="205" y="205" text-anchor="middle" class="room-name">主卫</text>
+    <text x="205" y="219" text-anchor="middle" class="room-en">MASTER BATH · 约 41 ㎡</text>
+    <text x="205" y="368" text-anchor="middle" class="room-name">衣帽间</text>
+    <text x="205" y="382" text-anchor="middle" class="room-en">WALK-IN CLOSET · 约 20 ㎡</text>
+    <text x="205" y="462" text-anchor="middle" class="room-area">洗衣房 LAUNDRY · 约 15 ㎡</text>
+    <text x="560" y="220" text-anchor="middle" class="room-name">主卧</text>
+    <text x="560" y="234" text-anchor="middle" class="room-en">MASTER BEDROOM · 约 105 ㎡(含起居角)</text>
+    <text x="365" y="240" text-anchor="middle" class="room-area">过道</text>
+    <text x="365" y="251" text-anchor="middle" class="room-en">LANDING</text>
+
+    <!-- 尺寸 -->
+    <g class="dim-line">
+      <line x1="96" y1="62" x2="708" y2="62"/>
+      <line x1="96" y1="56" x2="96" y2="68"/><line x1="708" y1="56" x2="708" y2="68"/>
+    </g>
+    <text x="402" y="56" text-anchor="middle" class="dim-text" font-size="11">总面宽 18.00 m</text>
+    <g class="dim-line">
+      <line x1="62" y1="90" x2="62" y2="498"/>
+      <line x1="56" y1="90" x2="68" y2="90"/><line x1="56" y1="498" x2="68" y2="498"/>
+    </g>
+    <text x="48" y="300" text-anchor="middle" class="dim-text" transform="rotate(-90 48 300)">总进深 12.00 m</text>
+
+    <circle cx="752" cy="120" r="17" fill="none" stroke="#8a7a66" stroke-width="1.4"/>
+    <path d="M752 108 L758 128 L752 123 L746 128 Z" fill="#8a3a32"/>
+    <text x="752" y="100" text-anchor="middle" class="dim-text" font-weight="700">N</text>
+  </svg>
+
+  <p class="notes">
+    <b>布局要点:</b>整层即一套主卧套房。西侧竖条依次是主卫(淋浴 + 双台盆 + 独立浴缸 + 马桶)、
+    衣帽间、洗衣房;东侧整开间是卧室,蜜橡木地板,床居中南向,床尾落地窗直通南向阳台。
+    楼梯间位置与一楼、负一楼上下对齐,结构柱网一致。
+  </p>
+</section>
+
+<!-- ==================== 负一楼 ==================== -->
+<section class="sheet">
+  <div class="floor-title">
+    <span class="badge">B1</span>
+    <h2>负一楼 · 娱乐层</h2>
+    <span class="en">ENTERTAINMENT LEVEL</span>
+    <span class="area">建筑面积约 216 ㎡</span>
+  </div>
+
+  <svg viewBox="0 0 800 640" role="img" aria-label="负一楼平面图">
+    <defs>
+      <pattern id="b1fl" width="20" height="20" patternUnits="userSpaceOnUse">
+        <rect width="20" height="20" fill="#e3dccd"/>
+        <path d="M0 0H20M0 0V20" stroke="#cfc4ae" stroke-width="0.8"/>
+      </pattern>
+      <pattern id="theaterfl" width="10" height="10" patternUnits="userSpaceOnUse">
+        <rect width="10" height="10" fill="#d9d0c0"/>
+        <circle cx="5" cy="5" r="1" fill="#c2b6a2"/>
+      </pattern>
+      <pattern id="well" width="10" height="10" patternUnits="userSpaceOnUse">
+        <rect width="10" height="10" fill="#eef0e4"/>
+        <path d="M0 10L10 0" stroke="#b9c4a4" stroke-width="1"/>
+      </pattern>
+    </defs>
+
+    <!-- 南侧采光井 -->
+    <rect x="313.6" y="498" width="204" height="48" fill="url(#well)"/>
+    <rect x="313.6" y="498" width="204" height="48" fill="none" stroke="#a08b6c" stroke-width="1" stroke-dasharray="5 3"/>
+    <text x="415.6" y="527" text-anchor="middle" class="room-area" fill="#7a8462">采光井 LIGHT WELL</text>
+
+    <!-- 房间地面 -->
+    <rect x="96" y="90" width="612" height="408" fill="url(#b1fl)"/>
+    <rect x="517.6" y="90" width="190.4" height="306" fill="url(#theaterfl)"/>  <!-- 影音室 -->
+    <rect x="96" y="246.4" width="108.8" height="136" fill="#e6ddcb"/>         <!-- 酒窖 -->
+    <rect x="425.8" y="90" width="96.8" height="102" fill="#d8cbae"/>          <!-- 楼梯间 -->
+
+    <!-- 家具:酒吧 -->
+    <rect x="98" y="92" width="200" height="10" class="furn"/>
+    <rect x="98" y="102" width="200" height="26" class="furn"/>
+    <text x="104" y="100" class="furn-label">背柜酒架</text>
+    <text x="180" y="119" class="furn-label">吧台</text>
+    <circle cx="140" cy="150" r="9" class="furn"/>
+    <circle cx="190" cy="150" r="9" class="furn"/>
+    <circle cx="240" cy="150" r="9" class="furn"/>
+    <rect x="98" y="180" width="60" height="40" class="furn"/>
+    <text x="106" y="203" class="furn-label">卡座</text>
+
+    <!-- 家具:酒窖(墙面酒架) -->
+    <g class="furn-line">
+      <line x1="100" y1="252" x2="200" y2="252"/>
+      <line x1="100" y1="258" x2="200" y2="258"/>
+      <line x1="100" y1="376" x2="200" y2="376"/>
+      <line x1="100" y1="370" x2="200" y2="370"/>
+      <line x1="100" y1="252" x2="100" y2="376"/>
+      <line x1="106" y1="252" x2="106" y2="376"/>
+    </g>
+    <text x="118" y="318" class="furn-label">恒温酒架</text>
+
+    <!-- 家具:台球区 -->
+    <rect x="361.2" y="273.6" width="95.2" height="54.4" class="furn"/>
+    <rect x="368" y="280.4" width="81.6" height="40.8" fill="#7a9a7a" stroke="#7a6a58" stroke-width="1.2"/>
+    <circle cx="368" cy="280.4" r="2.4" fill="#7a6a58"/><circle cx="449.6" cy="280.4" r="2.4" fill="#7a6a58"/>
+    <circle cx="368" cy="321.2" r="2.4" fill="#7a6a58"/><circle cx="449.6" cy="321.2" r="2.4" fill="#7a6a58"/>
+    <circle cx="408.8" cy="280.4" r="2.4" fill="#7a6a58"/><circle cx="408.8" cy="321.2" r="2.4" fill="#7a6a58"/>
+    <text x="384" y="345" class="furn-label">台球桌</text>
+
+    <!-- 家具:健身房(西段并入,整面南墙镜) -->
+    <rect x="130" y="392" width="34" height="54" class="furn"/>
+    <text x="132" y="421" class="furn-label">跑步机</text>
+    <circle cx="230" cy="420" r="14" class="furn"/>
+    <text x="216" y="448" class="furn-label">单车</text>
+    <rect x="330" y="392" width="52" height="80" class="furn"/>
+    <text x="338" y="436" class="furn-label">瑜伽垫</text>
+    <rect x="440" y="392" width="70" height="24" class="furn"/>
+    <text x="448" y="407" class="furn-label">器械架</text>
+    <line x1="100" y1="492" x2="514" y2="492" stroke="#b8c8cc" stroke-width="4"/>
+    <text x="106" y="488" class="furn-label">镜面墙</text>
+
+    <!-- 家具:影音室 -->
+    <rect x="544.8" y="94" width="136" height="8" fill="#3d3228"/>
+    <text x="612" y="86" text-anchor="middle" class="furn-label">180″ 幕布</text>
+    <line x1="524" y1="200" x2="702" y2="200" class="furn-line"/>
+    <line x1="524" y1="290" x2="702" y2="290" class="furn-line"/>
+    <rect x="544.8" y="212" width="34" height="40" class="furn"/>
+    <rect x="595.2" y="212" width="34" height="40" class="furn"/>
+    <rect x="645.6" y="212" width="34" height="40" class="furn"/>
+    <rect x="544.8" y="302" width="34" height="40" class="furn"/>
+    <rect x="595.2" y="302" width="34" height="40" class="furn"/>
+    <rect x="645.6" y="302" width="34" height="40" class="furn"/>
+    <text x="548" y="236" class="furn-label">躺椅</text>
+    <text x="548" y="326" class="furn-label">躺椅</text>
+    <text x="524" y="196" class="furn-label">台阶式地台</text>
+
+    <!-- 家具:休息区 -->
+    <rect x="544.8" y="440" width="102" height="34" class="furn"/>
+    <rect x="565.6" y="414" width="40.8" height="20" class="furn"/>
+    <text x="572" y="460" class="furn-label">沙发</text>
+    <text x="566" y="428" class="furn-label">棋牌桌</text>
+
+    <!-- 家具:储物间 -->
+    <g class="furn-line">
+      <line x1="212" y1="252" x2="306" y2="252"/>
+      <line x1="212" y1="258" x2="306" y2="258"/>
+      <line x1="212" y1="370" x2="306" y2="370"/>
+    </g>
+    <text x="232" y="318" class="furn-label">储物架</text>
+
+    <!-- 家具:楼梯(直跑,向南下行) -->
+    <g class="furn-line">
+      <line x1="425.8" y1="102" x2="517.6" y2="102"/>
+      <line x1="425.8" y1="112" x2="517.6" y2="112"/>
+      <line x1="425.8" y1="122" x2="517.6" y2="122"/>
+      <line x1="425.8" y1="132" x2="517.6" y2="132"/>
+      <line x1="425.8" y1="142" x2="517.6" y2="142"/>
+      <line x1="425.8" y1="152" x2="517.6" y2="152"/>
+      <line x1="425.8" y1="162" x2="517.6" y2="162"/>
+      <line x1="425.8" y1="172" x2="517.6" y2="172"/>
+      <line x1="425.8" y1="182" x2="517.6" y2="182"/>
+    </g>
+    <line x1="471.7" y1="96" x2="471.7" y2="192" class="furn-line" stroke-width="1.6"/>
+    <path d="M466 184 L471.7 194 L477.4 184" class="furn-line" stroke-width="1.6"/>
+    <text x="478" y="150" class="furn-label">下 B1</text>
+
+    <!-- 外墙(地下室外墙加厚) -->
+    <rect x="86" y="80" width="632" height="428" fill="none" stroke="#2b241f" stroke-width="20"/>
+
+    <!-- 隔墙 -->
+    <!-- 酒吧南墙(整体;酒吧向东朝台球区敞开) -->
+    <rect x="96" y="246.4" width="217.6" height="5" class="partition"/>
+    <!-- 酒窖 -->
+    <rect x="204.8" y="246.4" width="5" height="54.4" class="partition"/>
+    <rect x="204.8" y="334.8" width="5" height="47.6" class="partition"/>
+    <rect x="96" y="382.4" width="113.8" height="5" class="partition"/>
+    <!-- 储物间 -->
+    <rect x="204.8" y="382.4" width="108.8" height="5" class="partition"/>
+    <!-- 健身房北墙(留宽门洞) -->
+    <rect x="313.6" y="382.4" width="54.4" height="5" class="partition"/>
+    <rect x="470" y="382.4" width="47.6" height="5" class="partition"/>
+    <!-- 影音室 -->
+    <rect x="517.6" y="90" width="5" height="156.4" class="partition"/>
+    <rect x="517.6" y="273.6" width="5" height="122.4" class="partition"/>
+    <rect x="517.6" y="396" width="190.4" height="5" class="partition"/>
+    <!-- 楼梯间 -->
+    <rect x="425.8" y="90" width="5" height="102" class="partition"/>
+    <rect x="517.6" y="90" width="5" height="102" class="partition"/>
+    <rect x="425.8" y="192" width="19" height="5" class="partition"/>
+    <rect x="476.8" y="192" width="40.8" height="5" class="partition"/>
+
+    <!-- 门:酒窖(玻璃)/ 储物间 / 影音室(隔声) -->
+    <line x1="204.8" y1="300.8" x2="238.4" y2="300.8" class="leaf" stroke="#5a7a90"/>
+    <path d="M238.4 300.8 A33.6 33.6 0 0 0 204.8 334.4" class="swing"/>
+    <line x1="238.4" y1="382.4" x2="238.4" y2="355.2" class="leaf"/>
+    <path d="M238.4 355.2 A27.2 27.2 0 0 1 265.6 382.4" class="swing"/>
+    <line x1="517.6" y1="246.4" x2="544.8" y2="246.4" class="leaf"/>
+    <path d="M544.8 246.4 A27.2 27.2 0 0 0 517.6 273.6" class="swing"/>
+
+    <!-- 房间标注 -->
+    <text x="200" y="180" text-anchor="middle" class="room-name">酒吧</text>
+    <text x="200" y="194" text-anchor="middle" class="room-en">BAR · 约 25 ㎡</text>
+    <text x="150" y="300" text-anchor="middle" class="room-area">酒窖</text>
+    <text x="150" y="311" text-anchor="middle" class="room-en">WINE · 约 12 ㎡</text>
+    <text x="259" y="300" text-anchor="middle" class="room-area">储物间</text>
+    <text x="259" y="311" text-anchor="middle" class="room-en">STORAGE</text>
+    <text x="408" y="240" text-anchor="middle" class="room-name">台球区</text>
+    <text x="408" y="254" text-anchor="middle" class="room-en">BILLIARDS · 约 35 ㎡</text>
+    <text x="300" y="470" text-anchor="middle" class="room-name">健身房</text>
+    <text x="300" y="484" text-anchor="middle" class="room-en">GYM · 约 40 ㎡</text>
+    <text x="612" y="160" text-anchor="middle" class="room-name">影音室</text>
+    <text x="612" y="174" text-anchor="middle" class="room-en">HOME THEATER · 约 50 ㎡</text>
+    <text x="612" y="492" text-anchor="middle" class="room-area">休息区 LOUNGE</text>
+    <text x="365" y="240" text-anchor="middle" class="room-area">过道</text>
+
+    <!-- 尺寸 -->
+    <g class="dim-line">
+      <line x1="96" y1="62" x2="708" y2="62"/>
+      <line x1="96" y1="56" x2="96" y2="68"/><line x1="708" y1="56" x2="708" y2="68"/>
+    </g>
+    <text x="402" y="56" text-anchor="middle" class="dim-text" font-size="11">总面宽 18.00 m</text>
+    <g class="dim-line">
+      <line x1="62" y1="90" x2="62" y2="498"/>
+      <line x1="56" y1="90" x2="68" y2="90"/><line x1="56" y1="498" x2="68" y2="498"/>
+    </g>
+    <text x="48" y="300" text-anchor="middle" class="dim-text" transform="rotate(-90 48 300)">总进深 12.00 m</text>
+
+    <circle cx="752" cy="120" r="17" fill="none" stroke="#8a7a66" stroke-width="1.4"/>
+    <path d="M752 108 L758 128 L752 123 L746 128 Z" fill="#8a3a32"/>
+    <text x="752" y="100" text-anchor="middle" class="dim-text" font-weight="700">N</text>
+  </svg>
+
+  <p class="notes">
+    <b>布局要点:</b>出楼梯即是台球区,整个娱乐层环绕它展开——西北酒吧 + 恒温酒窖(玻璃门),
+    东侧台阶式地台影音室(隔声门),南侧健身房整面镜墙,并借南向采光井引入自然光;
+    影音室下方留一间休息区,看完电影直接转场棋牌。
+  </p>
+</section>
+
+<!-- ==================== 面积表 + 图例 ==================== -->
+<section class="sheet">
+  <div class="floor-title">
+    <span class="badge">Σ</span>
+    <h2>面积汇总与图例</h2>
+    <span class="en">AREA SCHEDULE / LEGEND</span>
+  </div>
+
+  <table class="spec">
+    <tr><th>楼层</th><th>功能</th><th>面积(约)</th><th>材料要点</th></tr>
+    <tr><td rowspan="4">1F 社交层</td><td>厨房</td><td>42 ㎡</td><td>赤陶 Saltillo 地、浅木台面、黑钢灶</td></tr>
+    <tr><td>餐厅</td><td>42 ㎡</td><td>Saltillo 通铺</td></tr>
+    <tr><td>客厅(含门厅)</td><td>105 ㎡</td><td>三扇推拉门 → 廊下露台</td></tr>
+    <tr><td>粉卫 / 楼梯</td><td>27 ㎡</td><td>核心筒贴北墙</td></tr>
+    <tr><td rowspan="4">2F 寝居层</td><td>主卧(含起居角)</td><td>105 ㎡</td><td>蜜橡木地板、南向阳台</td></tr>
+    <tr><td>主卫</td><td>41 ㎡</td><td>独立浴缸、双台盆、玻璃淋浴</td></tr>
+    <tr><td>衣帽间</td><td>20 ㎡</td><td>环墙挂杆 + 中岛柜</td></tr>
+    <tr><td>洗衣房 / 过道</td><td>50 ㎡</td><td>洗烘并排 + 水槽</td></tr>
+    <tr><td rowspan="6">B1 娱乐层</td><td>影音室</td><td>50 ㎡</td><td>台阶地台、180″ 幕布、隔声门</td></tr>
+    <tr><td>酒吧</td><td>25 ㎡</td><td>吧台 + 背柜酒架 + 卡座</td></tr>
+    <tr><td>酒窖</td><td>12 ㎡</td><td>恒温、玻璃门</td></tr>
+    <tr><td>台球区</td><td>35 ㎡</td><td>娱乐层枢纽</td></tr>
+    <tr><td>健身房</td><td>40 ㎡</td><td>整面南墙镜、采光井采光</td></tr>
+    <tr><td>休息区 / 储物 / 楼梯</td><td>54 ㎡</td><td>—</td></tr>
+    <tr><th colspan="2">合计(含墙体)</th><th colspan="2">约 648 ㎡ · 占地 216 ㎡</th></tr>
+  </table>
+
+  <div class="legend-grid">
+    <div class="item"><span class="swatch" style="background:#2b241f"></span>承重 / 外墙(地下室加厚)</div>
+    <div class="item"><span class="swatch" style="background:linear-gradient(90deg,#2b241f 0 15%,#f6efe2 15% 85%,#2b241f 85%)"></span>门洞 + 门扇开启方向</div>
+    <div class="item"><span class="swatch" style="background:repeating-linear-gradient(0deg,#f6efe2 0 4px,#2b241f 4px 5px,#f6efe2 5px 9px,#2b241f 9px 10px)"></span>窗(双线玻璃)</div>
+    <div class="item"><span class="swatch" style="background:repeating-linear-gradient(0deg,#f6efe2 0 2px,#2b241f 2px 3px,#f6efe2 3px 5px,#2b241f 5px 6px,#f6efe2 6px 8px,#2b241f 8px 9px)"></span>落地推拉门(三线)</div>
+    <div class="item"><span class="swatch" style="background:#efdfc2"></span>赤陶 Saltillo(1F)</div>
+    <div class="item"><span class="swatch" style="background:#e6d3ae"></span>蜜橡木地板(2F)</div>
+    <div class="item"><span class="swatch" style="background:#e2e9e6"></span>卫浴地砖(2F)</div>
+    <div class="item"><span class="swatch" style="background:#7ec8d4"></span>水面(浴缸)</div>
+    <div class="item"><span class="swatch" style="background:#e8dcc0"></span>廊下露台 / 阳台</div>
+    <div class="item"><span class="swatch" style="background:#eef0e4"></span>采光井(B1)</div>
+  </div>
+
+  <p class="notes" style="margin-top:16px">
+    <b>设计说明:</b>西班牙复兴 × 加州现代。地上两层与「乐园」小屋同构——一楼西厨东厅、二楼西浴东卧、
+    楼梯同一位置;负一楼是本次新增的娱乐层。三层楼梯间上下对齐,结构落柱一致;
+    南向依次是廊下露台(1F)、阳台(2F)、采光井(B1),把加州的阳光一路引到地下。
+  </p>
+</section>
+
+<footer>CALIFORNIA SPANISH REVIVAL · FLOOR PLANS · 18.0 × 12.0 M FOOTPRINT</footer>
+
+</body>
+</html>
