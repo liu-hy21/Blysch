@@ -12,7 +12,7 @@ export default async function AppLayout({
       <a href="#main" className="skip-link">
         跳到正文
       </a>
-      <main id="main" className="min-h-0 flex-1 overflow-y-auto">
+      <main id="main" className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {children}
       </main>
       <BottomNav />

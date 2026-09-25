@@ -1,5 +1,6 @@
 export const PARK_MODELS = {
   yard: "/models/park/yard.glb",
+  b1: "/models/park/house-b1.glb",
   l1: "/models/park/house-l1.glb",
   l2: "/models/park/house-l2.glb",
 } as const;

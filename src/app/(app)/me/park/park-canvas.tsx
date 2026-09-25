@@ -5,10 +5,13 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Suspense, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Box3, Group, OrthographicCamera, Sphere, Vector3 } from "three";
 import { PARK_MODELS } from "@/lib/park/models";
+import { parkDioramaUrls } from "@/lib/park/places";
 
 useGLTF.preload(PARK_MODELS.yard);
+useGLTF.preload(PARK_MODELS.b1);
 useGLTF.preload(PARK_MODELS.l1);
 useGLTF.preload(PARK_MODELS.l2);
+for (const src of parkDioramaUrls()) useGLTF.preload(src);
 
 function FittedModel({
   url,

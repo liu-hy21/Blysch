@@ -331,18 +331,19 @@ h2 {
 
 .dream-stage {
   display: flex;
-  justify-content: center;
-  overflow-x: auto;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .dream-scene {
   position: relative;
-  width: min(100%, 520px);
-  height: min(72vw, 560px);
-  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+  border-bottom: 0;
+  box-shadow: none;
   background: #e8ecee;
 }
 

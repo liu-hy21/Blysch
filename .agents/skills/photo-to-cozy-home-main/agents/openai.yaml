@@ -1,0 +1,4 @@
+interface:
+  display_name: "照片变成互动小家"
+  short_description: "从家庭照片推导户型，制作暖色 Q 版三维小家，并通过简短确认补齐空间信息"
+  default_prompt: "使用 $photo-to-cozy-home，根据我提供的家庭照片还原户型并制作可互动的暖色 Q 版小家；请先检查是否有户型图，没有就推算，并向我确认关键缺失信息。"

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { startTransition, useState, ViewTransition, type ReactNode } from "react";
 import { PixelPet } from "@/components/pets/pixel-pet";
 import { BackBar } from "../back-bar";
@@ -10,7 +11,14 @@ import {
   type DreamRoom,
   type DreamScene,
 } from "@/lib/dream-furniture";
-import { PARK_MODELS } from "@/lib/park/models";
+import {
+  PARK_PLACES,
+  parkModelFor,
+  parkPlaceById,
+  parkPlaceHref,
+  type ParkPlaceId,
+  type Story,
+} from "@/lib/park/places";
 import type { SerializedPet } from "@/lib/pet-rules";
 import { cn, todayKey } from "@/lib/utils";
 
@@ -20,7 +28,6 @@ const ParkCanvas = dynamic(
 );
 
 type DreamPet = SerializedPet & { room: DreamRoom };
-type Story = 0 | 1 | 2;
 type Spot = { top: string; left: string };
 
 const PET_SPOTS: Record<DreamRoom, Spot[]> = {
@@ -96,11 +103,49 @@ function FloorBtn({
         "inline-flex h-11 min-w-11 items-center justify-center border-2 border-ink px-2 text-sm",
         disabled
           ? "cursor-default bg-[#efe6d4] text-[#c4b49c] shadow-none"
-          : "bg-gold text-ink shadow-[3px_3px_0_var(--ink)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none",
+          : "bg-gold text-ink shadow-[3px_3px_0_var(--ink)] active:translate-x-0.75 active:translate-y-0.75 active:shadow-none",
       )}
     >
       {label}
     </button>
+  );
+}
+
+function PlaceBar({
+  value,
+  onChange,
+}: {
+  value: ParkPlaceId;
+  onChange: (id: ParkPlaceId) => void;
+}) {
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 p-2">
+      <div
+        role="toolbar"
+        aria-label="地点"
+        className="pointer-events-auto flex gap-2 overflow-x-auto"
+      >
+        {PARK_PLACES.map((place) => {
+          const on = value === place.id;
+          return (
+            <button
+              key={place.id}
+              type="button"
+              aria-pressed={on}
+              aria-current={on ? "location" : undefined}
+              aria-label={`前往${place.title}`}
+              onClick={() => onChange(place.id)}
+              className={cn(
+                "pixel-chip min-h-11 shrink-0 px-3 text-xs shadow-[3px_3px_0_var(--ink)]",
+                on ? "is-on" : "bg-card text-ink-soft",
+              )}
+            >
+              {place.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -114,7 +159,7 @@ function ParkFrame({
   children?: ReactNode;
 }) {
   return (
-    <div className="dream-stage -mx-5">
+    <div className="dream-stage h-full min-h-0">
       <div className="dream-scene" role="group" aria-label={label}>
         <div className="absolute inset-0">
           <ParkCanvas src={model} />
@@ -125,73 +170,19 @@ function ParkFrame({
   );
 }
 
-function YardScene({
-  pets,
-  label,
-  onEnter,
-}: {
-  pets: DreamPet[];
-  label: string;
-  onEnter: () => void;
-}) {
-  const here = placedPets(pets, "yard");
-  return (
-    <ParkFrame label={label} model={PARK_MODELS.yard}>
-      <button
-        type="button"
-        aria-label="进屋"
-        onClick={onEnter}
-        className="dream-door-hotspot absolute z-30 cursor-pointer"
-        style={{ left: "42%", top: "34%", width: "16%", height: "22%", minHeight: 44 }}
-      />
-      {here.map((p) => (
-        <PetMarker key={p.id} pet={p} spot={p.spot} />
-      ))}
-    </ParkFrame>
-  );
-}
-
-function HouseScene({
-  story,
-  pets,
-  label,
-  onLeave,
-}: {
-  story: Story;
-  pets: DreamPet[];
-  label: string;
-  onLeave: () => void;
-}) {
-  const indoor = STORY_ROOMS[story].flatMap((room) => placedPets(pets, room));
-  const model =
-    story === 1 ? PARK_MODELS.l1 : story === 2 ? PARK_MODELS.l2 : null;
-  return (
-    <ParkFrame label={label} model={model}>
-      {story === 1 ? (
-        <button
-          type="button"
-          aria-label="出门"
-          onClick={onLeave}
-          className="dream-door-hotspot absolute z-30 cursor-pointer"
-          style={{ left: "40%", top: "70%", width: "20%", height: "22%", minHeight: 44 }}
-        />
-      ) : null}
-      {indoor.map((p) => (
-        <PetMarker key={p.id} pet={p} spot={p.spot} />
-      ))}
-    </ParkFrame>
-  );
-}
-
 export function DreamClient({
   coupleId,
   mine,
   partner,
+  initialPlace,
 }: {
   coupleId: string;
   mine: SerializedPet | null;
   partner: SerializedPet | null;
+  initialPlace: ParkPlaceId;
 }) {
+  const router = useRouter();
+  const [place, setPlace] = useState<ParkPlaceId>(initialPlace);
   const [scene, setScene] = useState<DreamScene>("yard");
   const [story, setStory] = useState<Story>(1);
   const dateKey = todayKey();
@@ -202,15 +193,41 @@ export function DreamClient({
       room: dreamRoom(coupleId, p.id, dateKey),
     }));
 
-  const where = pets.map((p) => `${p.name}在${ROOM_LABEL[p.room]}`).join("，");
-  const label =
-    scene === "yard"
+  const atHome = place === "home";
+  const current = parkPlaceById(place);
+  const where = atHome
+    ? pets.map((p) => `${p.name}在${ROOM_LABEL[p.room]}`).join("，")
+    : "";
+  const label = !atHome
+    ? current.title
+    : scene === "yard"
       ? `室外院子${where ? `，${where}` : ""}`
       : story === 0
         ? "负一楼娱乐层"
         : story === 1
           ? `一楼厨房与客厅${where ? `，${where}` : ""}`
           : `二楼浴室与卧室${where ? `，${where}` : ""}`;
+  const hint = !atHome
+    ? `在${current.title}`
+    : scene === "yard"
+      ? "点屋门进屋"
+      : "点门口出门";
+  const model = parkModelFor(place, scene, story);
+  const indoor = STORY_ROOMS[story].flatMap((room) => placedPets(pets, room));
+  const yardPets = placedPets(pets, "yard");
+  const viewKey = `${place}-${scene}-${story}`;
+
+  function goPlace(next: ParkPlaceId) {
+    if (next === place) return;
+    startTransition(() => {
+      setPlace(next);
+      if (next === "home") {
+        setStory(1);
+        setScene("yard");
+      }
+      router.replace(parkPlaceHref(next), { scroll: false });
+    });
+  }
 
   function goYard() {
     startTransition(() => {
@@ -231,49 +248,63 @@ export function DreamClient({
   }
 
   return (
-    <div className="px-5 pb-8 pt-6">
-      <BackBar title="乐园" href="/me" />
-      <p className="mb-3 flex items-center text-xs text-ink-soft">
-        {scene === "yard" ? (
-          "点屋门进屋"
-        ) : (
-          <>
-            点门口出门
-            <span className="ml-3 inline-flex gap-1">
-              <FloorBtn
-                label="上"
-                ariaLabel="上楼"
-                disabled={story === 2}
-                onClick={() => goStory((story + 1) as Story)}
+    <div className="flex min-h-0 flex-1 flex-col pt-6">
+      <div className="px-5">
+        <BackBar title="乐园" href="/me" />
+        <p className="mb-3 text-xs text-ink-soft">{hint}</p>
+        {pets.length === 0 ? (
+          <p className="mb-3 text-sm text-ink-soft">还没有人认养宠物。</p>
+        ) : null}
+      </div>
+      <div className="relative min-h-0 flex-1">
+        <div className="h-full min-h-0">
+          <ViewTransition enter="fade-in" exit="fade-out" default="none">
+            <ParkFrame key={viewKey} label={label} model={model}>
+            {atHome && scene === "yard" ? (
+              <button
+                type="button"
+                aria-label="进屋"
+                onClick={goHouse}
+                className="dream-door-hotspot absolute z-30 cursor-pointer"
+                style={{ left: "42%", top: "34%", width: "16%", height: "22%", minHeight: 44 }}
               />
-              <FloorBtn
-                label="下"
-                ariaLabel="下楼"
-                disabled={story === 0}
-                onClick={() => goStory((story - 1) as Story)}
+            ) : null}
+            {atHome && scene === "house" && story === 1 ? (
+              <button
+                type="button"
+                aria-label="出门"
+                onClick={goYard}
+                className="dream-door-hotspot absolute z-30 cursor-pointer"
+                style={{ left: "40%", top: "70%", width: "20%", height: "22%", minHeight: 44 }}
               />
-            </span>
-          </>
-        )}
-      </p>
-      {scene === "yard" ? (
-        <ViewTransition enter="fade-in" exit="fade-out" default="none">
-          <YardScene pets={pets} label={label} onEnter={goHouse} />
+            ) : null}
+            {atHome && scene === "house" ? (
+              <div className="absolute top-2 right-2 z-40 flex gap-1">
+                <FloorBtn
+                  label="上"
+                  ariaLabel="上楼"
+                  disabled={story === 2}
+                  onClick={() => goStory((story + 1) as Story)}
+                />
+                <FloorBtn
+                  label="下"
+                  ariaLabel="下楼"
+                  disabled={story === 0}
+                  onClick={() => goStory((story - 1) as Story)}
+                />
+              </div>
+            ) : null}
+            {atHome && scene === "yard"
+              ? yardPets.map((p) => <PetMarker key={p.id} pet={p} spot={p.spot} />)
+              : null}
+            {atHome && scene === "house"
+              ? indoor.map((p) => <PetMarker key={p.id} pet={p} spot={p.spot} />)
+              : null}
+          </ParkFrame>
         </ViewTransition>
-      ) : (
-        <ViewTransition enter="fade-in" exit="fade-out" default="none">
-          <HouseScene
-            key={story}
-            story={story}
-            pets={pets}
-            label={label}
-            onLeave={goYard}
-          />
-        </ViewTransition>
-      )}
-      {pets.length === 0 ? (
-        <p className="mt-3 text-sm text-ink-soft">还没有人认养宠物。</p>
-      ) : null}
+        </div>
+        <PlaceBar value={place} onChange={goPlace} />
+      </div>
     </div>
   );
 }
