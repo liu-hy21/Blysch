@@ -32,22 +32,40 @@ function getClientIp(req: NextRequest) {
   );
 }
 
-function getAllowedOrigins() {
+function normalizeOrigin(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    const url = new URL(trimmed);
+    return `${url.protocol}//${url.host}`;
+  } catch {
+    return null;
+  }
+}
+
+function getAllowedOrigins(): Set<string> {
   const extra =
     process.env.ALLOWED_ORIGINS?.split(",")
       .map((s) => s.trim())
       .filter(Boolean) ?? [];
-  const origins = [process.env.SITE_URL, ...extra].filter(Boolean) as string[];
-  if (process.env.NODE_ENV === "development") origins.push("http://localhost:3000");
-  return origins;
+  const raw = [process.env.SITE_URL, ...extra].filter(Boolean) as string[];
+  if (process.env.NODE_ENV === "development") raw.push("http://localhost:3000");
+
+  const allowed = new Set<string>();
+  for (const entry of raw) {
+    const origin = normalizeOrigin(entry);
+    if (origin) allowed.add(origin);
+  }
+  return allowed;
 }
 
 function isOriginAllowed(origin: string | null, referer: string | null) {
   if (process.env.NODE_ENV === "development") return true;
   const allowed = getAllowedOrigins();
   if (!origin && !referer) return true;
-  const check = origin ?? referer ?? "";
-  return allowed.some((o) => check.startsWith(o));
+  const check = normalizeOrigin(origin ?? referer ?? "");
+  if (!check) return false;
+  return allowed.has(check);
 }
 
 export async function proxy(req: NextRequest) {
