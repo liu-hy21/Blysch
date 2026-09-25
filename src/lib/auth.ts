@@ -36,11 +36,26 @@ export async function createSessionToken(payload: SessionPayload) {
     .sign(getSecret());
 }
 
-export async function setSessionCookie(token: string) {
+function sessionCookieSecure(req?: Request): boolean {
+  if (process.env.COOKIE_SECURE === "true") return true;
+  if (process.env.COOKIE_SECURE === "false") return false;
+  if (req) {
+    const forwarded = req.headers.get("x-forwarded-proto");
+    if (forwarded) return forwarded.split(",")[0]?.trim() === "https";
+    try {
+      return new URL(req.url).protocol === "https:";
+    } catch {
+      return false;
+    }
+  }
+  return (process.env.SITE_URL?.trim().startsWith("https://") ?? false);
+}
+
+export async function setSessionCookie(token: string, req?: Request) {
   const store = await cookies();
   store.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: sessionCookieSecure(req),
     sameSite: "lax",
     path: "/",
     maxAge: ONE_YEAR,

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     sub: user.id,
     username: user.username,
   });
-  await setSessionCookie(token);
+  await setSessionCookie(token, req);
   return NextResponse.json({
     user: { id: user.id, username: user.username, nickname: user.nickname },
   });
