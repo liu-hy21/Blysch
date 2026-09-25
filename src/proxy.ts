@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { SESSION_COOKIE } from "@/lib/constants";
-import { checkRateLimit } from "@/lib/rate-limit";
 
 const PUBLIC_PATHS = ["/login"];
 const PUBLIC_API_PATHS = ["/api/auth/login", "/api/auth/setup-password"];
@@ -23,77 +22,8 @@ async function isValidToken(token: string | undefined) {
   }
 }
 
-function getClientIp(req: NextRequest) {
-  return (
-    req.headers.get("cf-connecting-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
-}
-
-function normalizeOrigin(value: string): string | null {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  try {
-    const url = new URL(trimmed);
-    return `${url.protocol}//${url.host}`;
-  } catch {
-    return null;
-  }
-}
-
-function getAllowedOrigins(): Set<string> {
-  const extra =
-    process.env.ALLOWED_ORIGINS?.split(",")
-      .map((s) => s.trim())
-      .filter(Boolean) ?? [];
-  const raw = [process.env.SITE_URL, ...extra].filter(Boolean) as string[];
-  if (process.env.NODE_ENV === "development") raw.push("http://localhost:3000");
-
-  const allowed = new Set<string>();
-  for (const entry of raw) {
-    const origin = normalizeOrigin(entry);
-    if (origin) allowed.add(origin);
-  }
-  return allowed;
-}
-
-function isOriginAllowed(origin: string | null, referer: string | null) {
-  if (process.env.NODE_ENV === "development") return true;
-  const allowed = getAllowedOrigins();
-  if (!origin && !referer) return true;
-  const check = normalizeOrigin(origin ?? referer ?? "");
-  if (!check) return false;
-  return allowed.has(check);
-}
-
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  if (pathname.startsWith("/api/")) {
-    const ip = getClientIp(req);
-    const authPath = pathname.startsWith("/api/auth/");
-    const max = authPath ? 8 : 80;
-    const result = checkRateLimit(`${ip}:${authPath ? pathname : "/api"}`, max, 60_000);
-    if (!result.allowed) {
-      return NextResponse.json(
-        { error: "请求过于频繁，请稍后再试" },
-        { status: 429 },
-      );
-    }
-  }
-
-  if (
-    pathname.startsWith("/api/") &&
-    ["POST", "PUT", "DELETE", "PATCH"].includes(req.method)
-  ) {
-    const origin = req.headers.get("origin");
-    const referer = req.headers.get("referer");
-    if (!isOriginAllowed(origin, referer)) {
-      return NextResponse.json({ error: "请求来源不合法" }, { status: 403 });
-    }
-  }
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const authed = await isValidToken(token);

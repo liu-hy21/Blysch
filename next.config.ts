@@ -1,20 +1,13 @@
 import type { NextConfig } from "next";
 
 function allowedDevOriginsFromEnv(): string[] {
-  const hosts = new Set<string>();
-  for (const raw of [
-    process.env.SITE_URL,
-    ...(process.env.ALLOWED_ORIGINS?.split(",") ?? []),
-  ]) {
-    const value = raw?.trim();
-    if (!value) continue;
-    try {
-      hosts.add(new URL(value).hostname);
-    } catch {
-      hosts.add(value.replace(/:\d+$/, ""));
-    }
+  const site = process.env.SITE_URL?.trim();
+  if (!site) return [];
+  try {
+    return [new URL(site).hostname];
+  } catch {
+    return [];
   }
-  return [...hosts];
 }
 
 const nextConfig: NextConfig = {
