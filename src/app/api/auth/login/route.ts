@@ -21,25 +21,32 @@ export async function POST(req: Request) {
   if (!isAllowedUsername(username)) {
     return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
   }
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) {
-    return NextResponse.json({ error: "用户尚未初始化，请先 seed" }, { status: 401 });
-  }
-  if (!user.passwordHash) {
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      return NextResponse.json({ error: "用户尚未初始化，请先 seed" }, { status: 401 });
+    }
+    if (!user.passwordHash) {
+      return NextResponse.json(
+        { error: "请先设置密码", needsSetup: true },
+        { status: 409 },
+      );
+    }
+    if (!(await verifyPassword(password, user.passwordHash))) {
+      return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
+    }
+    const token = await createSessionToken({
+      sub: user.id,
+      username: user.username,
+    });
+    await setSessionCookie(token, req);
+    return NextResponse.json({
+      user: { id: user.id, username: user.username, nickname: user.nickname },
+    });
+  } catch {
     return NextResponse.json(
-      { error: "请先设置密码", needsSetup: true },
-      { status: 409 },
+      { error: "数据库连接失败，请检查 DATABASE_URL" },
+      { status: 503 },
     );
   }
-  if (!(await verifyPassword(password, user.passwordHash))) {
-    return NextResponse.json({ error: "用户名或密码错误" }, { status: 401 });
-  }
-  const token = await createSessionToken({
-    sub: user.id,
-    username: user.username,
-  });
-  await setSessionCookie(token, req);
-  return NextResponse.json({
-    user: { id: user.id, username: user.username, nickname: user.nickname },
-  });
 }

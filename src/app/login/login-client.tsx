@@ -18,25 +18,38 @@ export function LoginClient() {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const url = mode === "setup" ? "/api/auth/setup-password" : "/api/auth/login";
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (res.status === 409 && data.needsSetup) {
-      setMode("setup");
-      setError("第一次来，先给这个账号设一个密码。");
-      return;
+    try {
+      const url = mode === "setup" ? "/api/auth/setup-password" : "/api/auth/login";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      let data: { error?: string; needsSetup?: boolean } = {};
+      try {
+        data = await res.json();
+      } catch {
+        if (!res.ok) {
+          setError(res.status >= 500 ? "服务暂不可用，请稍后再试" : "失败了");
+          return;
+        }
+      }
+      if (res.status === 409 && data.needsSetup) {
+        setMode("setup");
+        setError("第一次来，先给这个账号设一个密码。");
+        return;
+      }
+      if (!res.ok) {
+        setError(data.error ?? "失败了");
+        return;
+      }
+      router.replace("/");
+      router.refresh();
+    } catch {
+      setError("网络异常，请稍后再试");
+    } finally {
+      setBusy(false);
     }
-    if (!res.ok) {
-      setError(data.error ?? "失败了");
-      return;
-    }
-    router.replace("/");
-    router.refresh();
   }
 
   return (
