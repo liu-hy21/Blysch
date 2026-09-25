@@ -6,7 +6,7 @@ function localIpv4Hostnames(): string[] {
   for (const ifaces of Object.values(os.networkInterfaces())) {
     if (!ifaces) continue;
     for (const iface of ifaces) {
-      if ((iface.family === "IPv4" || iface.family === 4) && !iface.internal) {
+      if (String(iface.family) === "IPv4" && !iface.internal) {
         hosts.add(iface.address);
       }
     }
