@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
 import { listMemoryPage } from "@/lib/memory-page";
 import { memorySchema } from "@/lib/validators";
+import { MEMORY_INTIMACY } from "@/lib/pet-rules";
 
 export async function GET(req: Request) {
   const ctx = await requireApiCouple();
@@ -25,25 +26,35 @@ export async function POST(req: Request) {
     return jsonError(parsed.error.issues[0]?.message ?? "参数错误", 400);
   }
   const { title, content, category, date, placeId, images } = parsed.data;
-  const memory = await prisma.memory.create({
-    data: {
-      coupleId: ctx.coupleId,
-      authorId: ctx.user.id,
-      title,
-      content,
-      category,
-      date: new Date(`${date}T12:00:00+08:00`),
-      placeId: placeId || null,
-      coverImage: images[0] ?? null,
-      images: {
-        create: images.map((url, i) => ({ url, sortOrder: i })),
+  const memory = await prisma.$transaction(async (tx) => {
+    const created = await tx.memory.create({
+      data: {
+        coupleId: ctx.coupleId,
+        authorId: ctx.user.id,
+        title,
+        content,
+        category,
+        date: new Date(`${date}T12:00:00+08:00`),
+        placeId: placeId || null,
+        coverImage: images[0] ?? null,
+        images: {
+          create: images.map((url, i) => ({ url, sortOrder: i })),
+        },
       },
-    },
-    include: {
-      images: true,
-      author: { select: { nickname: true, username: true } },
-      place: { select: { id: true, name: true } },
-    },
+      include: {
+        images: true,
+        author: { select: { nickname: true, username: true } },
+        place: { select: { id: true, name: true } },
+      },
+    });
+    await tx.pet.updateMany({
+      where: {
+        userId: { in: [ctx.user.id, ctx.partner.id] },
+        species: { in: ["rabbit", "cow"] },
+      },
+      data: { intimacy: { increment: MEMORY_INTIMACY } },
+    });
+    return created;
   });
   return NextResponse.json(memory);
 }

@@ -1,6 +1,7 @@
 import type { Pet, PetSpecies } from "@/generated/prisma/client";
 import { addDaysKey, daysBetweenKeys, todayKey } from "@/lib/utils";
 import { furnitureFor } from "@/lib/dream-furniture";
+import { buildPetRpg } from "@/lib/pet-rpg";
 
 export const SPECIES = [
   "rabbit",
@@ -31,7 +32,6 @@ export const SPECIES_TYPE: Record<PetSpecies, string> = {
 
 export type PetMood = "calm" | "content" | "miss";
 
-export const MAX_LEVEL = 30;
 export const MAX_FEEDS_PER_DAY = 3;
 
 /** 10 intimacy → 1 lowest mark. 4-up after that: 4 → next, 16 → next, 64 → top. */
@@ -42,24 +42,21 @@ export type IntimacyTier = (typeof INTIMACY_TIERS)[number];
 export type IntimacyRank = Record<IntimacyTier, number>;
 
 export function expToNext(level: number) {
-  if (level >= MAX_LEVEL) return 0;
-  return 15 + level * 10;
+  const lv = Math.max(1, Math.floor(level));
+  return 15 + lv * 10;
 }
 
 export function applyExp(pet: { level?: number | null; exp?: number | null }, gained: number) {
   let level = Number.isFinite(pet.level) ? Number(pet.level) : 1;
   let exp = Number.isFinite(pet.exp) ? Number(pet.exp) : 0;
-  if (level >= MAX_LEVEL) {
-    return { level: MAX_LEVEL, exp: 0, levelsGained: 0 };
-  }
-  exp += gained;
+  if (level < 1) level = 1;
+  if (gained > 0) exp += gained;
   let levelsGained = 0;
-  while (level < MAX_LEVEL && exp >= expToNext(level)) {
+  while (exp >= expToNext(level)) {
     exp -= expToNext(level);
     level += 1;
     levelsGained += 1;
   }
-  if (level >= MAX_LEVEL) exp = 0;
   return { level, exp, levelsGained };
 }
 
@@ -172,7 +169,14 @@ export const TYPE_COLOR: Record<string, string> = {
   水: "#6890f0",
   火: "#f08030",
   岩: "#b8a038",
+  火焰: "#f08030",
+  冰霜: "#8fd4ee",
+  奥术: "#9b59d0",
+  神圣: "#f0d060",
+  爱: "#ff8ec8",
 };
+
+export type SkillEffect = "damage" | "heal" | "buff" | "bond";
 
 export type PetSkill = {
   id: string;
@@ -181,20 +185,121 @@ export type PetSkill = {
   power: number;
   unlockLevel: number;
   desc: string;
+  /** 施放时消耗的蓝条。蓝条上限等于亲密度。 */
+  cost: number;
+  effect: SkillEffect;
+  /** 法术、奥秘等。有它时不再显示威力。 */
+  tag?: string;
 };
 
-const SKILL_SETS: Record<PetSpecies, PetSkill[]> = {
+/** 新建一条回忆时，小兔子和大牛子各增加的亲密度。 */
+export const MEMORY_INTIMACY = 40;
+
+/** 小兔子与大牛子的连携。双方都在场，并且各自扣同样的蓝。 */
+export const BOND_SKILL: PetSkill = {
+  id: "blysch",
+  name: "Blysch",
+  type: "爱",
+  power: 30,
+  unlockLevel: 1,
+  cost: 6,
+  effect: "bond",
+  tag: "连携",
+  desc: "两人一起打出一击，伤害按两人的攻击合计来算。",
+};
+
+const SPELL_TUNE: Record<string, Pick<PetSkill, "cost" | "effect" | "power">> = {
+  frostbolt: { cost: 2, effect: "damage", power: 24 },
+  fireball: { cost: 4, effect: "damage", power: 48 },
+  blizzard: { cost: 6, effect: "damage", power: 36 },
+  pyroblast: { cost: 8, effect: "damage", power: 80 },
+  "holy-light": { cost: 2, effect: "heal", power: 60 },
+  "starlight-groove": { cost: 3, effect: "buff", power: 10 },
+  "blessing-of-kings": { cost: 4, effect: "buff", power: 18 },
+  "lay-on-hands": { cost: 6, effect: "heal", power: 120 },
+};
+
+type SkillDef = Omit<PetSkill, "cost" | "effect"> & {
+  cost?: number;
+  effect?: SkillEffect;
+};
+
+const SKILL_SETS: Record<PetSpecies, SkillDef[]> = {
   rabbit: [
-    { id: "tackle", name: "撞击", type: "一般", power: 20, unlockLevel: 1, desc: "用身体撞过去。" },
-    { id: "hop", name: "蹦跳", type: "妖精", power: 32, unlockLevel: 5, desc: "轻巧地弹起来再落下。" },
-    { id: "carrot", name: "胡萝卜箭", type: "草", power: 48, unlockLevel: 12, desc: "把胡萝卜当箭射出去。" },
-    { id: "moon", name: "月下踏", type: "妖精", power: 70, unlockLevel: 20, desc: "借着月光全力一踏。" },
+    {
+      id: "frostbolt",
+      name: "寒冰箭",
+      type: "冰霜",
+      power: 3,
+      unlockLevel: 1,
+      tag: "法术",
+      desc: "对一个角色造成3点伤害，并使其冻结。",
+    },
+    {
+      id: "fireball",
+      name: "火球术",
+      type: "火焰",
+      power: 6,
+      unlockLevel: 5,
+      tag: "法术",
+      desc: "造成6点伤害。",
+    },
+    {
+      id: "blizzard",
+      name: "暴风雪",
+      type: "冰霜",
+      power: 2,
+      unlockLevel: 12,
+      tag: "法术",
+      desc: "对所有敌方随从造成2点伤害，并使其冻结。",
+    },
+    {
+      id: "pyroblast",
+      name: "炎爆术",
+      type: "火焰",
+      power: 10,
+      unlockLevel: 20,
+      tag: "法术",
+      desc: "造成10点伤害。",
+    },
   ],
   cow: [
-    { id: "tackle", name: "撞击", type: "一般", power: 22, unlockLevel: 1, desc: "沉稳地顶上去。" },
-    { id: "tail", name: "甩尾", type: "一般", power: 30, unlockLevel: 5, desc: "尾巴扫过地面。" },
-    { id: "stomp", name: "大地踏", type: "地面", power: 52, unlockLevel: 12, desc: "蹄子砸出一声闷响。" },
-    { id: "rush", name: "蛮牛冲", type: "格斗", power: 74, unlockLevel: 20, desc: "低着头直线冲锋。" },
+    {
+      id: "holy-light",
+      name: "圣光术",
+      type: "神圣",
+      power: 6,
+      unlockLevel: 1,
+      tag: "法术",
+      desc: "恢复6点生命值。",
+    },
+    {
+      id: "starlight-groove",
+      name: "星光节律",
+      type: "奥术",
+      power: 0,
+      unlockLevel: 5,
+      tag: "法术",
+      desc: "使你的随从获得+2/+1。本回合你每施放一个神圣法术，本牌费用减少1。",
+    },
+    {
+      id: "blessing-of-kings",
+      name: "王者祝福",
+      type: "神圣",
+      power: 4,
+      unlockLevel: 12,
+      tag: "法术",
+      desc: "使一个随从获得+4/+4。",
+    },
+    {
+      id: "lay-on-hands",
+      name: "圣疗术",
+      type: "神圣",
+      power: 8,
+      unlockLevel: 20,
+      tag: "法术",
+      desc: "恢复8点生命值，抽三张牌。",
+    },
   ],
   sheep: [
     { id: "tackle", name: "撞击", type: "一般", power: 18, unlockLevel: 1, desc: "毛茸茸地撞一下。" },
@@ -223,10 +328,16 @@ const SKILL_SETS: Record<PetSpecies, PetSkill[]> = {
 };
 
 export function skillsFor(species: PetSpecies, level: number) {
-  return SKILL_SETS[species].map((s) => ({
-    ...s,
-    locked: level < s.unlockLevel,
-  }));
+  return SKILL_SETS[species].map((s) => {
+    const tuned = SPELL_TUNE[s.id];
+    return {
+      ...s,
+      power: tuned?.power ?? s.power,
+      cost: tuned?.cost ?? Math.max(1, Math.ceil(s.power / 20)),
+      effect: tuned?.effect ?? "damage",
+      locked: level < s.unlockLevel,
+    };
+  });
 }
 
 export const DAILY_FOODS = [
@@ -376,7 +487,7 @@ export function serializePet(pet: Pet) {
     level: pet.level ?? 1,
     exp: pet.exp ?? 0,
     expToNext: next,
-    maxLevel: pet.level >= MAX_LEVEL,
+    rpg: buildPetRpg(pet.species, pet.level ?? 1),
     feedsLeft: feedsLeft(pet, today),
     goldFoodReady: goldFoodReady(pet, today),
     backpack: todaysBackpack(today),

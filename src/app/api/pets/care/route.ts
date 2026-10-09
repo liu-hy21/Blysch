@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
+import { rewardsBetween } from "@/lib/pet-rpg";
 import { applyExp, nextCareGain, serializePet } from "@/lib/pet-rules";
 import { settlePetRecord } from "@/lib/pet-settle";
 import { todayKey } from "@/lib/utils";
@@ -28,8 +29,10 @@ export async function POST() {
       exp: grown.exp,
     },
   });
+  const rewards = rewardsBetween(pet.species, pet.level, grown.level);
   return NextResponse.json({
     pet: serializePet(updated),
     levelsGained: grown.levelsGained,
+    rewards: rewards.map((r) => r.name),
   });
 }

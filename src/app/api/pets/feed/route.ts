@@ -9,6 +9,7 @@ import {
   isTodaysBackpackFood,
   serializePet,
 } from "@/lib/pet-rules";
+import { rewardsBetween } from "@/lib/pet-rpg";
 import { settlePetRecord } from "@/lib/pet-settle";
 import { feedSchema } from "@/lib/validators";
 import { todayKey } from "@/lib/utils";
@@ -48,9 +49,11 @@ export async function POST(req: Request) {
       ...("gold" in food && food.gold ? { goldFoodDate: today } : {}),
     },
   });
+  const rewards = rewardsBetween(pet.species, pet.level, grown.level);
   return NextResponse.json({
     pet: serializePet(updated),
     levelsGained: grown.levelsGained,
+    rewards: rewards.map((r) => r.name),
     food: food.name,
   });
 }

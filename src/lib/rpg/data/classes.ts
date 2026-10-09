@@ -1,0 +1,140 @@
+import type { ClassDefinition } from "../types";
+
+/** 参考 FF / Tales 式职业：成长曲线、技能表、可装备类型分离配置 */
+export const CLASSES: Record<string, ClassDefinition> = {
+  warrior: {
+    id: "warrior",
+    name: "战士",
+    description: "近战前排，高生命与物攻，可持剑斧与重甲。",
+    primaryStat: "str",
+    baseCombat: {
+      maxHp: 120,
+      maxMp: 20,
+      attack: 18,
+      defense: 14,
+      magicAttack: 4,
+      magicDefense: 8,
+      speed: 10,
+      critRate: 0.05,
+    },
+    growthPerLevel: {
+      maxHp: 22,
+      maxMp: 2,
+      attack: 4,
+      defense: 3,
+      magicAttack: 0.5,
+      magicDefense: 1,
+      speed: 0.5,
+    },
+    statGrowthPerLevel: { str: 2, vit: 2, dex: 0.5 },
+    skillLearnset: [
+      { level: 1, skillId: "slash" },
+      { level: 5, skillId: "power_strike" },
+      { level: 10, skillId: "guard_break" },
+    ],
+    equipmentTags: ["sword", "axe", "shield", "heavy_armor", "accessory"],
+  },
+  mage: {
+    id: "mage",
+    name: "法师",
+    description: "远程魔法输出，高 MP 与魔攻，身着法袍。",
+    primaryStat: "int",
+    baseCombat: {
+      maxHp: 70,
+      maxMp: 80,
+      attack: 6,
+      defense: 6,
+      magicAttack: 22,
+      magicDefense: 14,
+      speed: 11,
+      critRate: 0.08,
+    },
+    growthPerLevel: {
+      maxHp: 10,
+      maxMp: 12,
+      attack: 0.5,
+      defense: 1,
+      magicAttack: 5,
+      magicDefense: 2,
+      speed: 1,
+    },
+    statGrowthPerLevel: { int: 2, wis: 1, vit: 0.5 },
+    skillLearnset: [
+      { level: 1, skillId: "fire_bolt" },
+      { level: 4, skillId: "ice_shard" },
+      { level: 8, skillId: "arcane_burst" },
+    ],
+    equipmentTags: ["staff", "wand", "robe", "accessory"],
+  },
+  rogue: {
+    id: "rogue",
+    name: "盗贼",
+    description: "高敏捷与暴击，轻甲，匕首与弓。",
+    primaryStat: "dex",
+    baseCombat: {
+      maxHp: 85,
+      maxMp: 35,
+      attack: 14,
+      defense: 8,
+      magicAttack: 6,
+      magicDefense: 10,
+      speed: 18,
+      critRate: 0.15,
+    },
+    growthPerLevel: {
+      maxHp: 14,
+      maxMp: 4,
+      attack: 3,
+      defense: 1.5,
+      magicAttack: 1,
+      magicDefense: 1.5,
+      speed: 2,
+      critRate: 0.005,
+    },
+    statGrowthPerLevel: { dex: 2, luk: 1, str: 0.5 },
+    skillLearnset: [
+      { level: 1, skillId: "backstab" },
+      { level: 6, skillId: "poison_edge" },
+      { level: 12, skillId: "shadow_step" },
+    ],
+    equipmentTags: ["dagger", "bow", "light_armor", "accessory"],
+  },
+  cleric: {
+    id: "cleric",
+    name: "牧师",
+    description: "治疗与辅助，中等护甲，权杖与盾。",
+    primaryStat: "wis",
+    baseCombat: {
+      maxHp: 95,
+      maxMp: 70,
+      attack: 8,
+      defense: 10,
+      magicAttack: 14,
+      magicDefense: 16,
+      speed: 9,
+      critRate: 0.04,
+    },
+    growthPerLevel: {
+      maxHp: 16,
+      maxMp: 10,
+      attack: 1,
+      defense: 2,
+      magicAttack: 3,
+      magicDefense: 3,
+      speed: 0.5,
+    },
+    statGrowthPerLevel: { wis: 2, vit: 1, int: 0.5 },
+    skillLearnset: [
+      { level: 1, skillId: "heal" },
+      { level: 3, skillId: "bless" },
+      { level: 7, skillId: "holy_light" },
+    ],
+    equipmentTags: ["staff", "wand", "shield", "robe", "light_armor", "accessory"],
+  },
+};
+
+export function getClassDefinition(classId: string): ClassDefinition {
+  const def = CLASSES[classId];
+  if (!def) throw new Error(`未知职业: ${classId}`);
+  return def;
+}

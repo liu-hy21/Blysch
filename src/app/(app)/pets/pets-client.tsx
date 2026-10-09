@@ -1,15 +1,18 @@
 "use client";
 
 import { startTransition, useState, ViewTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PixelPet, GuardianPet } from "@/components/pets/pixel-pet";
 import { FurniturePiece } from "@/components/pets/furniture-piece";
+import { GearIcon } from "@/components/pets/gear-icon";
+import { SkillIcon } from "@/components/pets/skill-icon";
 import { IntimacyRow } from "@/components/pets/intimacy-badges";
 import { Button } from "@/components/ui/button";
-import { Sheet } from "@/components/ui/sheet";
 import {
   SPECIES,
   SPECIES_LABEL,
+  BOND_SKILL,
   TYPE_COLOR,
   type SerializedPet,
 } from "@/lib/pet-rules";
@@ -24,12 +27,14 @@ function Bar({
   value: number;
   max: number;
 }) {
-  const pct = max <= 0 ? 100 : Math.min(100, Math.round((value / max) * 100));
+  const pct = max <= 0 ? 0 : Math.min(100, Math.round((value / max) * 100));
   return (
     <div>
       <div className="mb-1 flex justify-between text-[11px] text-ink-soft">
         <span>{label}</span>
-        <span>{max <= 0 ? "MAX" : `${value}/${max}`}</span>
+        <span>
+          {value}/{max}
+        </span>
       </div>
       <div className="h-2.5 border-2 border-ink bg-bg">
         <div className="h-full bg-gold" style={{ width: `${pct}%` }} />
@@ -53,8 +58,6 @@ export function PetsClient({
   const [tab, setTab] = useState<"mine" | "partner">(initialTab);
   const [species, setSpecies] = useState<PetSpecies>("rabbit");
   const [name, setName] = useState("");
-  const [renameOpen, setRenameOpen] = useState(false);
-  const [newName, setNewName] = useState(mine?.name ?? "");
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -84,7 +87,9 @@ export function PetsClient({
       setError(data.error ?? "照料失败");
       return;
     }
-    if (data.levelsGained) setNote(`升了 ${data.levelsGained} 级！`);
+    const rewards = Array.isArray(data.rewards) ? data.rewards.join("、") : "";
+    if (data.levelsGained && rewards) setNote(`升了 ${data.levelsGained} 级，获得 ${rewards}！`);
+    else if (data.levelsGained) setNote(`升了 ${data.levelsGained} 级！`);
     router.refresh();
   }
 
@@ -105,21 +110,12 @@ export function PetsClient({
     }
     const bits = [`吃了${data.food}`];
     if (data.levelsGained) bits.push(`升了 ${data.levelsGained} 级`);
+    if (Array.isArray(data.rewards) && data.rewards.length > 0) {
+      bits.push(`获得 ${data.rewards.join("、")}`);
+    }
     if (shown && shown.moodLevel <= 1) bits.push("可是还在等你照料");
     setNote(bits.join("，") + "！");
     router.refresh();
-  }
-
-  async function rename() {
-    const res = await fetch("/api/pets", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName }),
-    });
-    if (res.ok) {
-      setRenameOpen(false);
-      router.refresh();
-    }
   }
 
   const shown = tab === "mine" ? mine : partner;
@@ -225,11 +221,7 @@ export function PetsClient({
                     {shown.speciesType}
                   </span>
                 </p>
-                <Bar
-                  label="经验"
-                  value={shown.maxLevel ? 1 : shown.exp}
-                  max={shown.maxLevel ? 1 : shown.expToNext}
-                />
+                <Bar label="经验" value={shown.exp} max={shown.expToNext} />
                 <IntimacyRow intimacy={shown.intimacy} species={shown.species} />
               </div>
             </div>
@@ -241,28 +233,78 @@ export function PetsClient({
           </section>
 
           <section className="pixel-box p-3">
+            <div className="mb-2 flex items-baseline justify-between gap-2">
+              <h3 className="text-sm">{shown.rpg.classTitle}</h3>
+              <span className="text-[11px] text-ink-soft">{shown.rpg.classBlurb}</span>
+            </div>
+            <dl className="grid grid-cols-4 gap-1 text-center">
+              {(
+                [
+                  ["生命", shown.rpg.combat.hp],
+                  ["攻击", shown.rpg.combat.atk],
+                  ["防御", shown.rpg.combat.def],
+                  ["速度", shown.rpg.combat.spd],
+                ] as const
+              ).map(([label, value]) => (
+                <div key={label} className="border-2 border-ink bg-bg px-1 py-1">
+                  <dt className="text-[10px] text-ink-soft">{label}</dt>
+                  <dd className="text-sm">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <ul className="mt-2 grid grid-cols-2 gap-1">
+              {shown.rpg.slots.map((slot) => (
+                <li key={slot.kind} className="flex items-center gap-2 border-2 border-ink px-2 py-1">
+                  <span className={slot.name ? "" : "opacity-30"}>
+                    <GearIcon
+                      species={shown.species}
+                      kind={slot.kind}
+                      label={slot.name ?? slot.kindLabel}
+                    />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[10px] text-ink-soft">{slot.kindLabel}</p>
+                    <p className="truncate text-sm">{slot.name ?? "—"}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="pixel-box p-3">
             <h3 className="mb-2 text-sm">技能</h3>
-            <ul className="space-y-2">
+            <ul className="grid grid-cols-2 gap-2">
               {shown.skills.map((s) => (
                 <li
                   key={s.id}
-                  className={`border-2 border-ink px-2 py-2 ${s.locked ? "opacity-40" : "bg-bg"}`}
+                  className={`flex min-w-0 items-center justify-between gap-1 border-2 border-ink px-2 py-1.5 ${s.locked ? "opacity-40" : "bg-bg"}`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm">{s.locked ? "？？？" : s.name}</span>
-                    <span className="flex items-center gap-2 text-[11px] text-ink-soft">
-                      <span
-                        className="border-2 border-ink px-1"
-                        style={{ background: TYPE_COLOR[s.type] ?? "#c4c4c0" }}
-                      >
-                        {s.locked ? "??" : s.type}
-                      </span>
-                      {s.locked ? `Lv.${s.unlockLevel}` : s.power ? `威力 ${s.power}` : "变化"}
-                    </span>
-                  </div>
-                  {!s.locked && <p className="mt-1 text-[11px] text-ink-soft">{s.desc}</p>}
+                  <span className="flex min-w-0 items-center gap-1">
+                    <SkillIcon species={shown.species} skillId={s.id} label={s.locked ? "未解锁技能" : s.name} size={22} />
+                    <span className="min-w-0 truncate text-sm">{s.locked ? "？？？" : s.name}</span>
+                  </span>
+                  <span
+                    className="shrink-0 border-2 border-ink px-1 text-[11px]"
+                    style={{ background: TYPE_COLOR[s.type] ?? "#c4c4c0" }}
+                  >
+                    {s.locked ? `Lv.${s.unlockLevel}` : s.type}
+                  </span>
                 </li>
               ))}
+              {shown.species === "rabbit" || shown.species === "cow" ? (
+                <li className="col-span-2 flex min-w-0 items-center justify-between gap-1 border-2 border-ink bg-bg px-2 py-1.5">
+                  <span className="flex min-w-0 items-center gap-1">
+                    <SkillIcon species={shown.species} skillId={BOND_SKILL.id} label={BOND_SKILL.name} size={22} />
+                    <span className="min-w-0 truncate text-sm">{BOND_SKILL.name}</span>
+                  </span>
+                  <span
+                    className="shrink-0 border-2 border-ink px-1 text-[11px]"
+                    style={{ background: TYPE_COLOR[BOND_SKILL.type] ?? "#c4c4c0" }}
+                  >
+                    {BOND_SKILL.type}
+                  </span>
+                </li>
+              ) : null}
             </ul>
           </section>
 
@@ -295,16 +337,12 @@ export function PetsClient({
                 <Button className="flex-1" disabled={busy || shown.caredToday} onClick={care}>
                   照料
                 </Button>
-                <Button
-                  variant="ghost"
-                  className="flex-1"
-                  onClick={() => {
-                    setNewName(shown.name);
-                    setRenameOpen(true);
-                  }}
+                <Link
+                  href="/pets/battle"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center border-2 border-ink bg-gold px-4 text-sm text-ink shadow-[3px_3px_0_var(--ink)]"
                 >
-                  改名
-                </Button>
+                  作战
+                </Link>
               </div>
               {note && (
                 <p className="mt-2 text-sm text-gold-deep" role="status">
@@ -352,17 +390,6 @@ export function PetsClient({
           </section>
         </div>
       )}
-
-      <Sheet open={renameOpen} onClose={() => setRenameOpen(false)} title="改名">
-        <input
-          className="pixel-field min-h-11 w-full px-3"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-        />
-        <Button className="mt-4 w-full" onClick={rename}>
-          保存
-        </Button>
-      </Sheet>
     </div>
   );
 }
