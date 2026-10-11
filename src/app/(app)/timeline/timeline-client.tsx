@@ -232,7 +232,13 @@ export function TimelineClient({
                     {m.images.slice(0, MEMORY_IMAGE_PREVIEW).map((url, i) => {
                       const img = (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={url} alt="" className="aspect-square w-full object-cover" />
+                        <img
+                          src={url}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          className="aspect-square w-full object-cover"
+                        />
                       );
                       const thumb =
                         i === 0 ? (

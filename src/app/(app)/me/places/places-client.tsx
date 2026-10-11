@@ -54,7 +54,13 @@ export function PlacesClient({ places }: { places: PlaceItem[] }) {
           <li key={p.id} className="pixel-box overflow-hidden">
             {p.images[0] ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={p.images[0]} alt="" className="aspect-square w-full object-cover" />
+              <img
+                src={p.images[0]}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="aspect-square w-full object-cover"
+              />
             ) : (
               <div className="aspect-square bg-bg" />
             )}

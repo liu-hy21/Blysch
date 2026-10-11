@@ -109,7 +109,7 @@ export function HomeClient({
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2>近照</h2>
-          <Link href="/timeline" className="text-xs text-gold-deep">
+          <Link href="/timeline" prefetch={false} className="text-xs text-gold-deep">
             时间轴
           </Link>
         </div>

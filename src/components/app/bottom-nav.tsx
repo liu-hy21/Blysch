@@ -27,6 +27,7 @@ export function BottomNav() {
             <li key={href} className="flex-1">
               <Link
                 href={href}
+                prefetch={false}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "mx-0.5 flex min-h-12 flex-col items-center justify-center gap-0.5 border-2 text-[11px]",

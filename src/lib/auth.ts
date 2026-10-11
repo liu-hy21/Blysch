@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
@@ -78,7 +79,7 @@ export async function readSession(): Promise<SessionPayload | null> {
   }
 }
 
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async function getCurrentUser() {
   const session = await readSession();
   if (!session) return null;
   return prisma.user.findUnique({
@@ -95,7 +96,7 @@ export async function getCurrentUser() {
       },
     },
   });
-}
+});
 
 export async function requireUser() {
   const user = await getCurrentUser();

@@ -96,11 +96,11 @@ export function HomePets({
         </div>
       </button>
       <div className="flex items-center justify-around border-t-2 border-ink px-2 py-2">
-        <Link href="/pets" className="text-[11px] text-ink-soft">
+        <Link href="/pets" prefetch={false} className="text-[11px] text-ink-soft">
           {me.nickname}
         </Link>
         <span className="text-[11px] text-gold-deep">{BOND_LABEL[bond.kind]}</span>
-        <Link href="/pets?side=partner" className="text-[11px] text-ink-soft">
+        <Link href="/pets?side=partner" prefetch={false} className="text-[11px] text-ink-soft">
           {partner.nickname}
         </Link>
       </div>
@@ -120,7 +120,7 @@ function IdlePet({
   transition: string;
 }) {
   return (
-    <Link href={href} className="flex flex-col items-center gap-1">
+    <Link href={href} prefetch={false} className="flex flex-col items-center gap-1">
       <ViewTransition name={transition} share="morph" default="none">
         {pet ? (
           <PixelPet species={pet.species} mood={pet.mood} scale={2} label={nickname} />

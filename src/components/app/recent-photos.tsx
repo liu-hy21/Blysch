@@ -12,20 +12,23 @@ type Photo = { id: string; title: string; cover: string | null };
 
 function PhotoFrame({
   cover,
+  load,
 }: {
   cover: string | null;
+  load: boolean;
 }) {
   return (
     <div className="relative aspect-square bg-bg">
-      {cover ? (
+      {cover && load ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={cover}
           alt=""
           draggable={false}
+          decoding="async"
           className="pixelated h-full w-full object-cover"
         />
-      ) : (
+      ) : cover ? null : (
         <div className="flex h-full items-center justify-center px-1 text-center text-[11px] text-ink-soft">
           无封面
         </div>
@@ -158,14 +161,15 @@ export function RecentPhotos({ memories }: { memories: Photo[] }) {
                     >
                       {i >= index && i < index + VISIBLE ? (
                         <ViewTransition name={`memory-${m.id}`} share="morph" default="none">
-                          <PhotoFrame cover={m.cover} />
+                          <PhotoFrame cover={m.cover} load />
                         </ViewTransition>
                       ) : (
-                        <PhotoFrame cover={m.cover} />
+                        <PhotoFrame cover={m.cover} load={i === index + VISIBLE} />
                       )}
                     </button>
                     <Link
                       href={`/timeline#${m.id}`}
+                      prefetch={false}
                       className="block truncate border-t-2 border-ink px-1.5 py-1.5 text-[11px]"
                     >
                       {m.title}

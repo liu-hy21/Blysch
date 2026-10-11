@@ -1,4 +1,6 @@
-import { readFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+import { Readable } from "node:stream";
 import { NextResponse } from "next/server";
 import { resolveUploadPath } from "@/lib/uploads";
 
@@ -15,10 +17,12 @@ export async function GET(_req: Request, { params }: Params) {
   const filePath = resolveUploadPath(file);
   if (!filePath) return new NextResponse("Not found", { status: 404 });
   try {
-    const buf = await readFile(filePath);
-    return new NextResponse(buf, {
+    const info = await stat(filePath);
+    const body = Readable.toWeb(createReadStream(filePath)) as ReadableStream;
+    return new NextResponse(body, {
       headers: {
         "Content-Type": contentType(file),
+        "Content-Length": String(info.size),
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
