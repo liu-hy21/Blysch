@@ -37,9 +37,11 @@ function splitTitle(title: string) {
 function WishCard({
   wish,
   onEdit,
+  onToggle,
 }: {
   wish: WishItem;
   onEdit: (wish: WishItem) => void;
+  onToggle: (wish: WishItem) => void;
 }) {
   const effort = effortOf(wish.stars);
   const { lead, rest } = splitTitle(wish.title);
@@ -81,12 +83,21 @@ function WishCard({
                 <span className="shrink-0 text-xs leading-5 text-ink-soft">{wish.whenText}</span>
               ) : null}
             </span>
-            <span className="mt-2 block text-[11px]">
+            <span className="mt-2 block pr-8 text-[11px]">
               <span className="effort-ink" style={{ color: effort.color }}>
                 {effort.label}
               </span>
             </span>
           </span>
+      </button>
+      <button
+        type="button"
+        aria-pressed={done}
+        aria-label={done ? `取消完成 ${wish.title}` : `完成心愿 ${wish.title}`}
+        onClick={() => onToggle(wish)}
+        className={`wish-check ${done ? "is-on" : ""}`}
+      >
+        <span aria-hidden>{done ? "✓" : ""}</span>
       </button>
     </li>
   );
@@ -138,6 +149,19 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
     setWhenText(w.whenText ?? "");
     setError("");
     setOpen(true);
+  }
+
+  function toggleDone(wish: WishItem) {
+    const status = wish.status === "DONE" ? "PLANNED" : "DONE";
+    startTransition(async () => {
+      const res = await fetch(`/api/wishes/${wish.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) return;
+      router.refresh();
+    });
   }
 
   function save() {
@@ -233,7 +257,7 @@ export function WishesClient({ wishes }: { wishes: WishItem[] }) {
       {list.length > 0 ? (
         <ul className="mt-4 space-y-3">
           {list.map((w) => (
-            <WishCard key={w.id} wish={w} onEdit={startEdit} />
+            <WishCard key={w.id} wish={w} onEdit={startEdit} onToggle={toggleDone} />
           ))}
         </ul>
       ) : (

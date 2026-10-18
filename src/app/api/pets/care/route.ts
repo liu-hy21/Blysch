@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiCouple, jsonError } from "@/lib/api";
 import { rewardsBetween } from "@/lib/pet-rpg";
-import { applyExp, nextCareGain, serializePet } from "@/lib/pet-rules";
+import { applyPetCare, buildCareUpdate } from "@/lib/pet-care";
+import { serializePet } from "@/lib/pet-rules";
 import { settlePetRecord } from "@/lib/pet-settle";
 import { todayKey } from "@/lib/utils";
 
@@ -15,24 +16,13 @@ export async function POST() {
   if (!pet) return jsonError("还没有宠物", 404);
   const today = todayKey();
   if (pet.lastCareDate === today) return jsonError("今天已经照料过了", 409);
-  const { intimacyDelta, expDelta, careStreak, moodLevel } = nextCareGain(pet, today);
-  const grown = applyExp(pet, expDelta);
-  const updated = await prisma.pet.update({
-    where: { id: pet.id },
-    data: {
-      intimacy: pet.intimacy + intimacyDelta,
-      lastCareDate: today,
-      careStreak,
-      moodLevel,
-      moodSettledOn: today,
-      level: grown.level,
-      exp: grown.exp,
-    },
-  });
-  const rewards = rewardsBetween(pet.species, pet.level, grown.level);
+  const beforeLevel = pet.level;
+  const plan = buildCareUpdate(pet, today);
+  const updated = await applyPetCare(pet, today);
+  const rewards = rewardsBetween(pet.species, beforeLevel, updated.level);
   return NextResponse.json({
     pet: serializePet(updated),
-    levelsGained: grown.levelsGained,
+    levelsGained: plan.levelsGained,
     rewards: rewards.map((r) => r.name),
   });
 }

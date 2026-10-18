@@ -1,5 +1,5 @@
 import type { Pet, PetSpecies } from "@/generated/prisma/client";
-import { addDaysKey, daysBetweenKeys, todayKey } from "@/lib/utils";
+import { addDaysKey, daysBetweenKeys, isAutoCareDueForDay, todayKey } from "@/lib/utils";
 import { furnitureFor } from "@/lib/dream-furniture";
 import { buildPetRpg } from "@/lib/pet-rpg";
 
@@ -118,7 +118,6 @@ export function settleMoodState(pet: MoodSettleInput, today = todayKey()) {
   let intimacy = pet.intimacy;
   let careStreak = pet.careStreak;
   if (delta > 0) {
-    careStreak = 0;
     intimacy = Math.max(0, intimacy - 3 * delta);
     for (let i = 0; i < delta; i++) moodLevel = applyOneMiss(moodLevel);
   }
@@ -131,31 +130,56 @@ export function settleMoodState(pet: MoodSettleInput, today = todayKey()) {
   };
 }
 
+/** 连续照料只增不减（不因断档或低心情归零） */
+export function nextCareStreak(
+  pet: Pick<Pet, "lastCareDate" | "careStreak">,
+  careDate: string,
+) {
+  if (pet.lastCareDate === careDate) return pet.careStreak;
+  return pet.careStreak + 1;
+}
+
 export function nextCareGain(
   pet: Pick<Pet, "lastCareDate" | "careStreak"> & { moodLevel: number },
-  today = todayKey(),
+  careDate = todayKey(),
 ) {
   const mood = pet.moodLevel;
+  const streak = nextCareStreak(pet, careDate);
+  const extra = streak >= 2 ? 1 : 0;
   if (mood <= 0) {
-    return { intimacyDelta: 2, expDelta: 10, careStreak: 1, moodLevel: 2 };
+    return { intimacyDelta: 2, expDelta: 10, careStreak: streak, moodLevel: 2 };
   }
   if (mood <= 2) {
     return {
       intimacyDelta: 3,
       expDelta: 10,
-      careStreak: 1,
+      careStreak: streak,
       moodLevel: Math.min(5, mood + 2),
     };
   }
-  const continuing = pet.lastCareDate === addDaysKey(today, -1);
-  const streak = continuing ? pet.careStreak + 1 : 1;
-  const extra = streak >= 2 ? 1 : 0;
   return {
     intimacyDelta: 3 + extra,
     expDelta: 10 + extra,
     careStreak: streak,
     moodLevel: Math.min(5, mood + 1),
   };
+}
+
+/** 需要自动补照料的自然日（上海日历）；当日须已过 23:59 */
+export function autoCareDayKeys(
+  pet: Pick<Pet, "lastCareDate" | "hatchedAt">,
+  now = new Date(),
+): string[] {
+  const today = todayKey(now);
+  const hatchKey = todayKey(pet.hatchedAt);
+  let d = pet.lastCareDate ? addDaysKey(pet.lastCareDate, 1) : addDaysKey(hatchKey, 1);
+  const days: string[] = [];
+  while (d <= today) {
+    if (d === today && !isAutoCareDueForDay(now)) break;
+    days.push(d);
+    d = addDaysKey(d, 1);
+  }
+  return days;
 }
 
 export const TYPE_COLOR: Record<string, string> = {

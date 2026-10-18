@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, ViewTransition } from "react";
+import { Fragment, useEffect, useRef, useState, ViewTransition } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { MEMORY_CATEGORIES, MEMORY_IMAGE_MAX, MEMORY_IMAGE_PREVIEW } from "@/lib/constants";
@@ -10,6 +10,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { ImagePicker } from "@/components/app/image-picker";
 import { ImageLightbox } from "@/components/app/image-lightbox";
 import { mergeMemoryPages, type MemoryCard } from "@/lib/memory-paging";
+import { OctoberMemory, octoberMemoryIndex } from "@/components/timeline/october-bed";
 import { todayKey } from "@/lib/utils";
 
 type PagePayload = {
@@ -56,6 +57,8 @@ export function TimelineClient({
   listLenRef.current = list.length;
 
   const hasMore = list.length < total;
+  const octoberAt =
+    filter === "全部" ? octoberMemoryIndex(list.map((item) => item.date), hasMore) : -1;
 
   async function fetchPage(opts: {
     page: number;
@@ -214,12 +217,14 @@ export function TimelineClient({
           </button>
         ))}
       </div>
-      {list.length === 0 ? (
+      {list.length === 0 && octoberAt < 0 ? (
         <p className="text-sm text-ink-soft">还没有回忆</p>
       ) : (
         <ul className="space-y-4">
-          {list.map((m) => (
-            <li id={m.id} key={m.id} className="pixel-box p-4">
+          {list.map((m, index) => (
+            <Fragment key={m.id}>
+              {index === octoberAt ? <OctoberMemory /> : null}
+            <li id={m.id} className="pixel-box p-4">
               <p className="text-xs text-ink-soft">
                 {m.category}
                 {m.placeName ? ` · ${m.placeName}` : ""}
@@ -272,7 +277,7 @@ export function TimelineClient({
                       transitionTypes={["nav-forward"]}
                       className="mt-2 inline-block text-xs text-ink-soft"
                     >
-                      查看更多
+                      显示更多
                     </Link>
                   ) : null}
                 </>
@@ -283,7 +288,9 @@ export function TimelineClient({
                 </button>
               </div>
             </li>
+            </Fragment>
           ))}
+          {octoberAt === list.length ? <OctoberMemory /> : null}
         </ul>
       )}
       {hasMore ? (

@@ -4,8 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MOODS, MOOD_MAP, SHOW_TOGETHER_UI } from "@/lib/constants";
 import { HomePets } from "@/components/pets/home-pets";
+import { SpaceBanner } from "@/components/pets/space-banner";
 import { RecentPhotos } from "@/components/app/recent-photos";
 import type { SerializedPet } from "@/lib/pet-rules";
+
+/** 时段场景横幅；与太空横幅不同时展示，恢复时改为 true */
+const SHOW_HOME_PETS_BANNER = false;
 
 export function HomeClient({
   coupleId,
@@ -17,6 +21,7 @@ export function HomeClient({
   partnerMood,
   nextDay,
   memories,
+  doneWishes,
   minePet,
   partnerPet,
 }: {
@@ -29,6 +34,7 @@ export function HomeClient({
   partnerMood: string | null;
   nextDay: { title: string; remain: number } | null;
   memories: { id: string; title: string; cover: string | null }[];
+  doneWishes: { id: string; title: string }[];
   minePet: SerializedPet | null;
   partnerPet: SerializedPet | null;
 }) {
@@ -75,29 +81,39 @@ export function HomeClient({
         </div>
       </section>
 
-      <div className="flex flex-wrap gap-2">
-        {MOODS.map((m) => (
-          <button
-            key={m.value}
-            type="button"
-            aria-pressed={mineMood === m.value}
-            onClick={() => setMood(m.value)}
-            className={`pixel-chip min-h-11 px-3 text-xs ${
-              mineMood === m.value ? "is-on" : "text-ink-soft"
-            }`}
-          >
-            {m.label}
-          </button>
-        ))}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {MOODS.map((m) => (
+            <button
+              key={m.value}
+              type="button"
+              aria-pressed={mineMood === m.value}
+              onClick={() => setMood(m.value)}
+              className={`pixel-chip min-h-11 px-3 text-xs ${
+                mineMood === m.value ? "is-on" : "text-ink-soft"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+        <p className="shrink-0 pt-1 text-right">
+          <span className="block text-2xl leading-none tabular-nums">{doneWishes.length}</span>
+          <span className="mt-1 block text-[11px] text-ink-soft">已完成</span>
+        </p>
       </div>
 
-      <HomePets
-        coupleId={coupleId}
-        me={me}
-        partner={partner}
-        minePet={minePet}
-        partnerPet={partnerPet}
-      />
+      {SHOW_HOME_PETS_BANNER ? (
+        <HomePets
+          coupleId={coupleId}
+          me={me}
+          partner={partner}
+          minePet={minePet}
+          partnerPet={partnerPet}
+        />
+      ) : null}
+
+      <SpaceBanner />
 
       {nextDay && (
         <section className="pixel-box px-4 py-3 text-sm">
@@ -115,6 +131,19 @@ export function HomeClient({
         </div>
         <RecentPhotos memories={memories} />
       </section>
+
+      {doneWishes.length > 0 ? (
+        <section>
+          <h2 className="mb-3">已完成的心愿</h2>
+          <ul className="space-y-2">
+            {doneWishes.map((wish) => (
+              <li key={wish.id} className="pixel-box px-3 py-2 text-sm">
+                {wish.title}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

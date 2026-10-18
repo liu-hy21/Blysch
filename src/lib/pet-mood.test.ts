@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   applyOneMiss,
+  autoCareDayKeys,
   missedCareDays,
   nextCareGain,
   moodEmoji,
   settleMoodState,
 } from "./pet-rules";
+import { isAutoCareDueForDay } from "./utils";
 
 function hatch(key: string) {
   return new Date(`${key}T12:00:00+08:00`);
@@ -73,7 +75,7 @@ describe("settleMoodState", () => {
   it("applies one miss when opening the next day after a skip", () => {
     const next = settleMoodState(base, "2026-08-24");
     assert.equal(next.changed, true);
-    assert.equal(next.careStreak, 0);
+    assert.equal(next.careStreak, 6);
     assert.equal(next.moodLevel, 1);
     assert.equal(next.intimacy, 37);
     assert.equal(next.moodSettledOn, "2026-08-24");
@@ -95,7 +97,7 @@ describe("settleMoodState", () => {
     );
     assert.equal(day2.moodLevel, 0);
     assert.equal(day2.intimacy, 34);
-    assert.equal(day2.careStreak, 0);
+    assert.equal(day2.careStreak, 6);
   });
 
   it("stamps today with no penalty when nothing was missed", () => {
@@ -133,12 +135,12 @@ describe("nextCareGain", () => {
     assert.equal(gain.moodLevel, 5);
   });
 
-  it("pulls miss back toward calm without streak bonus", () => {
+  it("pulls miss back toward calm without resetting streak", () => {
     const gain = nextCareGain(
-      { lastCareDate: "2026-08-22", careStreak: 0, moodLevel: 1 },
+      { lastCareDate: "2026-08-22", careStreak: 56, moodLevel: 1 },
       "2026-08-24",
     );
-    assert.equal(gain.careStreak, 1);
+    assert.equal(gain.careStreak, 57);
     assert.equal(gain.intimacyDelta, 3);
     assert.equal(gain.moodLevel, 3);
   });
@@ -151,6 +153,34 @@ describe("nextCareGain", () => {
     assert.equal(gain.careStreak, 1);
     assert.equal(gain.intimacyDelta, 2);
     assert.equal(gain.moodLevel, 2);
+  });
+});
+
+describe("autoCareDayKeys", () => {
+  it("waits until 23:59 Shanghai before caring for today", () => {
+    const pet = { lastCareDate: "2026-08-23", hatchedAt: hatch("2026-08-01") };
+    const before = new Date("2026-08-24T15:58:00.000Z"); // 23:58 +8
+    const after = new Date("2026-08-24T15:59:00.000Z"); // 23:59 +8
+    assert.deepEqual(autoCareDayKeys(pet, before), []);
+    assert.deepEqual(autoCareDayKeys(pet, after), ["2026-08-24"]);
+  });
+
+  it("backfills missed calendar days before today", () => {
+    const pet = { lastCareDate: "2026-08-20", hatchedAt: hatch("2026-08-01") };
+    const now = new Date("2026-08-24T16:30:00.000Z");
+    assert.deepEqual(autoCareDayKeys(pet, now), [
+      "2026-08-21",
+      "2026-08-22",
+      "2026-08-23",
+      "2026-08-24",
+    ]);
+  });
+});
+
+describe("isAutoCareDueForDay", () => {
+  it("is false before 23:59 and true at 23:59 Shanghai", () => {
+    assert.equal(isAutoCareDueForDay(new Date("2026-08-24T15:58:59.000Z")), false);
+    assert.equal(isAutoCareDueForDay(new Date("2026-08-24T15:59:00.000Z")), true);
   });
 });
 

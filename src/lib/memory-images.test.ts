@@ -13,9 +13,9 @@ describe("memoryWeekKey", () => {
 describe("shuffleMemoryImages", () => {
   const seven = ["a", "b", "c", "d", "e", "f", "g"];
 
-  it("leaves six or fewer images in place", () => {
-    const six = ["a", "b", "c", "d", "e", "f"];
-    assert.equal(shuffleMemoryImages(six, "m1"), six);
+  it("leaves three or fewer images in place", () => {
+    const three = ["a", "b", "c"];
+    assert.equal(shuffleMemoryImages(three, "m1"), three);
   });
 
   it("keeps the same photos, only the order", () => {

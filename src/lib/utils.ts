@@ -15,12 +15,29 @@ export function todayKey(date = new Date()): string {
 }
 
 export function shanghaiHour(date = new Date()): number {
-  const hour = new Intl.DateTimeFormat("en-GB", {
+  return shanghaiTimeOfDay(date).hour;
+}
+
+/** 上海时区当前时刻（用于每日 23:59 自动照料） */
+export function shanghaiTimeOfDay(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Shanghai",
     hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hourCycle: "h23",
-  }).formatToParts(date).find((part) => part.type === "hour")?.value;
-  return Number(hour);
+  }).formatToParts(date);
+  return {
+    hour: Number(parts.find((p) => p.type === "hour")?.value),
+    minute: Number(parts.find((p) => p.type === "minute")?.value),
+    second: Number(parts.find((p) => p.type === "second")?.value ?? 0),
+  };
+}
+
+/** 当天是否已到自动照料时刻（上海 23:59:00 起） */
+export function isAutoCareDueForDay(now = new Date()): boolean {
+  const { hour, minute } = shanghaiTimeOfDay(now);
+  return hour > 23 || (hour === 23 && minute >= 59);
 }
 
 export function addDaysKey(key: string, days: number): string {

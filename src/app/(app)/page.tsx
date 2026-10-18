@@ -13,8 +13,13 @@ export default async function HomePage() {
   if (!couple) return <p className="p-6">空间未就绪。</p>;
   const partner = couple.members.find((m) => m.userId !== user.id)?.user;
   const date = todayKey();
-  const [moods, nextDay, memories, mineRaw, partnerRaw] = await Promise.all([
+  const [moods, doneWishes, nextDay, memories, mineRaw, partnerRaw] = await Promise.all([
     prisma.mood.findMany({ where: { coupleId: couple.id, date } }),
+    prisma.wish.findMany({
+      where: { coupleId: couple.id, status: "DONE" },
+      orderBy: { completedAt: "desc" },
+      select: { id: true, title: true },
+    }),
     prisma.day.findFirst({
       where: { coupleId: couple.id, targetDate: { gte: new Date() } },
       orderBy: { targetDate: "asc" },
@@ -62,6 +67,7 @@ export default async function HomePage() {
         title: m.title,
         cover: m.coverImage ?? m.images[0]?.url ?? null,
       }))}
+      doneWishes={doneWishes}
       minePet={minePet}
       partnerPet={partnerPet}
     />

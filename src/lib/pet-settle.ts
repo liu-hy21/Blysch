@@ -1,10 +1,12 @@
 import "server-only";
 import type { Pet } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { runAutoCareForPet } from "@/lib/pet-care";
 import { serializePet, settleMoodState } from "@/lib/pet-rules";
 
 export async function settlePetRecord(pet: Pet | null) {
   if (!pet) return null;
+  pet = await runAutoCareForPet(pet);
   const next = settleMoodState({
     lastCareDate: pet.lastCareDate,
     careStreak: pet.careStreak,
