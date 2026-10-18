@@ -53,7 +53,15 @@ export function SpaceBanner() {
   );
 }
 
-const STARS = [
+type SpaceStar = {
+  t: number;
+  l?: number;
+  r?: number;
+  dim?: boolean;
+  pink?: boolean;
+};
+
+const STARS: SpaceStar[] = [
   { t: 14, l: 18 },
   { t: 28, l: 42, dim: true },
   { t: 12, l: 78, pink: true },
@@ -69,4 +77,4 @@ const STARS = [
   { t: 52, l: 16, dim: true },
   { t: 64, r: 22, pink: true },
   { t: 78, l: 28 },
-] as const;
+];
